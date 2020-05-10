@@ -1,5 +1,6 @@
 ﻿#include "DimensionManager.h"
 #include "ValueField.h"
+#include "Solver.h"
 #include <iostream>
 #include <fstream>
 using namespace Eigen;
@@ -164,12 +165,24 @@ private:
   }
 };
 
+void testAll();
+
 int main() {
   try {
     StructTriangMesh M{ 2, 2, 0.1 };
     Eigen::ArrayXd z = Eigen::ArrayXd::Constant(M.num_nodes(), 1, -1.);
     Bathymetry B{ M, z };
-    ValueField U{ B };
+    VolumeField U{ B, B.mesh().num_triangles() };
+    U.prim(0) = Array3d{ 0., 0., 15. };
+    U.cons(1) = Array3d{ 2., 0., 15. };
+    std::cout << U.prim(0) << std::endl;
+    EdgeField Ue{ B, B.mesh().num_triangles() * 3 };
+    Ue.cons(0, 0, 1) = Array3d{ 3., 0., 15. };
+    //Ue.cons(0, 0, 1) += Array3d{ 3., 0., 15. };
+    Ue.vel(0, 0, 1) = Array2d{ 2., 3. };
+    //Ue.cons(0, 0) *= 2.;
+    //Ue.prim(0, 1) = Array3d{ 0., 0., 15. };
+    std::cout << Ue.prim(0,0,1) << std::endl;
     //FluxField F{ U };
     return 0;
   }
@@ -196,4 +209,20 @@ int main() {
     std::cerr << "Unrecognized exception type " << std::endl;
   }
   return -1;
+}
+
+void testValueFields() {
+  StructTriangMesh M{ 2, 2, 0.1 };
+  Eigen::ArrayXd z = Eigen::ArrayXd::Constant(M.num_nodes(), 1, -1.);
+  Bathymetry B{ M, z };
+  VolumeField U{ B, B.mesh().num_triangles() };
+  U.prim(0) = Array3d{ 0., 0., 15. };
+  U.cons(1) = Array3d{ 2., 0., 15. };
+  std::cout << U.prim(0) << std::endl;
+  EdgeField Ue{ B, B.mesh().num_triangles() * 3 };
+  Ue.cons(0, 0, 1) = Array3d{ 3., 0., 15. };
+  Ue.cons(0, 0, 1) += Array3d{ 3., 0., 15. };
+  //Ue.cons(0, 0) *= 2.;
+  //Ue.prim(0, 1) = Array3d{ 0., 0., 15. };
+  std::cout << Ue.prim(0, 0, 1) << std::endl;
 }

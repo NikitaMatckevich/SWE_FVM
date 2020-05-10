@@ -9,5 +9,6 @@ add_executable( SWE_FVM "Main.cpp"
 						"PointOperations.cpp"
 						"TriangMesh.cpp"
 						"Bathymetry.cpp"
-						"ValueFieldAssign.cpp"
-						"ValueFieldUpdate.cpp")
+						"ValueFieldAssigner.cpp"
+						"ValueField.cpp"
+						"MUSCLObject.cpp")

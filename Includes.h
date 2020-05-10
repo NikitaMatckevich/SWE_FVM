@@ -6,7 +6,7 @@
 #include <algorithm>
 
 // Eigen library:
-#include "Eigen/Core"
+#include "Eigen/Dense"
 namespace Eigen {
   using Array23d = Array<double, 2, 3>;
   using Array32d = Array<double, 3, 2>;
@@ -17,3 +17,7 @@ namespace Eigen {
 }
 
 enum boundaries { SOLID_WALL = -1, FREE_FLOW = -2, PERIODIC = -3, CUSTOM = -4 };
+
+using index = Eigen::Index;
+
+constexpr inline double tol = 1e-13;

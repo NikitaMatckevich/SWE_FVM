@@ -1,72 +1,55 @@
 #pragma once
-#include "Bathymetry.h"
-#include "Solver.h"
+#include "ValueFieldAssigner.h"
 
-constexpr bool is_wet(double h) noexcept;
-Eigen::Array3d dry_state(double B) noexcept;
-
-struct ValueField {
+struct BaseValueField {
 	using Storage = Eigen::Array3Xd;
-	using Array3d = Eigen::Array3d;
-	using Column3d = Eigen::Block<Storage, 3, 1, true>;
+	using Array = Eigen::Array3d;
+	BaseValueField() = default;
+	BaseValueField(BaseValueField && other) = default;
+	BaseValueField(const BaseValueField& other);
+	BaseValueField(const Bathymetry& b, size_t storage_sz);
+	const Bathymetry& bathymetry() const;
+protected:
+	Storage str_;
 private:
-	class AssignColumnCons {
-		ValueField& field_;
-		index col_;
-	public:
-		AssignColumnCons(ValueField& field, index col);
-		const Array3d& operator =(const Array3d& rhs);
-		const Array3d& operator+=(const Array3d& rhs);
-		const Array3d& operator-=(const Array3d& rhs);
-		const Array3d& operator*=(double scalar);
-		const Array3d& operator/=(double scalar);
-	};
-	class AssignHeightCons {
-		double& target_;
-		double b_;
-	public:
-		AssignHeightCons(double& target, double b);
-		double operator =(double h);
-		double operator+=(double h);
-		double operator-=(double h);
-		double operator*=(double scalar);
-		double operator/=(double scalar);
-	};
-
-	Storage U_;
-	Storage edges_;
 	const Bathymetry& b_;
-
-	bool      dry_cell(index i) const;
-	bool full_wet_cell(index i) const;
-	bool part_wet_cell(index i) const;
-
-	Eigen::Matrix32d gradient(index i) const;
-
-public:
-	ValueField() = default;
-	ValueField(ValueField && other) = default;
-	ValueField(const ValueField & other) : U_(other.U_), b_(other.b_) {};
-	explicit ValueField(const Bathymetry & b) : b_(b) {
-		U_.resize(Eigen::NoChange, b.mesh().num_triangles());
-	}
-
-	inline const Bathymetry& bathymetry() const { return b_; }
-	Array3d prim(index i) const;
-	double  w(index i)    const;
-	double  u(index i)    const;
-	double  v(index i)    const;
-	Array3d cons(index i) const;
-	double  h (index i)   const;
-	double  hu(index i)   const;
-	double  hv(index i)   const;
-
-	Column3d prim(index i);
-	double& w(index i);
-	double& u(index i);
-	double& v(index i);
-	AssignColumnCons cons(index i);
-	AssignHeightCons h(index i);
-
-	void update();
 };
+
+template <class Indexer, class ...Args>
+struct ValueField : BaseValueField {
+	using Base    = BaseValueField;
+	using Array   = Base::Array;
+	using Base::BaseValueField;
+
+	auto prim(Args... args) const { return str_.col(Indexer::Id(args...)); }
+	Array cons(Args... args) const { return { h(args...), hu(args...), hv(args...) }; }
+	double w (Args... args) const { return str_(0, Indexer::Id(args...)); }
+	double u (Args... args) const { return str_(1, Indexer::Id(args...)); }
+	double v (Args... args) const { return str_(2, Indexer::Id(args...)); }
+	auto vel(Args... args) const { return str_.col(Indexer::Id(args...)).tail<2>(); }
+	double h (Args... args) const {
+		auto i = Indexer::Id(args...);
+		return str_(0, i) + bathymetry().t(i);
+	}
+	double hu(Args... args) const { return h(args...) * u(args...); }
+	double hv(Args... args) const { return h(args...) * v(args...); }
+
+	auto prim(Args... args) { return str_.col(Indexer::Id(args...)); }
+	Assigner cons(Args... args) { return Assigner(&str_, bathymetry(), Indexer::Id(args...)); };
+	double& w(Args... args) { return str_(0, Indexer::Id(args...)); }
+	double& u(Args... args) { return str_(1, Indexer::Id(args...)); }
+	double& v(Args... args) { return str_(2, Indexer::Id(args...)); }
+	auto vel(Args... args) { return str_.col(Indexer::Id(args...)).tail<2>(); }
+};
+
+struct VolumeIndexer {
+	static constexpr index Id(index i);
+};
+using VolumeField = ValueField<VolumeIndexer, index>;
+extern template struct ValueField<VolumeIndexer, index>;
+
+struct EdgeIndexer {
+	static constexpr index Id(index edgeId, index fromId, index toId);
+};
+using EdgeField = ValueField<EdgeIndexer, index, index, index>;
+extern template struct ValueField<EdgeIndexer, index, index, index>;
