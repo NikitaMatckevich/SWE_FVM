@@ -3,12 +3,14 @@
 project ("SWE_FVM")
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable( SWE_FVM "Main.cpp"
+add_executable( SWE_FVM "TestAll.cpp"
 						"ConfigParser.cpp"
 						"DimensionManager.cpp"
 						"PointOperations.cpp"
 						"TriangMesh.cpp"
 						"Bathymetry.cpp"
-						"ValueFieldAssigner.cpp"
+						"ConsAssigner.cpp"
 						"ValueField.cpp"
-						"MUSCLObject.cpp")
+						"MUSCLObject.cpp"
+						"Solver.cpp"
+						"KurganovFluxMethod.cpp")

@@ -1,20 +1,27 @@
 #pragma once
 #include "ValueField.h"
 
-struct MUSCLObject {
-  Bathymetry const& B_;
-  VolumeField& Vol_;
-  EdgeField& Edg_;
-  
-  using NodeArray = Eigen::ArrayXd;
-  NodeArray max_wp_;
+namespace utils {
 
-  void update();
-private:
-  bool dry_cell(index i) const;
-  bool full_wet_cell(index i) const;
-  bool part_wet_cell(index i) const;
-  Eigen::Matrix32d gradient(index i) const;
+  struct MUSCLObject {
+    inline const VolumeField& currentVolField() const { return Vol_; }
+    inline const EdgeField& currentEdgField() const { return Edg_; }
+  protected:
+    MUSCLObject(VolumeField&& v0);
+    using NodeField = Eigen::ArrayXd;
 
-  void full_wet_reconst(index i);
-};
+    VolumeField Vol_;
+    EdgeField   Edg_;
+    NodeField   Max_W_;
+
+    inline const Bathymetry& bathymetry() const { return Vol_.bathymetry(); };
+
+    bool is_dry_cell(index i) const;
+    bool is_full_wet_cell(index i) const;
+    bool is_part_wet_cell(index i) const;
+    Eigen::Matrix32d gradient(index i) const;
+
+    void reconstruct_full_wet_cell(index i);
+    void reconstruct_all();
+  };
+} // namespace utils 

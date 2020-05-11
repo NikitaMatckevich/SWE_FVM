@@ -1,9 +1,11 @@
 #pragma once
 #include "TriangMesh.h"
-
 #include <string>
 #include <fstream>
+#include <functional>
 using namespace std;
+
+// PARSING OF MSH FILE
 
 TriangMesh::TriangMesh(string const& filename) {
   ifstream msh(filename);
@@ -81,6 +83,8 @@ TriangMesh::TriangMesh(string const& filename) {
   check_tag_format_too_small_to_handle(num_entity_blocks);
   check_tag_format_too_small_to_handle(num_elements);
 }
+
+// EIGEN PUBLIC INTERFACE
 
 using namespace Eigen;
 #include "PointOperations.h"
@@ -172,6 +176,8 @@ double max_triang_area(TriangMesh const& M) {
   }
   return max_S;
 }
+
+// SIMPLE I/O
 
 #include <iostream>
 

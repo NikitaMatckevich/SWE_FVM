@@ -1,11 +1,9 @@
 ﻿#pragma once
 
-// STL library:
+// use STL library exceptions:
 #include <exception>
-#include <functional>
-#include <algorithm>
 
-// Eigen library:
+// use Eigen library dense array/matrix objects:
 #include "Eigen/Dense"
 namespace Eigen {
   using Array23d = Array<double, 2, 3>;
@@ -16,8 +14,11 @@ namespace Eigen {
   using Matrix31d = Matrix<double, 3, 1>;
 }
 
+// define possible boundary types
 enum boundaries { SOLID_WALL = -1, FREE_FLOW = -2, PERIODIC = -3, CUSTOM = -4 };
 
+// define alias for indexing
 using index = Eigen::Index;
 
+// define computational precision
 constexpr inline double tol = 1e-13;

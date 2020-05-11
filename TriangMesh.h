@@ -15,6 +15,8 @@ struct MeshError : std::runtime_error {
 struct TriangMesh {
   using NodeTag = index;
   TriangMesh() = default; //TODO: delete this
+  TriangMesh(TriangMesh&& other) = default;
+  TriangMesh(const TriangMesh& other) = delete;
   TriangMesh(std::string const& filename);
 
   // TOPOLOGY SECTION
@@ -30,7 +32,6 @@ struct TriangMesh {
   TriangTag triang_edges(NodeTag i) const;
   TriangTag triang_triangs(NodeTag i) const;
   bool is_triangle_boundary(NodeTag i) const;
-
 
   // GEOMETRY SECTION
   inline double min_x() const { return p_.row(0).minCoeff(); }
