@@ -6,7 +6,8 @@
 using namespace std;
 
 // PARSING OF MSH FILE
-
+TriangTagArray triang_edges_;   // edges of each triangle
+TriangTagArray triang_triangs_;;
 TriangMesh::TriangMesh(string const& filename) {
   ifstream msh(filename);
   if (!msh.is_open())

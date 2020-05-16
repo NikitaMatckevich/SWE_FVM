@@ -1,27 +1,26 @@
 #include "ValueField.h"
 #include "Solver.h"
 
-namespace utils {
+BaseValueField::BaseValueField(size_t str_size) {
+	if (str_size > 0) resize_storage(str_size);
+}
 
-	BaseValueField::BaseValueField(const BaseValueField& other)
-		: str_(other.str_), b_(other.b_) {};
-	BaseValueField::BaseValueField(const Bathymetry& b, size_t str_sz)
-		: b_(b)
-	{
-		str_.resize(Eigen::NoChange, str_sz);
-	}
-	const Bathymetry& BaseValueField::bathymetry() const { return b_; };
+double VolumeBathymetryWrapper::at(index t) const {
+	auto const& tp = b_.mesh().triang_points(t);
+	return 1. / 3. * (b_.at_node(tp[0]) + b_.at_node(tp[1]) + b_.at_node(tp[2]));
+};
+constexpr index VolumeIndexer::Id(index i) {
+	return i;
+}
+template struct ValueField<VolumeBathymetryWrapper, VolumeIndexer, index>;
 
-	constexpr index VolumeIndexer::Id(index i) {
-		return i;
-	}
-	template struct ValueField<VolumeIndexer, index>;
-
-	constexpr index EdgeIndexer::Id(index edgeId, index fromId, index toId) {
-		if (fromId == toId)
-			throw SolverError("Equal ids of neighbours in edge indexer not supported");
-		return 2 * edgeId + (index)(fromId < toId);
-	}
-	template struct ValueField<EdgeIndexer, index, index, index>;
-
-} // namespace utils
+double EdgeBathymetryWrapper::at(index edgeId, index fromId, index toId) const {
+	auto const& ep = b_.mesh().edge_points(edgeId);
+	return 0.5 * (b_.at_node(ep[0]) + b_.at_node(ep[1]));
+};
+constexpr index EdgeIndexer::Id(index edgeId, index fromId, index toId) {
+	if (fromId == toId)
+		throw SolverError("Equal ids of neighbours in edge indexer not supported");
+	return 2 * edgeId + (index)(fromId < toId);
+}
+template struct ValueField<EdgeBathymetryWrapper, EdgeIndexer, index, index, index>;

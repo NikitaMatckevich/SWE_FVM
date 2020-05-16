@@ -13,4 +13,4 @@ add_executable( SWE_FVM "TestAll.cpp"
 						"ValueField.cpp"
 						"MUSCLObject.cpp"
 						"Solver.cpp"
-						"KurganovFluxMethod.cpp")
+						"FVM_Methods/KurganovFluxMethod.cpp")

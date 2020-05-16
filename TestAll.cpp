@@ -1,7 +1,7 @@
 ﻿#include "ConfigParser.h"
 #include "DimensionManager.h"
-#include "KurganovFluxMethod.h"
-#include "EulerForwardSolver.h"
+#include "FVM_Methods/KurganovFluxMethod.h"
+#include "ODE_Solvers/EulerForwardSolver.h"
 #include <iostream>
 
 struct StructTriangMesh : public TriangMesh {
@@ -200,8 +200,9 @@ void testValueFields() {
   using Eigen::Array3d;
 
   StructTriangMesh M{ 2, 2, 0.1 };
-  Bathymetry::ValueArray z = Bathymetry::ValueArray::Constant(M.num_nodes(), 1, -1.);
-  Bathymetry B{ M, z };
+  Bathymetry B{ std::move(M) };
+  for (size_t i = 0; i < B.str_size(); i++)
+    B.at_node(i) = 0.;
 
   VolumeField Uv{ B, B.mesh().num_triangles() };
   Uv.prim(0) = Array3d{ 0., 0., 15. };
@@ -217,16 +218,17 @@ void testValueFields() {
 void testGaussWave() {
   using Eigen::Array3d;
 
-  StructTriangMesh m{ 3, 3, 0.1 };
-  Bathymetry::ValueArray z = Bathymetry::ValueArray::Constant(m.num_nodes(), 1, 0.);
-  Bathymetry b{ m, z };
+  StructTriangMesh m{ 2, 2, 0.1 };
+  Bathymetry b{ std::move(m) };
+  for (size_t i = 0; i < b.str_size(); i++) {
+    b.at_node(i) = 0.;
+  }
   VolumeField v0{ b, m.num_triangles() };
   for (size_t i = 0; i < m.num_triangles(); ++i) {
-    double x2 = (m.t(i) - Point{0.5, 0.5}).matrix().squaredNorm();
-    v0.prim(i) = Array3d{ 1. + exp(-10. * x2), 0., 0. };
+    double r = (m.t(i) - Point{0.5, 0.5}).matrix().squaredNorm();
+    v0.prim(i) = Array3d{ 1. + exp(-10. * r), 0., 0. };
   }
-
-  EulerForwardSolver<KurganovFluxMethod> s(std::move(v0), 0., 0.);
+  EulerForwardSolver<KurganovFluxMethod> s{ std::move(b), std::move(v0) };
   s.step(0.01);
 
 }
