@@ -1,7 +1,7 @@
 #pragma once
 #include <Solver.h>
 
-struct KurganovSpaceDisc : BaseSpaceDisc {
+struct KurganovSpaceDisc : BaseSpaceDisc<KurganovSpaceDisc> {
 	using BaseSpaceDisc::BaseSpaceDisc;
-	Array UserFlux(idx e, idx from, idx to) override;
+	Array<3> UserFlux(idx e, idx from, idx to);
 };

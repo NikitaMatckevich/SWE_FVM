@@ -1,7 +1,7 @@
 #pragma once
-#include "ConfigParser.hpp"
-#include "DimensionManager.hpp"
-#include "Mesh.hpp"
+#include <ConfigParser.h>
+#include <DimensionManager.h>
+#include <TriangMesh.h>
 
 #ifndef M_PI
   #define M_PI 3.14159265358979323846
@@ -12,9 +12,9 @@ class Test {
 protected:
   double mid_x_, mid_y_; // location
   double f_, tau_; // sources
-  Test(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
-    : f_  (Dim.unscale<scales::source>(Par.get<double>("Common", "f"  )))
-    , tau_(Dim.unscale<scales::source>(Par.get<double>("Common", "tau")))
+  Test(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
+    : f_  (Dim.unscale<scales::source>(Par.get("Common", "f"  )))
+    , tau_(Dim.unscale<scales::source>(Par.get("Common", "tau")))
     , mid_x_(0.5*(M.min_x() + M.max_x()))
     , mid_y_(0.5*(M.min_y() + M.max_y())) {}
 
@@ -26,16 +26,16 @@ public:
   virtual inline double h(double x, double y, double t) const = 0;
   inline double w(double x, double y, double t) const { return h(x, y, t) + B(x, y); }
 
-  bool is_wet(double x, double y, double t) const { return h(x, y, t) > 0.; }
+  bool is_wet(double x, double y, double t) const { return h(x, y, t) > 1e-10; }
 };
 
 // 1) abstract
 class BowlTest : public Test {
 protected:
   double delta_;
-  BowlTest(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
+  BowlTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : Test(Par, Dim, M)
-    , delta_(Par.get<double>("Common", "delta")) {}
+    , delta_(Par.get("Common", "delta")) {}
 
 public:
   double B(double x, double y) const override {
@@ -50,12 +50,12 @@ private:
   double lam1_, lam2_, alpha_, beta_;
   double A1_, A2_, A3_, A4_;
 public:
-  BallTest(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
+  BallTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : BowlTest(Par, Dim, M)
-    , x0_(Dim.unscale<scales::length>(Par.get<double>("Ball", "x0")) - mid_x_)
-    , y0_(Dim.unscale<scales::length>(Par.get<double>("Ball", "y0")) - mid_y_)
-    , u0_(Dim.unscale<scales::velocity>(Par.get<double>("Ball", "u0")))
-    , v0_(Dim.unscale<scales::velocity>(Par.get<double>("Ball", "v0")))
+    , x0_(Dim.unscale<scales::length>(Par.get("Ball", "x0")) - mid_x_)
+    , y0_(Dim.unscale<scales::length>(Par.get("Ball", "y0")) - mid_y_)
+    , u0_(Dim.unscale<scales::velocity>(Par.get("Ball", "u0")))
+    , v0_(Dim.unscale<scales::velocity>(Par.get("Ball", "v0")))
     , lam1_(2.  * delta_ - 0.25*tau_*tau_ + 0.25*f_*f_)
     , lam2_(0.5 * f_ * tau_) {
     alpha_ = lam1_ + sqrt(lam1_*lam1_ + lam2_*lam2_);
@@ -110,10 +110,10 @@ public:
     return res;
   }
   inline double h(double x, double y, double t) const override {
-    double res = 1.0 - 
-      (x - mid_x_ - phi_p(t) - phi_m(t)) * (x - mid_x_ - phi_p(t) - phi_m(t)) -
-      (y - mid_y_ - psi_p(t) - psi_m(t)) * (y - mid_y_ - psi_p(t) - psi_m(t)) ;
-    return std::max(0.0, delta_*res);
+  	double fx = x - mid_x_ - phi_p(t) - phi_m(t); 
+		double fy = y - mid_y_ - psi_p(t) - psi_m(t);
+	 	double res = delta_ * (1. - fx * fx - fy * fy);
+    return std::max(0., res);
   }
 };
 
@@ -121,11 +121,11 @@ public:
 class ThackerTest : public BowlTest {
 protected:
   double H0, p0, q0;
-  ThackerTest(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
+  ThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : BowlTest(Par, Dim, M)
-    , H0(Dim.unscale<scales::height>(Par.get<double>("Thacker", "H0")))
-    , p0(Dim.unscale<scales::source>(Par.get<double>("Thacker", "p0")))
-    , q0(Dim.unscale<scales::source>(Par.get<double>("Thacker", "q0"))) {}
+    , H0(Dim.unscale<scales::height>(Par.get("Thacker", "H0")))
+    , p0(Dim.unscale<scales::source>(Par.get("Thacker", "p0")))
+    , q0(Dim.unscale<scales::source>(Par.get("Thacker", "q0"))) {}
 
 public:
   virtual inline double p(double t) const = 0;
@@ -143,7 +143,7 @@ public:
       0.5*Hxx(t)*(x - mid_x_)*(x - mid_x_) +
           Hxy(t)*(x - mid_x_)*(y - mid_y_) + 
       0.5*Hyy(t)*(y - mid_y_)*(y - mid_y_);
-    return std::max(0.0, res);
+    return std::max(0., res);
   }
 };
 
@@ -153,7 +153,7 @@ private:
   double w;
   double A;
 public:
-  ConservativeThackerTest(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
+  ConservativeThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : ThackerTest(Par, Dim, M)
     , A(p0 * p0 + q0 * q0)
     , w(sqrt(0.25*f_*f_ + 2.0*A + 4.0*delta_) + 0.5*f_) {}
@@ -186,7 +186,7 @@ class SolenoidalThackerTest : public ThackerTest {
 private:
   double w;
 public:
-  SolenoidalThackerTest(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
+  SolenoidalThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : ThackerTest(Par, Dim, M)
     , w(sqrt(q0 - 2.0*delta_)) {
     if (f_ == 0) assert(p0 == q0 * (1.0 - delta_));
@@ -224,7 +224,7 @@ private:
   double w;
   double A, B;
 public:
-  ClassicThackerTest(Parser const & Par, DimensionManager const & Dim, Mesh const & M)
+  ClassicThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : ThackerTest(Par, Dim, M)
     , w(sqrt(f_*f_ + 8.0*delta_)) {
     double res;

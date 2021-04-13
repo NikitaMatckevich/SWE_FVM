@@ -2,13 +2,14 @@
 #include <PointOperations.h>
 
 bool is_wet(double h) noexcept {
-  constexpr double h_min = 1e-13; // minimal posible water depth of "wet" cell  
+  constexpr double h_min = 1e-10; // minimal posible water depth of "wet" cell  
   return h > h_min;
 }
-Eigen::Array3d dry_state(double b) noexcept { return { b, 0., 0. }; }
+
+Array<3> dry_state(double b) noexcept { return { b, 0., 0. }; }
 
 Bathymetry::Bathymetry(TriangMesh&& m) : m_(std::move(m)) {
-  b_.resize(m_.num_nodes(), Eigen::NoChange);
+  b_.resize(Eigen::NoChange, m_.num_nodes());
 }
 double  Bathymetry::at_point(idx t, Point const& p) const {
   auto const& tp = m_.triang_points(t);
@@ -34,6 +35,11 @@ double  Bathymetry::at_edge(idx n) const {
 double  Bathymetry::at_cell(idx n) const {
   const auto& tp = mesh().triang_points(n);
 	return (1./3.) * (b_[tp[0]] + b_[tp[1]] + b_[tp[2]]);
+}
+
+Array<2> Bathymetry::grad(idx n) const {
+  const auto& tp = mesh().triang_points(n);
+	return (at_nodes(tp).matrix() * gradient_coefs(mesh().p(tp).transpose())).array().transpose();
 }
 
 auto Bathymetry::at_nodes(NodeTagArray const& ns) const

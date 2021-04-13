@@ -1,15 +1,13 @@
 #pragma once
 #include <Solver.h>
- 
-struct EulerTimeSolver : BaseTimeSolver {
 
-	using BaseTimeSolver::BaseTimeSolver;
-
-	virtual void UserStep(double dt) override {
-  	const auto& m = SpDisc_->mesh();
-  	for (size_t i = 0; i < m.num_triangles(); ++i)
-    	SpDisc_->getVolField().cons(i) += dt * SpDisc_->RHS(i);
+template <class SpaceDisc>
+void EulerSolver(TimeDisc<SpaceDisc> * const td, double dt) {
+	SpaceDisc* sd = td->getSpaceDisc();
+	const auto& m = sd->mesh();
+	for (size_t i = 0; i < m.num_triangles(); ++i) {
+		sd->getVolField().cons(i) += td->RHS(i, dt);
 	}
-};
+}
 
 

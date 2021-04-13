@@ -46,3 +46,26 @@ double triang_average(Point const& p0, Point const& p1, Point const& p2,
   }
   return h * sum;
 }
+
+Eigen::Matrix32d gradient_coefs(const Eigen::Matrix32d& P) {
+		
+	Eigen::Matrix3d L;
+	L << 0,  1, -1,
+			-1,  0,  1,
+			 1, -1,  0;
+	
+	Eigen::Matrix2d R;
+	R << 0, -1,
+			 1,  0;
+	
+	Eigen::Matrix32d res = L * P * R;
+	
+	double d = res.topRows<2>().determinant();
+	
+	if (abs(d) < tol)
+		throw SolverError("Division by zero in gradient coefficient computation");
+	
+	res /= d;
+	return res;
+}
+

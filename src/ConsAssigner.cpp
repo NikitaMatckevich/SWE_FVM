@@ -1,27 +1,30 @@
 #include <ConsAssigner.h>
-//#include <Solver.h>
 
-using Array = ConsAssigner::Array;
-using Field = ConsAssigner::Field;
+Array<3> PrimAssigner::get() const {
+	return std::as_const(*field_).col(col_);
+}
 
-ConsAssigner::ConsAssigner(Field* field, double b, idx col)
-	: field_(field), b_(b), col_(col) {}
-const Array& ConsAssigner::operator =(const Array& rhs) {
+void PrimAssigner::operator =(const Array<3>& rhs) {
+	double h = rhs(0) - b_;
+	field_->col(col_) = rhs;
+	if (h < eta_1) {
+		field_->col(col_).tail<2>() *= (sqrt(2) * h / sqrt(h*h + eta_2));
+	}
+}
+
+Array<3> ConsAssigner::get() const {
+	Array<3> res = std::as_const(*field_).col(col_);
+	res.tail(2) *= (res(0) -= b_);
+	return res;
+}
+
+void ConsAssigner::operator =(const Array<3>& rhs) {
 	double h = rhs(0);
-	field_->col(col_) = is_wet(h) ? Array{ h + b_, rhs(1) / h, rhs(2) / h } : dry_state(b_);
-	return rhs;
-}
-const Array& ConsAssigner::operator+=(const Array& rhs) {
-	return this->operator=(std::as_const(*field_).col(col_) + rhs);
-}
-const Array& ConsAssigner::operator-=(const Array& rhs) {
-	return this->operator=(std::as_const(*field_).col(col_) - rhs);
-}
-const Array& ConsAssigner::operator*=(double scalar) {
-	return this->operator=(std::as_const(*field_).col(col_) * scalar);
-}
-const Array& ConsAssigner::operator/=(double scalar) {
-	if (scalar == 0.)
-		throw std::runtime_error("Division by zero when writing in value field in conservative form");
-	return this->operator*=(1. / scalar);
+	double ih;
+	if (h < eta_1) {
+		ih = sqrt(2) * h / sqrt(h*h*h*h + eta_4);
+	} else {
+		ih = 1. / h;
+	}
+	field_->col(col_) = Array<3>{ h + b_, rhs(1) * ih, rhs(2) * ih };
 }

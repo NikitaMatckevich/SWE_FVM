@@ -1,5 +1,6 @@
 #pragma once
 #include <PointOperations.h>
+#include <Exceptions.h>
 
 using EdgeTag = Eigen::Array<idx, 1, 2, Eigen::RowMajor>;
 using TriangTag = Eigen::Array<idx, 1, 3, Eigen::RowMajor>;
@@ -7,10 +8,6 @@ using TriangTag = Eigen::Array<idx, 1, 3, Eigen::RowMajor>;
 using NodeTagArray = Eigen::Array<idx, 1, Eigen::Dynamic, Eigen::RowMajor>;
 using EdgeTagArray = Eigen::Array<idx, Eigen::Dynamic, 2, Eigen::RowMajor>;
 using TriangTagArray = Eigen::Array<idx, Eigen::Dynamic, 3, Eigen::RowMajor>;
-
-struct MeshError : std::runtime_error {
-  using std::runtime_error::runtime_error;
-};
 
 struct TriangMesh {
   using NodeTag = idx;

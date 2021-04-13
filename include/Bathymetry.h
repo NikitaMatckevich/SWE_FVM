@@ -3,13 +3,12 @@
 #include <PointOperations.h>
 
 bool is_wet(double h) noexcept;
-Eigen::Array3d dry_state(double b) noexcept;
 
 struct Bathymetry {
   Bathymetry(TriangMesh&& m);
   Bathymetry(Bathymetry&& other) = default;
   inline TriangMesh const& mesh() const { return m_; }
-  inline Storage1d  const& buff() const { return b_; }
+  inline Storage<1> const& buff() const { return b_; }
   inline size_t str_size() const { return b_.size(); }
 
   double& at_node (idx n);
@@ -19,9 +18,11 @@ struct Bathymetry {
   double  at_edge (idx n) const;
 	double  at_cell (idx n) const;
 
+	Array<2> grad(idx n) const;
+
  private:
   TriangMesh m_;
-  Storage1d  b_;
+  Storage<1>  b_;
  public:
   auto    at_nodes(NodeTagArray const& ns) const -> decltype(b_.operator()(ns));
 };

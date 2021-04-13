@@ -1,11 +1,8 @@
 #pragma once
 #include <ConfigParser.h>
+#include <Exceptions.h>
 
 enum class scales { height, length, velocity, source, time };
-
-struct DimensionError : std::runtime_error {
-  using std::runtime_error::runtime_error;
-};
 
 class DimensionManager {
   Parser const& Parser_;

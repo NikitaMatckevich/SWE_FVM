@@ -1,8 +1,5 @@
 ﻿#pragma once
 
-// use STL library exceptions:
-#include <exception>
-
 // use Eigen library dense array/matrix objects:
 #include <eigen/Eigen/Dense>
 
@@ -20,9 +17,12 @@ enum class boundaries : int { SOLID_WALL = -1, FREE_FLOW = -2, PERIODIC = -3, CU
 
 // define alias for idxing
 using idx = Eigen::Index;
-using Array = Eigen::Array3d;
-using Storage1d = Eigen::ArrayXd;
-using Storage3d = Eigen::Array3Xd;
+
+template <size_t k>
+using Array = Eigen::Array<double, k, 1>;
+
+template <size_t k>
+using Storage = Eigen::Array<double, k, Eigen::Dynamic>;
 
 // define computational precision
 constexpr inline double tol = 1e-13;

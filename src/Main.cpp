@@ -2,6 +2,8 @@
 #include <SpaceIntegrators.h>
 #include <TimeIntegrators.h>
 #include <iostream>
+#include <Tests.hpp>
+#include <omp.h>
 
 struct StructTriangMesh : public TriangMesh {
   StructTriangMesh(size_t Ni, size_t Nj, double h)
@@ -201,18 +203,21 @@ void testValueFields() {
 
   StructTriangMesh M{ 2, 2, 0.1 };
   Bathymetry B{ std::move(M) };
+
+	std::cout << B.str_size() << '\n';
   for (size_t i = 0; i < B.str_size(); i++)
     B.at_node(i) = -1.;
 
   VolumeField Uv{ B, B.mesh().num_triangles() };
-  Uv.prim(0) = Array3d{ 0., 0., 15. };
-  Uv.cons(1) = Array3d{ 2., 0., 15. };
-  std::cout << Uv.prim(1) << std::endl;
+	std::cout << Uv.storage_size() << '\n';
+  Uv.prim(0) = Array<3>{ 0., 0., 15. };
+  Uv.cons(1) = Array<3>{ 2., 0., 15. };
+  std::cout << Uv.prim(1).get() << std::endl;
 
   EdgeField Ue{ B, B.mesh().num_triangles() * 3 };
-  Ue.cons(0, 0, 1) = Array3d{ 3., 0., 15. };
-  Ue.vel (0, 0, 1) = Array2d{ 2., 3. };
-  std::cout << Ue.prim(0, 0, 1) << std::endl;
+  Ue.cons(0, 0, 1) = Array<3>{ 3., 0., 15. };
+  Ue.vel (0, 0, 1) = Array<2>{ 2., 3. };
+  std::cout << Ue.prim(0, 0, 1).get() << std::endl;
 }
 
 void testGaussWave() {
@@ -231,15 +236,78 @@ void testGaussWave() {
     v0.prim(i) = Array3d{ 1. + exp(-5. * r), 0., 0. };
   }
 
-  EulerTimeSolver s{std::make_unique<KurganovSpaceDisc>(std::move(b), std::move(v0))};
-	
+	KurganovSpaceDisc disc{std::move(b), std::move(v0)};
+	TimeDisc<KurganovSpaceDisc> solv{ &disc, EulerSolver<KurganovSpaceDisc>};
+
 	double dt = 0.001;
-	s.getSpaceDisc()->Dump("out0.dat");
-	s.Step(dt);
-	s.getSpaceDisc()->Dump("out1.dat");
+	disc.Dump("out0.dat");
+	solv.Step(dt);
+	disc.Dump("out1.dat");
+}
+
+void testSimpleRunup() {
+
+	using Eigen::Array3d;
+
+  StructTriangMesh mesh{ 40, 40, 0.1 };
+  Bathymetry bathymetry{ std::move(mesh) };
+
+	Parser parser("config.ini");
+	DimensionManager dimer(parser);
+	BallTest test(parser, dimer, bathymetry.mesh());
+
+  for (size_t i = 0; i < bathymetry.mesh().num_nodes(); i++) {
+		const auto& p = bathymetry.mesh().p(i);
+    bathymetry.at_node(i) = test.B(p[0], p[1]);
+  }
+
+  VolumeField v0{ bathymetry, bathymetry.mesh().num_triangles() };
+
+	size_t i;
+	#pragma omp parallel for
+  for (i = 0; i < bathymetry.mesh().num_triangles(); ++i) {
+ 
+		const auto& ip = bathymetry.mesh().triang_points(i);
+		Point	p0 = bathymetry.mesh().p(ip[0]);
+		Point	p1 = bathymetry.mesh().p(ip[1]);
+		Point	p2 = bathymetry.mesh().p(ip[2]);
+
+		double hc = triang_average(p0, p1, p2, [&](const Point& p) { return test.h(p[0], p[1], 0.); } );
+		double uc = triang_average(p0, p1, p2, [&](const Point& p) { return test.u(p[0], p[1], 0.); } );
+		double vc = triang_average(p0, p1, p2, [&](const Point& p) { return test.v(p[0], p[1], 0.); } );
+
+		v0.prim(i) = Array3d{ hc + bathymetry.at_cell(i), uc, vc};
+  }
+
+	KurganovSpaceDisc disc{std::move(bathymetry), std::move(v0)};
+
+	disc.Dump("out_0.dat");
+	disc.reconstruct_all();
+	disc.compute_fluxes();
+	disc.dump("f_0.dat");
+
+	TimeDisc<KurganovSpaceDisc> solv{ &disc, EulerSolver<KurganovSpaceDisc>};
+	double t_end = 2.;
+
+	int limiter = 0, max_nb_steps = 500;
+
+	for (double t = 0., dt = 1e-3; t <= t_end; t += (dt = solv.CFLdt())) {
+		printf("\rStep #%d:  t=%.5e,  dt = %.5e", ++limiter, t, dt);
+		solv.Step(dt);
+		if (limiter > max_nb_steps) {
+			break;
+		}
+	}
+	
+	printf("\n");	
+	disc.Dump("out_2.dat");
+	disc.reconstruct_all();
+	disc.compute_fluxes();
+	disc.dump("f_2.dat");
 }
 
 void testAll() {
 	testValueFields();
-  testGaussWave();
+  //testGaussWave();
+	testSimpleRunup();
 }

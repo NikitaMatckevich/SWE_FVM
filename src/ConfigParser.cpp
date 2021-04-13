@@ -8,7 +8,6 @@ namespace {
     s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return !isspace(ch); }));
     s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return !isspace(ch); }).base(), s.end());
   }
-  const char assignment = '=';
   bool is_comment(string_view line) {
     return line.size() == 0 || line.at(0) == '#' || line.at(0) == ';';
   }
@@ -18,7 +17,8 @@ namespace {
 }
 
 Parser::Parser(const string& filename) {
-  ifstream file(filename);
+ const char assignment = '=';
+ ifstream file(filename);
   if (!file.good())
     throw ParserError("no file with a name " + filename + " found by parser");
   unsigned int ctr = 0;
@@ -50,11 +50,11 @@ Parser::Parser(const string& filename) {
 double Parser::get(const std::string& section, const std::string& property) const {
 	auto sectionEntry = m_ini.find(section);
   if (sectionEntry == m_ini.end())
-    throw ParserError("no section with name" + section + " found while calling parser get function");
+    throw ParserError("no section with name " + section + " found while calling parser get function");
   auto properties = sectionEntry->second;
   auto propertyEntry = properties.find(property);
   if (propertyEntry == properties.end())
-    throw ParserError("no property with name" + property + " found while calling parser get function");
+    throw ParserError("no property with name " + property + " found while calling parser get function");
   return std::stod(propertyEntry->second);
 }
 

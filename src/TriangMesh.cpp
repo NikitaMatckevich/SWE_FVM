@@ -155,13 +155,17 @@ Vector2d TriangMesh::norm(NodeTag ie, NodeTag it) const {
   NodeTag a = edge_points_(ie, 0);
   NodeTag b = edge_points_(ie, 1);
   Vector2d tan = (p(b) - p(a)).matrix() / l(ie);
-  if (det(t(it) - p(a), tan) < 0.) tan = -tan;
+  if (det(t(it) - p(a), tan) < 0.) {
+		tan = -tan;
+	}
   return (Matrix2d() << 0, -1, 1, 0).finished() * tan;
 }
+
 double TriangMesh::l   (NodeTag ie) const {
   auto const& ip = edge_points_.row(ie);
   return len(p(ip[0]), p(ip[1]));
 }
+
 double TriangMesh::area(NodeTag it) const {
   auto const& ip = triang_points_.row(it);
   return triang_area(p(ip[0]), p(ip[1]), p(ip[2]));
