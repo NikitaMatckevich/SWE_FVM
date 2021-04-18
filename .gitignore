@@ -1,2 +1,4 @@
 build/**
 include/eigen/**
+.clang-tidy
+run-clang-tidy.py
