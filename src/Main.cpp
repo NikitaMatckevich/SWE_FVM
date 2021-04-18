@@ -1,10 +1,12 @@
 ﻿#include <DimensionManager.h>
-#include <SpaceIntegrators.h>
 #include <StructTriangMesh.h>
-#include <Tests.hpp>
-#include <TimeIntegrators.h>
-#include <iostream>
+#include <Fluxes.h>
+#include <Solvers.h>
+#include <Tests.h>
+
 #include <omp.h>
+
+#include <iostream>
 
 void TestAll();
 
@@ -63,8 +65,7 @@ void TestValueFields() {
 
 void TestGaussWave() {
 
-  StructTriangMesh m{ 80, 80, 0.1 };
-  Bathymetry b{ std::move(m) };
+  Bathymetry b{StructTriangMesh{ 80, 80, 0.1 }};
 
   for (size_t i = 0; i < b.Size(); i++) {
     b.AtNode(i) = 0.;
@@ -76,8 +77,9 @@ void TestGaussWave() {
     v0.prim(i) = Array<3>{ 1. + exp(-5. * r), 0., 0. };
   }
 
-	KurganovSpaceDisc disc{std::move(b), std::move(v0)};
-	TimeDisc<KurganovSpaceDisc> solv{ &disc, EulerSolver<KurganovSpaceDisc>};
+	SpaceDisc disc{KurganovFlux, std::move(b), std::move(v0)};
+	TimeDisc  solv{EulerSolver};
+  solv.SetSpaceDisc(&disc);
 
 	double dt = 0.001;
 	disc.DumpFields("out0.dat");
@@ -87,8 +89,7 @@ void TestGaussWave() {
 
 void TestSimpleRunup() {
 
-  StructTriangMesh mesh{ 40, 40, 0.1 };
-  Bathymetry bathymetry{ std::move(mesh) };
+  Bathymetry bathymetry{StructTriangMesh{ 40, 40, 0.1 }};
 
 	Parser parser("config.ini");
 	DimensionManager dimer(parser);
@@ -118,11 +119,12 @@ void TestSimpleRunup() {
 		v0.prim(i) = Array<3>{ hc + v0.b(i), uc, vc};
   }
 
-	KurganovSpaceDisc disc{std::move(bathymetry), std::move(v0)};
-
+	SpaceDisc disc{KurganovFlux, std::move(bathymetry), std::move(v0)};
 	disc.DumpFields("out_0.dat");
 
-	TimeDisc<KurganovSpaceDisc> solv{ &disc, EulerSolver<KurganovSpaceDisc>};
+	TimeDisc solv{EulerSolver};
+  solv.SetSpaceDisc(&disc);
+
 	double t_end = 2.;
 
 	int limiter = 0, max_nb_steps = 1000;
@@ -166,7 +168,7 @@ void TestAnalytic() {
 		v0.prim(i) = Array<3>{ hc + v0.b(i), uc, vc};
   }
 
-	KurganovSpaceDisc disc{std::move(bathymetry), std::move(v0)};
+	SpaceDisc disc{KurganovFlux, std::move(bathymetry), std::move(v0)};
 	disc.DumpFields("out_2_an.dat");
 }
 

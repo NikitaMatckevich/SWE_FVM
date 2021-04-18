@@ -1,7 +1,6 @@
 #include <CubicPolyMath.h>
 #include <MUSCLObject.h>
 #include <PointOperations.h>
-#include <Solver.h>
 #include <fstream>
 #include <iostream>
 
