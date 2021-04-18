@@ -16,4 +16,3 @@ struct MeshError : std::runtime_error {
 struct SolverError : std::runtime_error {
   using std::runtime_error::runtime_error;
 };
-

@@ -1,50 +1,48 @@
-#include <PointOperations.h>
-#include <MUSCLObject.h>
 #include <CubicPolyMath.h>
+#include <MUSCLObject.h>
+#include <PointOperations.h>
 #include <Solver.h>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 MUSCLObject::MUSCLObject(Bathymetry&& b, const VolumeField& v0)
-	: b_(std::move(b))
-	, Vol_(b_, v0)
-	, Edg_(b_, 2 * b_.mesh().num_edges())
-	, S_  (b_, b_.mesh().num_triangles())
-{
-	std::cout << Vol_.storage_size() << '\n';
-}
+	: m_b(std::move(b))
+	, m_vol(m_b, v0)
+	, m_edg(m_b, 2 * m_b.Mesh().NumEdges())
+	, m_s  (m_b,     m_b.Mesh().NumTriangles())
+{}
 
 MUSCLObject::MUSCLObject(Bathymetry&& b, VolumeField&& v0)
-	: b_(std::move(b))
-	, Vol_(b_, std::move(v0))
-	, Edg_(b_, 2 * b_.mesh().num_edges())
-	, S_  (b_, 2 * b_.mesh().num_triangles())
-{
-	std::cout << Vol_.storage_size() << '\n';
-}
+	: m_b(std::move(b))
+	, m_vol(m_b, std::move(v0))
+	, m_edg(m_b, 2 * m_b.Mesh().NumEdges())
+	, m_s  (m_b, 2 * m_b.Mesh().NumTriangles())
+{}
 
-void MUSCLObject::Dump(const std::string& filename) const {
+void MUSCLObject::DumpFields(const std::string& filename) const {
+
 	std::ofstream fout(filename);
 	fout << "x\ty\th\tw\tdwx\tdwy\tu\tv\thu\thv\tb\tis full. wet?\tis part. wet?\tis dry?\n";
 	
-	for (size_t i = 0; i < mesh().num_triangles(); i++) {
+	for (size_t i = 0; i < Mesh().NumTriangles(); i++) {
 		
-		const auto& t = mesh().t(i);
-		const auto& ie = mesh().triang_edges(i);
-		const auto& it = mesh().triang_triangs(i);
+		const auto& t = Mesh().T(i);
+		const auto& ie = Mesh().TriangEdges(i);
+		const auto& it = Mesh().TriangTriangs(i);
 
 		fout << t[0] << '\t' << t[1] << '\t';
-		fout << Vol_.h(i) << '\t' << Vol_.w(i) << '\t';
 
-		fout << S_.u(i) << '\t' << S_.v(i) << '\t';
+		fout << m_vol.h(i) << '\t' << m_vol.w(i) << '\t';
 
-		fout << Vol_.u(i) << '\t' << Vol_.v(i) << '\t'; 
-		fout << Vol_.hu(i) << '\t' << Vol_.hv(i) << '\t';
-		fout << b_.at_cell(i) << '\t';
+		fout << m_s.u(i) << '\t' << m_s.v(i) << '\t';
 
-		if (is_full_wet_cell(i))
+		fout << m_vol.u(i)  << '\t' << m_vol.v(i) << '\t'; 
+		fout << m_vol.hu(i) << '\t' << m_vol.hv(i) << '\t';
+		fout << m_vol.b(i)  << '\t';
+
+		if (IsFullWetCell(i))
 			fout << "1\t0\t0";
-		else if (is_dry_cell(i))
+		else if (IsDryCell(i))
 			fout << "0\t0\t1";
 		else
 			fout << "0\t1\t0";
@@ -52,162 +50,322 @@ void MUSCLObject::Dump(const std::string& filename) const {
 		fout << '\n';
 	}
 	fout.close();
-	
-
-
 }
 
-bool MUSCLObject::is_dry_cell(idx i) const {
-	return !is_wet(Vol_.h(i));
+bool MUSCLObject::IsDryCell(Idx i) const {
+	return !IsWet(m_vol.h(i));
 }
 
-bool MUSCLObject::is_full_wet_cell(idx i) const {
-	auto const& m = mesh();
+bool MUSCLObject::IsFullWetCell(Idx i) const {
+	const auto& m = Mesh();
 	
-	if (m.is_triangle_boundary(i))
+	if (m.IsTriangleBoundary(i))
 		return false;
 
-	double max_bp = bath().at_nodes(m.triang_points(i)).maxCoeff();
-	return max_bp < Vol_.w(i);
+	double max_bp = Bath().AtNodes(m.TriangPoints(i)).maxCoeff();
+	return max_bp < m_vol.w(i);
 }
 
-bool MUSCLObject::is_part_wet_cell(idx i) const {
-	return !is_dry_cell(i) && !is_full_wet_cell(i);
+bool MUSCLObject::IsPartWetCell(Idx i) const {
+	return !IsDryCell(i) && !IsFullWetCell(i);
 }
 
-Eigen::Matrix32d MUSCLObject::gradient(idx i) const {
+Eigen::Matrix32d MUSCLObject::Gradient(Idx i) const {
 
-	Eigen::Matrix32d gradient(Eigen::Matrix32d::Zero());
+  Eigen::Matrix32d gradient(Eigen::Matrix32d::Zero());
 
-	if (!is_full_wet_cell(i))
+	if (!IsFullWetCell(i))
 		return gradient;
 
-	auto const& m = mesh();
-	auto const& it = m.triang_triangs(i);
-	auto const& ie = m.triang_edges(i);
+	const auto& m = Mesh();
+	const auto& it = m.TriangTriangs(i);
+	const auto& ie = m.TriangEdges(i);
 
 	Eigen::Matrix32d points; // points needed to build reconstruction plane 
 	Eigen::Matrix3d  values; // values at these points
 	
 	for (int k = 0; k < 3; k++) {
-		if (is_full_wet_cell(it[k])) {
-			points.row(k) = m.t(it[k]);
-			values.col(k) = Vol_.prim(it[k]).matrix();
+		if (IsFullWetCell(it[k])) {
+			points.row(k) = m.T(it[k]);
+			values.col(k) = m_vol.prim(it[k]).matrix();
 		}
-		else {
-			//points.row(k) = m.e(ie[k]);
-			//values.col(k) = 0.5 * (Vol_.prim(i) + Edg_.prim(ie[k], it[k], i)).matrix();
-			return gradient;
+		else if (IsDryCell(it[k])) {
+      return gradient;
+    }
+    else {
+      
+			points.row(k) = m.E(ie[k]);
+			values.col(k) = 0.5 * (m_vol.prim(i) + m_edg.prim(ie[k], it[k], i)).matrix();
+      
+      //return gradient;
 		}
 	}
 
-	gradient = values * gradient_coefs(points);
+	gradient = values * GradientCoefs(points);
 
-	auto const& ip = m.triang_points(i);
-	Eigen::Matrix23d dx = (m.p(ip) - m.t(i).replicate<1, 3>()).matrix();
-	Array<3> wp = (gradient.row(0) * dx).array() + Vol_.w(i);
-	Array<3> hp = wp - bath().at_nodes(ip).transpose();
-	if (!hp.unaryExpr([](double h) { return is_wet(h); }).all())
+	const auto& ip = m.TriangPoints(i);
+	Eigen::Matrix23d dx = (m.P(ip) - m.T(i).replicate<1, 3>()).matrix();
+
+	Array<3> wp = (gradient.row(0) * dx).array() + m_vol.w(i);
+	Array<3> hp = wp - Bath().AtNodes(ip).transpose();
+
+	if (!hp.unaryExpr([](double h) { return IsWet(h); }).all())
 		gradient.setZero();
 
 	return gradient;
 }
 
-void MUSCLObject::reconstruct_dry_cell(idx i) {
+void MUSCLObject::ReconstructDryCell(Idx i) {
 
-	auto const& m = mesh();
-	auto const& ie = m.triang_edges(i);
-	auto const& it = m.triang_triangs(i);
+	const auto& m = Mesh();
+	const auto& ie = m.TriangEdges(i);
+	const auto& it = m.TriangTriangs(i);
 
 	for (int k = 0; k < 3; k++) {
-		Edg_.cons(ie[k], i, it[k]) = Array<3>{Vol_.h(i), 0., 0.};
+		m_edg.cons(ie[k], i, it[k]) = DryState(m_edg.b(ie[k], i, it[k]));
 	}
-
-	S_.vel(i) = Array<2>{0., 0.};
+	m_s.vel(i) = Array<2>{0., 0.};
 }
 
-void MUSCLObject::reconstruct_full_wet_cell(idx i) {
+void MUSCLObject::ReconstructFullWetCell(Idx i) {
 
-	auto const& m = mesh();
-	auto const& ip = m.triang_points(i);
-	auto const& ie = m.triang_edges(i);
-	auto const& it = m.triang_triangs(i);
+	const auto& m = Mesh();
+	const auto& ip = m.TriangPoints(i);
+	const auto& ie = m.TriangEdges(i);
+	const auto& it = m.TriangTriangs(i);
 
-	auto const& Vol = Vol_;
+	const auto& vol = m_vol;
 
-	Eigen::Matrix32d df = gradient(i);
+	Eigen::Matrix32d df = Gradient(i);
 	Array<3> TVD = Array<3>::Constant(1.);
 
 	for (int k = 0; k < 3; k++) {
-		Array<3> Vtmin = Vol.prim(i).min(Vol.prim(it[k]));
-		Array<3> Vtmax = Vol.prim(i).max(Vol.prim(it[k]));	
-		Array<3> Vek = Vol.prim(i) + (df * (m.e(ie[k]) - m.t(i)).matrix()).array();
-		TVD = ((Vtmin <= Vek) && (Vek <= Vtmax)).select(TVD, Array<3>::Zero());
+		Array<3> vtmin = vol.prim(i).min(vol.prim(it[k]));
+		Array<3> vtmax = vol.prim(i).max(vol.prim(it[k]));	
+		Array<3> vek   = vol.prim(i) + (df * (m.E(ie[k]) - m.T(i)).matrix()).array();
+		TVD = ((vtmin <= vek) && (vek <= vtmax)).select(TVD, Array<3>::Zero());
 	}
 	
 	Eigen::Matrix32d df_lim = TVD.matrix().asDiagonal() * df;
 
 	for (int k = 0; k < 3; k++) {
-		Array<3> Vek = Vol.prim(i) + (df_lim * (m.e(ie[k]) - m.t(i)).matrix()).array();
-		Edg_.prim(ie[k], i, it[k]) = Vek;
-		double wpk = Vol.w(i) + df_lim.row(0) * (m.p(ip[k]) - m.t(i)).matrix();
-		Max_W_[ip[k]] = std::max(Max_W_[ip[k]], wpk);
+		
+    Array<3> vek = vol.prim(i) + (df_lim * (m.E(ie[k]) - m.T(i)).matrix()).array();
+		
+    m_edg.prim(ie[k], i, it[k]) = vek;
+
+		double wpk = vol.w(i) + df_lim.row(0) * (m.P(ip[k]) - m.T(i)).matrix();
+
+		m_max_w[ip[k]] = std::max(m_max_w[ip[k]], wpk);
 	}
 
-	S_.vel(i) = df_lim.row(0).transpose().array();
+	m_s.vel(i) = df_lim.row(0).transpose().array();
 }
 
-void MUSCLObject::reconstruct_part_wet_cell(idx i) {
+void MUSCLObject::ReconstructPartWetCell1(Idx i) {
 
-	auto const& m = mesh();
-	auto const& b = bath();
-	auto const& ip = m.triang_points(i);
-	auto const& ie = m.triang_edges(i);
-	auto const& it = m.triang_triangs(i);
+	const auto& m = Mesh();
+	const auto& b = Bath();
+	const auto& ip = m.TriangPoints(i);
+	const auto& ie = m.TriangEdges(i);
+	const auto& it = m.TriangTriangs(i);
 
-	double B13 = b.at_nodes(ip).maxCoeff();
-	double B23 = b.at_nodes(ip).minCoeff();
-	double B12 = 3. * b.at_cell(i) - B23 - B13;
+	double b13 = b.AtNodes(ip).maxCoeff();
+	double b23 = b.AtNodes(ip).minCoeff();
+	double b12 = 3. * m_vol.b(i) - b23 - b13;
 
-	double B_delimiter = B12 + (1./3.) * (B13 - B12) * (B13 - B12) / (B13 - B23);
+	double b_delimiter = b12 + (1./3.) * (b13 - b12) * (b13 - b12) / (b13 - b23);
 	double w_rec;
 	
-	if (Vol_.w(i) <= B_delimiter) {
-		w_rec = B23 + cbrt(3. * Vol_.h(i) * (B13 - B23) * (B12 - B23));
+	if (m_vol.w(i) <= b_delimiter) {
+
+		w_rec = b23 + cbrt(3. * m_vol.h(i) * (b13 - b23) * (b12 - b23));
+
 	} else {
-		double coef_2nd_degree = -3.*B13;
-		double coef_1st_degree = 3.*(B12 * B13 + B13 * B23 - B12 * B23);
-		double coef_free = (B13 - B23) * (3. * Vol_.h(i) * (B13 - B12) - B12 * (B12 + B23))
-										 - B23 * B23 * B13;
-		w_rec = bisection(
-			cubic::poly(coef_2nd_degree, coef_1st_degree, coef_free),
-			/* find from */ B12, /* to */ B13);
+
+		double a = -3.*b13;
+		double b =  3.*(b12 * b13 + b13 * b23 - b12 * b23);
+		double c = (b13 - b23) * (3. * m_vol.h(i) * (b13 - b12) - b12 * (b12 + b23)) - b23 * b23 * b13;
+
+		w_rec = Bisection(CubicPoly(c, b, a), /* find from */ b12, /* to */ b13);
 	}
 
 	for (int k = 0; k < 3; k++) {
-		Max_W_[ip[k]] = std::max(Max_W_[ip[k]], w_rec);
-		double shore = b.at_edge(ie[k]);
+		
+    m_max_w[ip[k]] = std::max(m_max_w[ip[k]], w_rec);
+
+		double shore = m_edg.b(ie[k], i, it[k]);
+
 		if (w_rec > shore) {
-			Edg_.prim(ie[k], i, it[k]) = Array<3>{w_rec, Vol_.u(i), Vol_.v(i)};
+			m_edg.prim(ie[k], i, it[k]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
 		} else {
-			Edg_.prim(ie[k], i, it[k]) = Array<3>{shore, 0, 0};
+			m_edg.prim(ie[k], i, it[k]) = Array<3>{shore, 0, 0};
 		}
+
 	}
 
-	S_.vel(i) = Array<2>{0., 0.};
+	m_s.vel(i) = Array<2>{0., 0.};
 }
 
+void MUSCLObject::ReconstructPartWetCell2(Idx i) {
+  
+  const auto& m = Mesh();
+	const auto& b = Bath();
 
-void MUSCLObject::reconstruct_all() {
+  // We sort points:
+  // 1) "lowest" point ip[0] 
+  // 2) "middle" point ie[1]
+  // 3) "highest" point ip[2]
+
+  auto ip = m.TriangPoints(i);
+  
+  if (b.AtNode(ip[0]) > b.AtNode(ip[1])) {
+    std::swap(ip[0], ip[1]);
+  }
+  if (b.AtNode(ip[1]) > b.AtNode(ip[2])) {
+    std::swap(ip[1], ip[2]);
+  }
+  if (b.AtNode(ip[0]) > b.AtNode(ip[1])) {
+    std::swap(ip[0], ip[1]);
+  }
+
+  double b23 = b.AtNode(ip[0]);
+	double b12 = b.AtNode(ip[1]);
+  double b13 = b.AtNode(ip[2]);
+
+  double w23 = m_max_w[ip[0]];
+  double h23 = w23 - b23;
+  double ratio_b = (b12 - b23) / (b13 - b23);
+  
+  double h_delimiter1 = 1./3. * h23 * ratio_b;
+  double h_delimiter2 = 1./3. * h23 * (2. - ratio_b);
+
+  double hi = m_vol.h(i);
+  double ratio_h = hi / h23;
+
+  //Further, we will distinguish 3 kinds of edges:
+  // 1) "lowest" edge ie[0] 
+  // 2) "middle" edge ie[1]
+  // 3) "highest" one ie[2]
+
+  auto ie = m.TriangEdges(i);
+  auto it = m.TriangTriangs(i);
+
+  if (m_edg.b(ie[0], i, it[0]) > m_edg.b(ie[1], i, it[1])) {
+    std::swap(ie[0], ie[1]);
+    std::swap(it[0], it[1]);
+  }
+  if (m_edg.b(ie[1], i, it[1]) > m_edg.b(ie[2], i, it[2])) {
+    std::swap(ie[1], ie[2]);
+    std::swap(it[1], it[2]);
+  }
+  if (m_edg.b(ie[0], i, it[0]) > m_edg.b(ie[1], i, it[1])) {
+    std::swap(ie[0], ie[1]);
+    std::swap(it[0], it[1]);
+  }
+
+  Eigen::Matrix13d grad_values;
+  Eigen::Matrix32d grad_points;
+  
+  grad_values[0] = w23;
+  grad_points.row(0) = m.P(ip[0]);
+
+  auto semiwet_edge = [this, &i, &ie, &it]
+    (int k, double val1, double val2, double portion)
+  {
+    if (portion < 0.5) {
+      return DryState(m_edg.b(ie[k], i, it[k]));
+    }
+    else {
+      double c = 0.5 / portion;
+      double w_rec = c * val1 + (1. - c) * val2;
+      return Array<3>{ w_rec, m_vol.u(i), m_vol.v(i) };
+    }
+  };
+
+  //Case 1
+  if (hi <= h_delimiter1) {
+
+    m_edg.prim(ie[2], i, it[2]) = DryState(m_edg.b(ie[2], i, it[2]));
+
+    double k2 = sqrt(3. * ratio_h / ratio_b);
+    grad_values    [1] = k2 * b.AtNode(ip[1]) + (1. - k2) * b.AtNode(ip[0]);
+    grad_points.row(1) = k2 * m.P(ip[1]) + (1. - k2) * m.P(ip[0]);
+    m_edg.prim(ie[0], i, it[0]) = semiwet_edge(0, grad_values[0], grad_values[1], k2);
+    
+    double k3 = sqrt(3. * ratio_h * ratio_b);
+    grad_values    [2] = k3 * b.AtNode(ip[2]) + (1. - k3) * b.AtNode(ip[0]);
+    grad_points.row(2) = k3 * m.P(ip[2]) + (1. - k3) * m.P(ip[0]);
+    m_edg.prim(ie[1], i, it[1]) = semiwet_edge(1, grad_values[0], grad_values[2], k3);
+  }
+  //Case 3
+  else if (hi >= h_delimiter2) {
+
+    double delta_w = 1.5 * (hi - h_delimiter2);
+
+    grad_values[1] = delta_w + b.AtNode(ip[1]) + (1. - ratio_b) * h23;
+    grad_points.row(1) = m.P(ip[1]);
+
+    grad_values[2] = delta_w + b.AtNode(ip[2]);
+    grad_points.row(2) = m.P(ip[2]);
+
+    double w_rec;
+
+    w_rec = 0.5 * (grad_values[0] + grad_values[1]);
+    m_edg.prim(ie[0], i, it[0]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
+    w_rec = 0.5 * (grad_values[0] + grad_values[2]);
+    m_edg.prim(ie[1], i, it[1]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
+    w_rec = 0.5 * (grad_values[1] + grad_values[2]);
+    m_edg.prim(ie[2], i, it[2]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
+  }
+  //Case 2
+  else {
+
+    double alpha = 3. * ratio_h;
+    double beta  = 1. - ratio_b;
+
+    double k1 = 1. - Bisection(CubicPoly{(1. + beta - alpha)/(beta*beta), (alpha - 3.)/beta});
+    double k3 = 1. - beta * (1. - k1);
+
+    double bp1 = k1 * b.AtNode(ip[2]) + (1. - k1) * b.AtNode(ip[1]);
+    double bp3 = k3 * b.AtNode(ip[2]) + (1. - k3) * b.AtNode(ip[0]);
+
+    grad_values    [1] = b.AtNode(ip[1]) + (k1 / k3) * beta * h23;
+    grad_points.row(1) = m.P(ip[1]);
+
+    grad_values    [2] = bp1;
+    grad_points.row(2) = k1 * m.P(ip[2]) + (1. - k1) * m.P(ip[1]);
+    
+    double w_rec = 0.5 * (grad_values[0] + grad_values[1]);
+    m_edg.prim(ie[0], i, it[0]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
+    m_edg.prim(ie[1], i, it[1]) = semiwet_edge(1, grad_values[0], bp3, k3);
+    m_edg.prim(ie[2], i, it[2]) = semiwet_edge(2, grad_values[1], bp1, k1);
+  }
+ 
+  m_s.vel(i) = (grad_values * GradientCoefs(grad_points)).transpose().array();
+}
+	
+void MUSCLObject::ReconstructAll() {
 		
-	Max_W_ = bath().buff();
-	auto const& m = mesh();
-	for (size_t i = 0; i < m.num_triangles(); ++i) {
-		if (is_full_wet_cell(i))
-			reconstruct_full_wet_cell(i);
-		else if (is_dry_cell(i))
-			reconstruct_dry_cell(i);
-		else
-			reconstruct_part_wet_cell(i);
+	m_max_w = Bath().Buff();
+	
+  const auto& m = Mesh();
+	
+  for (size_t i = 0; i < m.NumTriangles(); ++i) {
+		if (IsDryCell(i))
+			ReconstructDryCell(i);
+		else if (!IsFullWetCell(i))
+			ReconstructPartWetCell1(i);
 	}
+
+  for (size_t i = 0; i < m.NumTriangles(); ++i) {
+		if (IsFullWetCell(i))
+			ReconstructFullWetCell(i);
+	}
+
+  for (size_t i = 0; i < m.NumTriangles(); ++i) {
+		if (IsPartWetCell(i))
+			ReconstructPartWetCell2(i);
+	}
+
 }

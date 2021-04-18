@@ -1,40 +1,43 @@
 #include <SpaceIntegrators.h>
 
-Array<3> KurganovSpaceDisc::UserFlux(idx e, idx from, idx to) {
+Array<3> KurganovSpaceDisc::UserFlux(Idx e, Idx from, Idx to) {
 
-	const auto& m = mesh();
-	const auto& Edg = Edg_;	
+	const auto& m = Mesh();
+	const auto& edg = m_edg;	
 
-	auto n = m.norm(e, from);
+	auto n = m.Norm(e, from);
  
-	double ul = Edg.prim(e, from, to).tail<2>().matrix().dot(n);
-	double cl = sqrt(Edg.h(e, from, to));
+	double ul = edg.prim(e, from, to).tail<2>().matrix().dot(n);
+	double cl = sqrt(edg.h(e, from, to));
 
-	double ur = Edg.prim(e, to, from).tail<2>().matrix().dot(n);
-	double cr = sqrt(Edg.h(e, to, from));
+	double ur = edg.prim(e, to, from).tail<2>().matrix().dot(n);
+	double cr = sqrt(edg.h(e, to, from));
 
 	double al = -std::min({ ul - cl, ur - cr, 0. });
 	double ar =  std::max({ ul + cl, ur + cr, 0. });
 
   // std::cout << from << ' ' << to << ' ' << ' ' << al << ' ' << ar << '\n';
 	
-	if (al + ar <= min_wavespeed_to_capture_) {
+  constexpr double min_wavespeed_to_capture = 1e-10;
+	if (al + ar <= min_wavespeed_to_capture) {
 		return Array<3>::Zero();
 	} 
 
-	double dl = 2. * m.area(from) / m.l(e);
-	double dr = 2. * m.area(to)   / m.l(e);
+	double dl = 2. * m.Area(from) / m.L(e);
+	double dr = 2. * m.Area(to)   / m.L(e);
+
 	double length_to_wavespeed = std::min(dl, dr) / std::max(al, ar);
-	if (length_to_wavespeed < min_length_to_wavespeed_) {
-		min_length_to_wavespeed_ = length_to_wavespeed;
+
+	if (length_to_wavespeed < m_min_length_to_wavespeed) {
+		m_min_length_to_wavespeed = length_to_wavespeed;
 	}
 
 	/* TODO: delete */
   // al = ar = 0.5;
 	/**/
 
-	const auto& Ul = Edg.cons(e, from, to);
-	const auto& Ur = Edg.cons(e, to, from);
+	const auto& Ul = edg.cons(e, from, to);
+	const auto& Ur = edg.cons(e, to, from);
 
 	//return ElemFlux(n, Ul);
 

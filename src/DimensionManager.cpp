@@ -1,11 +1,9 @@
 #include <DimensionManager.h>
 
-
 constexpr double g = 9.8;
 
-DimensionManager::DimensionManager(Parser const& Parser)
-: Parser_(Parser)
-, h0_(Parser.get("Common", "vertical_measure"))
-, l0_(Parser.get("Common", "horizontal_measure"))
-, c0_(sqrt(g*h0_))
+DimensionManager::DimensionManager(const Parser& Parser)
+: m_h0(Parser.Get("Common", "vertical_measure"))
+, m_l0(Parser.Get("Common", "horizontal_measure"))
+, m_c0(sqrt(g*m_h0))
 {}

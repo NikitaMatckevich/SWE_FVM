@@ -1,14 +1,16 @@
 #pragma once
-#include <Includes.h>
 #include <Exceptions.h>
-#include <string>
+#include <Includes.h>
 #include <charconv>
+#include <string>
 #include <unordered_map>
 
-class Parser {
-  using ini_t = std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
-  ini_t m_ini;
-public:
+struct Parser {
+
+  using HashMap = std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
   Parser(const std::string& filename);
-  double get(const std::string& section, const std::string& property) const;	
+  double Get(const std::string& section, const std::string& property) const;	
+
+ private:
+  HashMap m_ini; 
 };

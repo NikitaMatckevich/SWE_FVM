@@ -1,69 +1,78 @@
 #pragma once
-#include <ConsAssigner.h>
-#include <iostream>
+#include "ConsAssigner.h"
 #include <cassert>
+#include <iostream>
 
 struct BaseValueField {
 
-	explicit BaseValueField(size_t str_size = 0);
+	explicit BaseValueField(size_t size = 0);
 	
-	size_t storage_size() const { return str_.cols(); }
-	void resize_storage(size_t str_size) { str_.resize(Eigen::NoChange, str_size); }
+	inline size_t Size() const { return m_str.cols(); }
+	inline void Resize(size_t size) { m_str.resize(Eigen::NoChange, size); }
   
  protected:
-	Storage<3> str_;
+	Storage<3> m_str;
 };
 
 template <class BathymetryWrapper, class Indexer, class ...Args>
 struct ValueField : BaseValueField {
 
-	const BathymetryWrapper b_;
+	const BathymetryWrapper m_b;
 
-	explicit ValueField(const Bathymetry& b, size_t str_size = 0)
-		: BaseValueField(str_size), b_(b) {} 
+	explicit ValueField(const Bathymetry& b, size_t size = 0)
+		: BaseValueField(size), m_b(b) {} 
+
 	ValueField(const Bathymetry& b, const BaseValueField& other)
-		: BaseValueField(other), b_(b) {}
-	ValueField(const Bathymetry& b, BaseValueField&& other)
-		: BaseValueField(std::move(other)), b_(b) {}
+		: BaseValueField(other), m_b(b) {}
 
-	auto     prim(Args... args) const { return str_.col(Indexer::Id(args...)); }
+	ValueField(const Bathymetry& b, BaseValueField&& other)
+		: BaseValueField(std::move(other)), m_b(b) {}
+
+  double b(Args... args) const { return m_b.At(args...); }
+
+	auto     prim(Args... args) const { return m_str.col(Indexer::Id(args...)); }
 	Array<3> cons(Args... args) const { return { h(args...), hu(args...), hv(args...) }; }
-	double w(Args... args) const { return str_(0, Indexer::Id(args...)); }
-	double u(Args... args) const { return str_(1, Indexer::Id(args...)); }
-	double v(Args... args) const { return str_(2, Indexer::Id(args...)); }
-	auto vel (Args... args) const { return str_.col(Indexer::Id(args...)).tail(2); }
-	double h (Args... args) const { return str_(0, Indexer::Id(args...)) - b_.at(args...); }
+	double w(Args... args) const { return m_str(0, Indexer::Id(args...)); }
+	double u(Args... args) const { return m_str(1, Indexer::Id(args...)); }
+	double v(Args... args) const { return m_str(2, Indexer::Id(args...)); }
+	auto vel (Args... args) const { return m_str.col(Indexer::Id(args...)).tail(2); }
+	double h (Args... args) const { return m_str(0, Indexer::Id(args...)) - m_b.At(args...); }
 	double hu(Args... args) const { return h(args...) * u(args...); }
 	double hv(Args... args) const { return h(args...) * v(args...); }
 
-	PrimAssigner prim(Args... args) { return PrimAssigner(&str_, b_.at(args...), Indexer::Id(args...)); }
-	ConsAssigner cons(Args... args) { return ConsAssigner(&str_, b_.at(args...), Indexer::Id(args...)); }
-	double& u(Args... args) { return str_(1, Indexer::Id(args...)); }
-	double& v(Args... args) { return str_(2, Indexer::Id(args...)); }
-	auto  vel(Args... args) { return str_.col(Indexer::Id(args...)).tail(2); }
+	PrimAssigner prim(Args... args) { return PrimAssigner(&m_str, m_b.At(args...), Indexer::Id(args...)); }
+	ConsAssigner cons(Args... args) { return ConsAssigner(&m_str, m_b.At(args...), Indexer::Id(args...)); }
+
+	double& u(Args... args) { return m_str(1, Indexer::Id(args...)); }
+	double& v(Args... args) { return m_str(2, Indexer::Id(args...)); }
+	auto  vel(Args... args) { return m_str.col(Indexer::Id(args...)).tail(2); }
 };
 
 struct VolumeBathymetryWrapper : BaseBathymetryWrapper {
 	using BaseBathymetryWrapper::BaseBathymetryWrapper;
-	double at(idx t) const;
+	double At(Idx t) const;
 };
+
 struct VolumeIndexer {
-	static constexpr inline idx Id(idx t) {
+	static constexpr inline Idx Id(Idx t) {
 		return t;
 	}
 };
-using VolumeField = ValueField<VolumeBathymetryWrapper, VolumeIndexer, idx>;
-extern template struct ValueField<VolumeBathymetryWrapper, VolumeIndexer, idx>;
+
+using VolumeField = ValueField<VolumeBathymetryWrapper, VolumeIndexer, Idx>;
+extern template struct ValueField<VolumeBathymetryWrapper, VolumeIndexer, Idx>;
 
 struct EdgeBathymetryWrapper : BaseBathymetryWrapper {
 	using BaseBathymetryWrapper::BaseBathymetryWrapper;
-	double at(idx edgeId, idx fromId, idx toId) const;
-} ;
+	double At(Idx edgeId, Idx fromId, Idx toId) const;
+};
+
 struct EdgeIndexer {
-	static constexpr inline idx Id(idx edgeId, idx fromId, idx toId) {
+	static constexpr inline Idx Id(Idx edgeId, Idx fromId, Idx toId) {
 		assert(fromId != toId);
-		return 2 * edgeId + (idx)(fromId < toId);
+		return 2 * edgeId + (Idx)(fromId < toId);
 	}
 };
-using EdgeField = ValueField<EdgeBathymetryWrapper, EdgeIndexer, idx, idx, idx>;
-extern template struct ValueField<EdgeBathymetryWrapper, EdgeIndexer, idx, idx, idx>;
+
+using EdgeField = ValueField<EdgeBathymetryWrapper, EdgeIndexer, Idx, Idx, Idx>;
+extern template struct ValueField<EdgeBathymetryWrapper, EdgeIndexer, Idx, Idx, Idx>;

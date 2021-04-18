@@ -1,50 +1,46 @@
 #include <Bathymetry.h>
 #include <PointOperations.h>
 
-bool is_wet(double h) noexcept {
-  constexpr double h_min = 1e-10; // minimal posible water depth of "wet" cell  
+bool IsWet(double h) noexcept {
+  constexpr double h_min = 1e-12; // minimal posible water depth of "wet" cell  
   return h > h_min;
 }
 
-Array<3> dry_state(double b) noexcept { return { b, 0., 0. }; }
+Array<3> DryState(double b) noexcept { return { b, 0., 0. }; }
 
-Bathymetry::Bathymetry(TriangMesh&& m) : m_(std::move(m)) {
-  b_.resize(Eigen::NoChange, m_.num_nodes());
+Bathymetry::Bathymetry(TriangMesh&& m) : m_m(std::move(m))
+{
+  m_b.resize(Eigen::NoChange, m_m.NumNodes());
 }
-double  Bathymetry::at_point(idx t, Point const& p) const {
-  auto const& tp = m_.triang_points(t);
-  double idet = 1. / det(m_.p(tp[2]) - m_.p(tp[0]), m_.p(tp[2]) - m_.p(tp[1]));
-  double lam0 = det(m_.p(tp[2]) - p, m_.p(tp[2]) - m_.p(tp[1])) * idet;
+
+double  Bathymetry::AtPoint(Idx t, Point const& p) const {
+  auto const& tp = m_m.TriangPoints(t);
+  double idet = 1. / Det(m_m.P(tp[2]) - m_m.P(tp[0]), m_m.P(tp[2]) - m_m.P(tp[1]));
+  double lam0 = Det(m_m.P(tp[2]) - p, m_m.P(tp[2]) - m_m.P(tp[1])) * idet;
   assert(lam0 >= 0.);
-  double lam1 = det(p - m_.p(tp[2]), m_.p(tp[2]) - m_.p(tp[0])) * idet;
+  double lam1 = Det(p - m_m.P(tp[2]), m_m.P(tp[2]) - m_m.P(tp[0])) * idet;
   assert(lam1 >= 0.);
   double lam2 = 1. - lam0 - lam1;
   assert(lam2 >= 0.);
-  return b_[tp[0]] * lam0 + b_[tp[1]] * lam1 + b_[tp[2]] * lam2;
-}
-double& Bathymetry::at_node(idx n) {
-  return b_[n];
-}
-double  Bathymetry::at_node(idx n) const {
-  return b_[n];
-}
-double  Bathymetry::at_edge(idx n) const {
-	const auto& ep = mesh().edge_points(n); 
-  return 0.5 * (b_[ep[0]] + b_[ep[1]]);
-}
-double  Bathymetry::at_cell(idx n) const {
-  const auto& tp = mesh().triang_points(n);
-	return (1./3.) * (b_[tp[0]] + b_[tp[1]] + b_[tp[2]]);
+  return m_b[tp[0]] * lam0 + m_b[tp[1]] * lam1 + m_b[tp[2]] * lam2;
 }
 
-Array<2> Bathymetry::grad(idx n) const {
-  const auto& tp = mesh().triang_points(n);
-	return (at_nodes(tp).matrix() * gradient_coefs(mesh().p(tp).transpose())).array().transpose();
+double& Bathymetry::AtNode(Idx n) {
+  return m_b[n];
 }
 
-auto Bathymetry::at_nodes(NodeTagArray const& ns) const
--> decltype(b_.operator()(ns)) {
-  return b_(ns);
+double  Bathymetry::AtNode(Idx n) const {
+  return m_b[n];
 }
 
-BaseBathymetryWrapper::BaseBathymetryWrapper(Bathymetry const& b) : b_(b) {}
+Array<2> Bathymetry::Gradient(Idx n) const {
+  const auto& tp = m_m.TriangPoints(n);
+	return (AtNodes(tp).matrix() * GradientCoefs(m_m.P(tp).transpose())).array().transpose();
+}
+
+auto Bathymetry::AtNodes(NodeTagArray const& ns) const -> decltype(m_b.operator()(ns))
+{
+  return m_b(ns);
+}
+
+BaseBathymetryWrapper::BaseBathymetryWrapper(Bathymetry const& b) : m_b(b) {}

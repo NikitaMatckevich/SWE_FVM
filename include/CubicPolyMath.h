@@ -1,25 +1,19 @@
 #pragma once
-#include <iostream>
 #include <cassert>
 #include <functional>
+#include <iostream>
 
-namespace cubic {
-  class poly {
-  private:
-    double b, c, d;
-  public:
-    poly(double p, double q) // x^3 + p*x + q
-      : b(0)
-      , c(p)
-      , d(q) {}
-    poly(double b, double c, double d) // x^3 + b*x^2 + c*x + d
-      : b(b)
-      , c(c)
-      , d(d) {}
-    inline double operator()(double x) const {
-      return x*x*x + b*x*x + c*x + d;
-    }
-  };
-}
+struct CubicPoly {
 
+  CubicPoly(double d = 0, double c = 0, double b = 0) // x^3 + b*x^2 + c*x + d
+    : m_b(b)
+    , m_c(c)
+    , m_d(d) {}
 
+  inline double operator()(double x) const {
+    return x*x*x + m_b*x*x + m_c*x + m_d;
+  }
+
+ private:
+  double m_b, m_c, m_d;
+};

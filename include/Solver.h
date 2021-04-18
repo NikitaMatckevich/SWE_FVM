@@ -1,91 +1,101 @@
 #pragma once
-#include <SpaceDisc.h>
+#include "SpaceDisc.h"
 
 template <class SpaceDisc>
 struct TimeDisc {
 	
 	static_assert(std::is_convertible_v<SpaceDisc*, BaseSpaceDisc<SpaceDisc>*>);
-	using solver_t = std::function<void(TimeDisc<SpaceDisc> * const, double)>;
+	using Solver = std::function<void(TimeDisc<SpaceDisc>* const, double)>;
 
-	TimeDisc(SpaceDisc* sd, const solver_t& solver, double cor = 0., double tau = 0.)
-		: sd(sd)
-		, solver(solver)
-		, cor_(cor)
-		, tau_(tau) {}
+	TimeDisc(SpaceDisc* sd, const Solver& solver, double cor = 0., double tau = 0.)
+		: m_sd(sd)
+		, m_solver(solver)
+		, m_cor(cor)
+		, m_tau(tau) {}
 
-	double CFLdt() const { return CFLconst_ * sd->getMinLenToWavespeed(); }
+	double CFLdt() const { return m_constCFL * m_sd->GetMinLenToWavespeed(); }
 
-	SpaceDisc* getSpaceDisc() { return sd; }
-	const SpaceDisc* getSpaceDisc() const { return sd; }
+	SpaceDisc* GetSpaceDisc() { return m_sd; }
+	const SpaceDisc* GetSpaceDisc() const { return m_sd; }
 
-	Array<3> RHS(idx i, double dt) const {
+	Array<3> RHS(Idx i, double dt) const {
 
-		Array<3> res = { 0., cor_ * sd->getVolField().v(i), -cor_ * sd->getVolField().u(i) };
+		const auto& vol = m_sd->GetVolField();
+		const auto& s   = m_sd->GetSrcField();
+		const auto& f   = m_sd->GetFluxes();
 
-		auto const& m = sd->mesh();
-		auto const& ie = m.triang_edges(i);
-		auto const& it = m.triang_triangs(i);
-		auto const& F = sd->getFluxes();
+		Array<3> res = { 0., m_cor * vol.v(i), -m_cor * vol.u(i) };
 
-		double iS = 1. / m.area(i);
-
-		double dti = compute_draining_dt(i);
+		const auto& m  = m_sd->Mesh();
+		const auto& ie = m.TriangEdges(i);
+		const auto& it = m.TriangTriangs(i);
 		
+		double i_area = 1. / m.Area(i);
+
+		double dti = ComputeDrainingDt(i);
+		Array<3> dts = (dt / 3.) * s.prim(i); 
+	
 		for (int k = 0; k < 3; k++) {
 
-			int sgn = m.edge_triangs(ie[k])[0] == i ? 1 : -1;
+			int sgn = m.EdgeTriangs(ie[k])[0] == i ? 1 : -1;
 			
-			double dtik = compute_draining_dt(it[k]);
-			double dtk = (sgn * F(0, ie[k])) > 0. ? std::min(dt, dti) : std::min(dt, dtik);
+			double dtik = ComputeDrainingDt(it[k]);
+			double dtk = (sgn * f(0, ie[k])) > 0. ? std::min(dt, dti) : std::min(dt, dtik);
 	
-			double c_ek = iS * m.l(ie[k]);
- 			double h_ek = sd->getEdgField().h(ie[k], i, it[k]);
+			double c_ek = i_area * m.L(ie[k]);
+ 			double h_ek = m_sd->GetEdgField().h(ie[k], i, it[k]);
 			
-			res -= dtk * sgn * c_ek * F.col(ie[k]);
-			//res.tail<2>() += dtk * (m.norm(ie[k], i) * c_ek * (0.5 * h_ek * h_ek)).array();
+			res -= dtk * sgn * c_ek * f.col(ie[k]);
+
+			// TODO(nikitamatckevich): if doesn't work, delete lines 51, uncomment line 54
+			//res.tail<2>() += dtk * (m.Norm(ie[k], i) * c_ek * (0.5 * h_ek * h_ek)).array();
 		}
 		
-		res.tail<2>() -= dt * sd->bath().grad(i) * sd->getVolField().h(i);
+		//res -= dt * s.prim(i) * vol.h(i);
+		res.tail<2>() -= dt * m_sd->Bath().Gradient(i) * vol.h(i);
 
 		return res;
 	}
 
 	void Step(double dt) {
-		sd->reconstruct_all();
-		sd->compute_fluxes();
-		solver(this, dt);
+		m_sd->ReconstructAll();
+		m_sd->ComputeFluxes();
+		m_solver(this, dt);
 	}
+
+	const double GetTau() const { return m_tau; }
+	const double GetCor() const { return m_cor; }
 
  protected:
 
-	double compute_draining_dt(idx i) const {
+	double ComputeDrainingDt(Idx i) const {
 
 		if (i < 0)
 			return std::numeric_limits<double>::infinity(); 
 
-		if (sd->is_dry_cell(i))
+		if (m_sd->IsDryCell(i))
 			return 0.;
 
-		auto const& m = sd->mesh();
-		auto const& ie = m.triang_edges(i);
-		auto const& F = sd->getFluxes();
+		const auto& m  = m_sd->Mesh();
+		const auto& ie = m.TriangEdges(i);
+	
+		const auto& f = m_sd->GetFluxes();
 
     double sum = 0.;
     for (int k = 0; k < 3; k++) {
-			idx itk = m.edge_triangs(ie[k])[0];
-			double f_ek = F(0, ie[k]);
+			Idx itk = m.EdgeTriangs(ie[k])[0];
+			double f_ek = f(0, ie[k]);
       sum += std::max(0., (i == itk ? f_ek : -f_ek));
     }
 
 		return sum > 0. ? 
-			m.area(i) * sd->getVolField().h(i) / sum :
-			std::numeric_limits<double>::infinity()  ;
+			m.Area(i) * m_sd->GetVolField().h(i) / sum :
+			std::numeric_limits<double>::infinity();
 	}
 
-	SpaceDisc* sd;
-	solver_t solver;
-	const double CFLconst_ = 0.15;   // time step is 90% of CFL
-
-	double cor_;                     // Coriolis force parameter
-  double tau_;                     // bottom friction parameter
+	SpaceDisc*   m_sd;
+	Solver 		   m_solver;
+	const double m_constCFL = 0.15;  // time step coef. is < 1/6 [Liu et al., 2018]
+	double 			 m_cor;              // rotation force parameter
+  double 			 m_tau;              // bottom friction parameter
 };

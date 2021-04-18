@@ -10,109 +10,109 @@
 // abstract
 class Test {
 protected:
-  double mid_x_, mid_y_; // location
-  double f_, tau_; // sources
-  Test(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
-    : f_  (Dim.unscale<scales::source>(Par.get("Common", "f"  )))
-    , tau_(Dim.unscale<scales::source>(Par.get("Common", "tau")))
-    , mid_x_(0.5*(M.min_x() + M.max_x()))
-    , mid_y_(0.5*(M.min_y() + M.max_y())) {}
+  double m_mid_x, m_mid_y; // location
+  double m_f, m_tau; // sources
+  Test(const Parser& Par, const DimensionManager& Dim, const TriangMesh& M)
+    : m_f  (Dim.Unscale<Scales::source>(Par.Get("Common", "f"  )))
+    , m_tau(Dim.Unscale<Scales::source>(Par.Get("Common", "tau")))
+    , m_mid_x(0.5*(M.MinX() + M.MaxX()))
+    , m_mid_y(0.5*(M.MinY() + M.MaxY())) {}
 
 public:
-  virtual double B(double x, double y) const = 0;
+  virtual double b(double x, double y) const = 0;
 
   virtual inline double u(double x, double y, double t) const = 0;
   virtual inline double v(double x, double y, double t) const = 0;
   virtual inline double h(double x, double y, double t) const = 0;
-  inline double w(double x, double y, double t) const { return h(x, y, t) + B(x, y); }
+  inline double w(double x, double y, double t) const { return h(x, y, t) + b(x, y); }
 
-  bool is_wet(double x, double y, double t) const { return h(x, y, t) > 1e-10; }
+  bool IsWet(double x, double y, double t) const { return h(x, y, t) > 1e-14; }
 };
 
 // 1) abstract
 class BowlTest : public Test {
 protected:
-  double delta_;
-  BowlTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
+  double m_delta;
+  BowlTest(const Parser& Par, const DimensionManager& Dim, const TriangMesh& M)
     : Test(Par, Dim, M)
-    , delta_(Par.get("Common", "delta")) {}
+    , m_delta(Par.Get("Common", "delta")) {}
 
 public:
-  double B(double x, double y) const override {
-    return delta_*((x - mid_x_)*(x - mid_x_) + (y - mid_y_)*(y - mid_y_) - 1.0);
+  double b(double x, double y) const override {
+    return m_delta*((x - m_mid_x)*(x - m_mid_x) + (y - m_mid_y)*(y - m_mid_y) - 1.0);
   }
 };
 
 // 1.1) concrete
 class BallTest : public BowlTest {
 private:
-  double x0_, y0_, u0_, v0_;
-  double lam1_, lam2_, alpha_, beta_;
-  double A1_, A2_, A3_, A4_;
+  double m_x0, m_y0, m_u0, m_v0;
+  double m_lam1, m_lam2, m_alpha, m_beta;
+  double m_a1, m_a2, m_a3, m_a4;
 public:
   BallTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : BowlTest(Par, Dim, M)
-    , x0_(Dim.unscale<scales::length>(Par.get("Ball", "x0")) - mid_x_)
-    , y0_(Dim.unscale<scales::length>(Par.get("Ball", "y0")) - mid_y_)
-    , u0_(Dim.unscale<scales::velocity>(Par.get("Ball", "u0")))
-    , v0_(Dim.unscale<scales::velocity>(Par.get("Ball", "v0")))
-    , lam1_(2.  * delta_ - 0.25*tau_*tau_ + 0.25*f_*f_)
-    , lam2_(0.5 * f_ * tau_) {
-    alpha_ = lam1_ + sqrt(lam1_*lam1_ + lam2_*lam2_);
-    beta_ = 0.5*sqrt(2.*alpha_);
-    alpha_ = lam2_ / sqrt(2.*alpha_);
-    A1_ = 0.5*(alpha_*alpha_ + beta_*beta_ + 0.5*alpha_*tau_ + 0.5*beta_*f_)*x0_
-        + 0.25*(beta_*tau_ - alpha_*f_)*y0_
-        + 0.5*(alpha_*u0_ + beta_*v0_);
-    A1_ /= (alpha_ * alpha_ + beta_ * beta_);
-    A2_ = 0.5*(alpha_*alpha_ + beta_*beta_ + 0.5*alpha_*tau_ + 0.5*beta_*f_)*y0_
-        - 0.25*(beta_*tau_ - alpha_*f_)*x0_
-        + 0.5*(alpha_*v0_ - beta_*u0_);
-    A2_ /= (alpha_ * alpha_ + beta_ * beta_);
-    A3_ = x0_ - A1_;
-    A4_ = y0_ - A2_;
+    , m_x0(Dim.Unscale<Scales::length>(Par.Get("Ball", "x0")) - m_mid_x)
+    , m_y0(Dim.Unscale<Scales::length>(Par.Get("Ball", "y0")) - m_mid_y)
+    , m_u0(Dim.Unscale<Scales::velocity>(Par.Get("Ball", "u0")))
+    , m_v0(Dim.Unscale<Scales::velocity>(Par.Get("Ball", "v0")))
+    , m_lam1(2.  * m_delta - 0.25*m_tau*m_tau + 0.25*m_f*m_f)
+    , m_lam2(0.5 * m_f * m_tau) {
+    m_alpha = m_lam1 + sqrt(m_lam1*m_lam1 + m_lam2*m_lam2);
+    m_beta = 0.5*sqrt(2.*m_alpha);
+    m_alpha = m_lam2 / sqrt(2.*m_alpha);
+    m_a1 = 0.5*(m_alpha*m_alpha + m_beta*m_beta + 0.5*m_alpha*m_tau + 0.5*m_beta*m_f)*m_x0
+        + 0.25*(m_beta*m_tau - m_alpha*m_f)*m_y0
+        + 0.5*(m_alpha*m_u0 + m_beta*m_v0);
+    m_a1 /= (m_alpha * m_alpha + m_beta * m_beta);
+    m_a2 = 0.5*(m_alpha*m_alpha + m_beta*m_beta + 0.5*m_alpha*m_tau + 0.5*m_beta*m_f)*m_y0
+        - 0.25*(m_beta*m_tau - m_alpha*m_f)*m_x0
+        + 0.5*(m_alpha*m_v0 - m_beta*m_u0);
+    m_a2 /= (m_alpha * m_alpha + m_beta * m_beta);
+    m_a3 = m_x0 - m_a1;
+    m_a4 = m_y0 - m_a2;
   }
 
-  inline double phi_m(double t) const {
-    return exp(-(0.5*tau_ - alpha_) * t) * (
-      A1_ * cos((0.5*f_ - beta_) * t) + A2_ * sin((0.5*f_ - beta_) * t)
+  inline double PhiM(double t) const {
+    return exp(-(0.5*m_tau - m_alpha) * t) * (
+      m_a1 * cos((0.5*m_f - m_beta) * t) + m_a2 * sin((0.5*m_f - m_beta) * t)
       );
   }
-  inline double phi_p(double t) const  {
-    return exp(-(0.5*tau_ + alpha_) * t) * (
-      A3_ * cos((0.5*f_ + beta_) * t) + A4_ * sin((0.5*f_ + beta_) * t)
+  inline double PhiP(double t) const  {
+    return exp(-(0.5*m_tau + m_alpha) * t) * (
+      m_a3 * cos((0.5*m_f + m_beta) * t) + m_a4 * sin((0.5*m_f + m_beta) * t)
       );
   }
-  inline double psi_m(double t) const {
-    return exp(-(0.5*tau_ - alpha_) * t) * (
-      A2_ * cos((0.5*f_ - beta_) * t) - A1_ * sin((0.5*f_ - beta_) * t)
+  inline double PsiM(double t) const {
+    return exp(-(0.5*m_tau - m_alpha) * t) * (
+      m_a2 * cos((0.5*m_f - m_beta) * t) - m_a1 * sin((0.5*m_f - m_beta) * t)
       );
   }
-  inline double psi_p(double t) const {
-    return exp(-(0.5*tau_ + alpha_) * t) * (
-      A4_ * cos((0.5*f_ + beta_) * t) - A3_ * sin((0.5*f_ + beta_) * t)
+  inline double PsiP(double t) const {
+    return exp(-(0.5*m_tau + m_alpha) * t) * (
+      m_a4 * cos((0.5*m_f + m_beta) * t) - m_a3 * sin((0.5*m_f + m_beta) * t)
       );
   }
   inline double u(double x, double y, double t) const override {
     double res;
-    is_wet(x, y, t) ?
-      res = (0.5*f_ + beta_) * psi_p(t) - (0.5*tau_ + alpha_) * phi_p(t) +
-            (0.5*f_ - beta_) * psi_m(t) - (0.5*tau_ - alpha_) * phi_m(t) :
+    IsWet(x, y, t) ?
+      res = (0.5*m_f + m_beta) * PsiP(t) - (0.5*m_tau + m_alpha) * PhiP(t) +
+            (0.5*m_f - m_beta) * PsiM(t) - (0.5*m_tau - m_alpha) * PhiM(t) :
       res = 0.0;
     return res;
   }
   inline double v(double x, double y, double t) const override {
     double res;
-    is_wet(x, y, t) ?
-      res =  - (0.5*f_ + beta_) * phi_p(t) - (0.5*tau_ + alpha_) * psi_p(t) -
-               (0.5*f_ - beta_) * phi_m(t) - (0.5*tau_ - alpha_) * psi_m(t) :
+    IsWet(x, y, t) ?
+      res =  - (0.5*m_f + m_beta) * PhiP(t) - (0.5*m_tau + m_alpha) * PsiP(t) -
+               (0.5*m_f - m_beta) * PhiM(t) - (0.5*m_tau - m_alpha) * PsiM(t) :
       res = 0.0;
     return res;
   }
   inline double h(double x, double y, double t) const override {
-  	double fx = x - mid_x_ - phi_p(t) - phi_m(t); 
-		double fy = y - mid_y_ - psi_p(t) - psi_m(t);
-	 	double res = delta_ * (1. - fx * fx - fy * fy);
+  	double fx = x - m_mid_x - PhiP(t) - PhiM(t); 
+		double fy = y - m_mid_y - PsiP(t) - PsiM(t);
+	 	double res = m_delta * (1. - fx * fx - fy * fy);
     return std::max(0., res);
   }
 };
@@ -123,15 +123,15 @@ protected:
   double H0, p0, q0;
   ThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : BowlTest(Par, Dim, M)
-    , H0(Dim.unscale<scales::height>(Par.get("Thacker", "H0")))
-    , p0(Dim.unscale<scales::source>(Par.get("Thacker", "p0")))
-    , q0(Dim.unscale<scales::source>(Par.get("Thacker", "q0"))) {}
+    , H0(Dim.Unscale<Scales::height>(Par.Get("Thacker", "H0")))
+    , p0(Dim.Unscale<Scales::source>(Par.Get("Thacker", "p0")))
+    , q0(Dim.Unscale<Scales::source>(Par.Get("Thacker", "q0"))) {}
 
 public:
   virtual inline double p(double t) const = 0;
   virtual inline double q(double t) const = 0;
   double u(double x, double y, double t) const override {
-    return p(t)*(x - mid_x_) + q(t)*(y - mid_y_);
+    return p(t)*(x - m_mid_x) + q(t)*(y - m_mid_y);
   }
   virtual double v(double x, double y, double t) const = 0;
   virtual double Hc(double t) const = 0;
@@ -140,9 +140,9 @@ public:
   virtual double Hyy(double t) const = 0;
   double h(double x, double y, double t) const override {
     double res = Hc(t) +
-      0.5*Hxx(t)*(x - mid_x_)*(x - mid_x_) +
-          Hxy(t)*(x - mid_x_)*(y - mid_y_) + 
-      0.5*Hyy(t)*(y - mid_y_)*(y - mid_y_);
+      0.5*Hxx(t)*(x - m_mid_x)*(x - m_mid_x) +
+          Hxy(t)*(x - m_mid_x)*(y - m_mid_y) + 
+      0.5*Hyy(t)*(y - m_mid_y)*(y - m_mid_y);
     return std::max(0., res);
   }
 };
@@ -151,12 +151,12 @@ public:
 class ConservativeThackerTest : public ThackerTest {
 private:
   double w;
-  double A;
+  double a;
 public:
   ConservativeThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : ThackerTest(Par, Dim, M)
-    , A(p0 * p0 + q0 * q0)
-    , w(sqrt(0.25*f_*f_ + 2.0*A + 4.0*delta_) + 0.5*f_) {}
+    , a(p0 * p0 + q0 * q0)
+    , w(sqrt(0.25*m_f*m_f + 2.0*a + 4.0*m_delta) + 0.5*m_f) {}
 
   inline double p(double t) const override {
     return p0 * cos(w*t) + q0 * sin(w*t);
@@ -165,19 +165,19 @@ public:
     return q0 * cos(w*t) - p0 * sin(w*t);
   }
   double v(double x, double y, double t) const override {
-    return q(t)*(x - mid_x_) + p(t)*(mid_y_ - y);
+    return q(t)*(x - m_mid_x) + p(t)*(m_mid_y - y);
   }
   double Hc(double t) const override {
     return H0;
   }
   double Hxx(double t) const override {
-    return -A - q(t)*(w - f_) - 2.0*delta_;
+    return -a - q(t)*(w - m_f) - 2.0*m_delta;
   }
   double Hxy(double t) const override {
-    return p(t)*(w - f_);
+    return p(t)*(w - m_f);
   }
   double Hyy(double t) const override {
-    return -A + q(t)*(w - f_) - 2.0*delta_;
+    return -a + q(t)*(w - m_f) - 2.0*m_delta;
   }
 };
 
@@ -188,33 +188,33 @@ private:
 public:
   SolenoidalThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
     : ThackerTest(Par, Dim, M)
-    , w(sqrt(q0 - 2.0*delta_)) {
-    if (f_ == 0) assert(p0 == q0 * (1.0 - delta_));
-    if (tau_ == 0) assert((p0 == 0) || (p0 == sqrt(q0 - 2.0*delta_)));
+    , w(sqrt(q0 - 2.0*m_delta)) {
+    if (m_f == 0) assert(p0 == q0 * (1.0 - m_delta));
+    if (m_tau == 0) assert((p0 == 0) || (p0 == sqrt(q0 - 2.0*m_delta)));
   }
     
   inline double p(double t) const override {
-    return p0 * exp(-tau_ * t);
+    return p0 * exp(-m_tau * t);
   }
   inline double q(double t) const override {
-    return q0 * exp(-tau_ * t);
+    return q0 * exp(-m_tau * t);
   }
   double v(double x, double y, double t) const override {
-    return q(t)*(mid_x_ - x) + p(t)*(mid_y_ - y);
+    return q(t)*(m_mid_x - x) + p(t)*(m_mid_y - y);
   }
   double Hc(double t) const override {
     return H0;
   }
   double Hxx(double t) const override {
-    if (tau_ != 0) return 0;
-    else return q0 * q0 - p0 * p0 - q0 * f_ - 2.0*delta_;
+    if (m_tau != 0) return 0;
+    else return q0 * q0 - p0 * p0 - q0 * m_f - 2.0*m_delta;
   }
   double Hxy(double t) const override {
-    return p0 * f_;
+    return p0 * m_f;
   }
   double Hyy(double t) const override {
-    if (tau_ != 0) return 0;
-    else return q0 * q0 - p0 * p0 - q0 * f_ - 2.0*delta_;
+    if (m_tau != 0) return 0;
+    else return q0 * q0 - p0 * p0 - q0 * m_f - 2.0*m_delta;
   }
 };
 
@@ -222,39 +222,39 @@ public:
 class ClassicThackerTest : public ThackerTest {
 private:
   double w;
-  double A, B;
+  double a, b;
 public:
-  ClassicThackerTest(Parser const & Par, DimensionManager const & Dim, TriangMesh const & M)
+  ClassicThackerTest(const Parser& Par, const DimensionManager& Dim, const TriangMesh& M)
     : ThackerTest(Par, Dim, M)
-    , w(sqrt(f_*f_ + 8.0*delta_)) {
+    , w(sqrt(m_f*m_f + 8.0*m_delta)) {
     double res;
-    res = (q0 - 0.5*f_)*(q0 - 0.5*f_) + 2.0*H0*H0 + p0 * p0 - 0.25*w*w;
-    A = sqrt(res*res + w * w*p0*p0) / (res + 0.5*w*w);
-    B = atan(w*p0 / res);
+    res = (q0 - 0.5*m_f)*(q0 - 0.5*m_f) + 2.0*H0*H0 + p0 * p0 - 0.25*w*w;
+    a = sqrt(res*res + w * w*p0*p0) / (res + 0.5*w*w);
+    b = atan(w*p0 / res);
   }
 
   inline double p(double t) const override {
-    return 0.5*w * A*sin(w*t + B) / (1.0 - A * cos(w*t + B));
+    return 0.5*w * a*sin(w*t + b) / (1.0 - a * cos(w*t + b));
   }
   inline double q(double t) const override {
-    return (q0 - 0.5*f_) * (1.0 - A * cos(B)) / (1.0 - A * cos(w*t + B)) + 0.5*f_;
+    return (q0 - 0.5*m_f) * (1.0 - a * cos(b)) / (1.0 - a * cos(w*t + b)) + 0.5*m_f;
   }
   double v(double x, double y, double t) const override {
-    return q(t)*(mid_x_ - x) + p(t)*(y - mid_y_);
+    return q(t)*(m_mid_x - x) + p(t)*(y - m_mid_y);
   }
   double Hc(double t) const override {
-    return H0 * (1.0 - A * cos(B)) / (1.0 - A * cos(w*t + B));
+    return H0 * (1.0 - a * cos(b)) / (1.0 - a * cos(w*t + b));
   }
   double Hxx(double t) const override {
-    return 0.25*(w*w*(A*A - 1.0) + 2.0*(q0 - f_)*(q0 - f_)*(1.0 - A * cos(B))*(1.0 - A * cos(B)))
-      / (1.0 - A * cos(w*t + B));
+    return 0.25*(w*w*(a*a - 1.0) + 2.0*(q0 - m_f)*(q0 - m_f)*(1.0 - a * cos(b))*(1.0 - a * cos(b)))
+      / (1.0 - a * cos(w*t + b));
   }
   double Hxy(double t) const override {
     return 0;
   }
   double Hyy(double t) const override {
-    return 0.25*(w*w*(A*A - 1.0) + 2.0*(q0 - f_)*(q0 - f_)*(1.0 - A * cos(B))*(1.0 - A * cos(B)))
-      / (1.0 - A * cos(w*t + B));
+    return 0.25*(w*w*(a*a - 1.0) + 2.0*(q0 - m_f)*(q0 - m_f)*(1.0 - a * cos(b))*(1.0 - a * cos(b)))
+      / (1.0 - a * cos(w*t + b));
   }
 };
 

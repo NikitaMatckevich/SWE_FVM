@@ -1,7 +1,8 @@
 #pragma once
-#include <Solver.h>
+#include "Solver.h"
 
 struct KurganovSpaceDisc : BaseSpaceDisc<KurganovSpaceDisc> {
 	using BaseSpaceDisc::BaseSpaceDisc;
-	Array<3> UserFlux(idx e, idx from, idx to);
+	Array<3> UserFlux(Idx e, Idx from, Idx to);
 };
+

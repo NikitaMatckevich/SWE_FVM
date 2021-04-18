@@ -1,34 +1,35 @@
 #pragma once
-#include <TriangMesh.h>
 #include <PointOperations.h>
+#include <TriangMesh.h>
 
-bool is_wet(double h) noexcept;
+bool IsWet(double h) noexcept;
+
+Array<3> DryState(double b) noexcept;
 
 struct Bathymetry {
-  Bathymetry(TriangMesh&& m);
-  Bathymetry(Bathymetry&& other) = default;
-  inline TriangMesh const& mesh() const { return m_; }
-  inline Storage<1> const& buff() const { return b_; }
-  inline size_t str_size() const { return b_.size(); }
+  
+  explicit Bathymetry(TriangMesh&& m);
 
-  double& at_node (idx n);
+  inline const TriangMesh& Mesh() const { return m_m; }
+  inline const Storage<1>& Buff() const { return m_b; }
+  inline size_t Size() const { return m_b.size(); }
 
-  double  at_point(idx t, Point const& p) const;
-	double  at_node (idx n) const;
-  double  at_edge (idx n) const;
-	double  at_cell (idx n) const;
-
-	Array<2> grad(idx n) const;
+  double& AtNode (Idx n);
+  double  AtNode (Idx n) const;
+  double  AtPoint(Idx t, const Point& p) const;
+	
+  Array<2> Gradient(Idx n) const;
 
  private:
-  TriangMesh m_;
-  Storage<1>  b_;
+  TriangMesh  m_m;
+  Storage<1>  m_b;
+
  public:
-  auto    at_nodes(NodeTagArray const& ns) const -> decltype(b_.operator()(ns));
+  auto AtNodes(NodeTagArray const& ns) const -> decltype(m_b.operator()(ns));
 };
 
 struct BaseBathymetryWrapper {
-  BaseBathymetryWrapper(Bathymetry const& b);
+  explicit BaseBathymetryWrapper(Bathymetry const& b);
  protected:
-  Bathymetry const& b_;
+  Bathymetry const& m_b;
 };

@@ -3,40 +3,42 @@
 
 struct MUSCLObject {
 
-  inline VolumeField& getVolField() noexcept { return Vol_; }
-  inline const VolumeField& getVolField() const noexcept { return Vol_; }
+  inline VolumeField& GetVolField() noexcept { return m_vol; }
+  inline const VolumeField& GetVolField() const noexcept { return m_vol; }
 
-	inline EdgeField& getEdgField() noexcept { return Edg_; }
-	inline const EdgeField& getEdgField() const noexcept { return Edg_; }
+	inline EdgeField& GetEdgField() noexcept { return m_edg; }
+	inline const EdgeField& GetEdgField() const noexcept { return m_edg; }
 
-	inline VolumeField& getSrcField() noexcept { return S_; }
-	inline const VolumeField& getSrcField() const noexcept { return S_; }
+	inline VolumeField& GetSrcField() noexcept { return m_s; }
+	inline const VolumeField& GetSrcField() const noexcept { return m_s; }
 
-	inline const Bathymetry& bath() const noexcept { return b_; };
-  inline const TriangMesh& mesh() const noexcept { return b_.mesh(); }
+	inline const Bathymetry& Bath() const noexcept { return m_b; };
+  inline const TriangMesh& Mesh() const noexcept { return m_b.Mesh(); }
 
-	bool is_dry_cell     (idx i) const;
-  bool is_full_wet_cell(idx i) const;
-  bool is_part_wet_cell(idx i) const;
+	bool IsDryCell    (Idx i) const;
+  bool IsFullWetCell(Idx i) const;
+  bool IsPartWetCell(Idx i) const;
 
-	void reconstruct_all();
-	void Dump(const std::string& filename) const;
+	void ReconstructAll();
+	void DumpFields(const std::string& filename) const;
 
  protected:
+
   MUSCLObject(Bathymetry&& b, const VolumeField& v0);
   MUSCLObject(Bathymetry&& b, VolumeField&& v0);
 
-	using NodeField = Storage<1>;
-  Bathymetry b_;
+  Bathymetry m_b;
 
-  VolumeField Vol_;
-  EdgeField   Edg_;
-	VolumeField   S_;
-  NodeField   Max_W_;
+  VolumeField m_vol;
+  EdgeField   m_edg;
+	VolumeField m_s;
+  Storage<1>  m_max_w;
   
-  Eigen::Matrix32d gradient(idx i) const;
+  Eigen::Matrix32d Gradient(Idx i) const;
 
-	void reconstruct_dry_cell(idx i);
-  void reconstruct_full_wet_cell(idx i);
-	void reconstruct_part_wet_cell(idx i);
+	void ReconstructDryCell(Idx i);
+  void ReconstructFullWetCell(Idx i);
+	void ReconstructPartWetCell1(Idx i);
+  void ReconstructPartWetCell2(Idx i);
+
 };

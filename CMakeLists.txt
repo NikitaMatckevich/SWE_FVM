@@ -9,6 +9,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer
 message(STATUS "Current build type: ${CMAKE_BUILD_TYPE}")
 
 project ("SWE_FVM")
+
 file(GLOB SRC "src/*[a-zA-Z].cpp")
+message("Sources:")
+message(${SRC})
+
 include_directories("include")
+
 add_executable(SWE_FVM ${SRC})
