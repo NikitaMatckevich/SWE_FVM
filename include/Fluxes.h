@@ -2,13 +2,17 @@
 #include <SpaceDisc.h>
 
 namespace Wavespeeds {
-  Array<2> Rusanov(double ul, double hl, double ur, double hr); 
-  Array<2> Davis(double ul, double hl, double ur, double hr); 
-  Array<2> Einfeldt(double ul, double hl, double ur, double hr);
+
+Array<2> Rusanov(double ul, double hl, double ur, double hr); 
+Array<2> Davis(double ul, double hl, double ur, double hr); 
+Array<2> Einfeldt(double ul, double hl, double ur, double hr);
+
 }
 
+namespace Fluxes {
+
 template <Array<2> (*WavespeedCalc)(double, double, double, double)>
-Array<3> HLLFlux(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
+Array<3> HLL(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 
 	const auto& m = sd->Mesh();
 	const auto& edg = sd->GetEdgField();	
@@ -49,7 +53,7 @@ Array<3> HLLFlux(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 }
 
 template <Array<2> (*WavespeedCalc)(double, double, double, double)>
-Array<3> HLLCFlux(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
+Array<3> HLLC(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 
   const auto& m = sd->Mesh();
 	const auto& edg = sd->GetEdgField();	
@@ -103,4 +107,6 @@ Array<3> HLLCFlux(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
     Array<3> Ulstar = Array<3>{hlstar, hlstar * ulstar, hlstar * vlstar};
     return ElemFlux(n, Ul) + std::min(0., al) * (Ulstar - Ul);
   }
+}
+
 }

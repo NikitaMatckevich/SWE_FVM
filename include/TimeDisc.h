@@ -3,8 +3,9 @@
 
 struct TimeDisc {
 	
-	explicit TimeDisc(double cor = 0., double tau = 0.)
-		: m_cor(cor)
+	explicit TimeDisc(SpaceDisc * sd = nullptr, double cor = 0., double tau = 0.)
+    : m_sd(sd)
+		, m_cor(cor)
 		, m_tau(tau) {}
 	
   inline const double GetTau() const { return m_tau; }
@@ -23,9 +24,9 @@ struct TimeDisc {
 
 	double ComputeDrainingDt(Idx i) const;
  
-	SpaceDisc*   m_sd {nullptr};
+	SpaceDisc*   m_sd;
+  double 			 m_cor;              // rotation force parameter
+  double 			 m_tau;              // bottom friction parameter
 
 	const double m_constCFL = 0.15;  // time step coef. is < 1/6 [Liu et al., 2018]
-	double 			 m_cor;              // rotation force parameter
-  double 			 m_tau;              // bottom friction parameter
 };

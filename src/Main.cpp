@@ -77,13 +77,12 @@ void TestGaussWave() {
     v0.prim(i) = Array<3>{ 1. + exp(-5. * r), 0., 0. };
   }
 
-	SpaceDisc sd{HLLFlux<Wavespeeds::Einfeldt>, std::move(b), std::move(v0)};
-	TimeDisc  td;
-  td.SetSpaceDisc(&sd);
+	SpaceDisc sd{Fluxes::HLL<Wavespeeds::Einfeldt>, std::move(b), std::move(v0)};
+	TimeDisc td{&sd};
 
 	double dt = 0.001;
 	sd.DumpFields("out0.dat");
-	EulerSolver(&td, dt);
+	Solvers::Euler(&td, dt);
 	sd.DumpFields("out1.dat");
 }
 
@@ -119,19 +118,17 @@ void TestSimpleRunup() {
 		v0.prim(i) = Array<3>{ hc + v0.b(i), uc, vc};
   }
 
-	SpaceDisc sd{HLLCFlux<Wavespeeds::Einfeldt>, std::move(bathymetry), std::move(v0)};
+	SpaceDisc sd{Fluxes::HLLC<Wavespeeds::Einfeldt>, std::move(bathymetry), std::move(v0)};
 	sd.DumpFields("out_0.dat");
 
-	TimeDisc  td;
-  td.SetSpaceDisc(&sd);
-
+	TimeDisc td{&sd};
 	double t_end = 2.;
 
 	int limiter = 0, max_nb_steps = 10000;
 
 	for (double t = 0., dt = 1e-3; t <= t_end; t += (dt = td.CFLdt())) {
 		printf("\rStep #%d:  t=%.5e,  dt = %.5e", ++limiter, t, dt);
-		SSPRK3Solver(&td, dt);
+		Solvers::SSPRK3(&td, dt);
 		if (limiter > max_nb_steps) {
 			break;
 		}

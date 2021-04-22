@@ -1,6 +1,9 @@
 #pragma once
 #include <TimeDisc.h>
 
-void EulerSolver(TimeDisc * const td, double dt);
+namespace Solvers {
 
-void SSPRK3Solver(TimeDisc * const td, double dt);
+void Euler(TimeDisc * const td, double dt);
+void SSPRK3(TimeDisc * const td, double dt);
+
+}
