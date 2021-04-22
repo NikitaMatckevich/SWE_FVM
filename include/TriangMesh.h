@@ -45,6 +45,7 @@ struct TriangMesh {
   PointArray E(NodeTagArray const& i) const;
   PointArray C(NodeTagArray const& i) const;
 
+  Eigen::Vector2d Tang(NodeTag ie, NodeTag it) const;
   Eigen::Vector2d Norm(NodeTag ie, NodeTag it) const;
   double L(NodeTag ie) const;
   double Area(NodeTag it) const;

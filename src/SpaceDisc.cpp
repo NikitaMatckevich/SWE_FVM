@@ -11,6 +11,11 @@ void SpaceDisc::ComputeFluxes() {
     Idx lf = it[0];
     Idx lt = it[1];
 
+    //if (IsDryCell(lf) && IsDryCell(lt)) {
+    //  m_f.col(i) = Array<3>{0., 0., 0.};
+    //  continue;
+    //}
+
     auto n = m.Norm(i, lf);
     
     switch (lt) {

@@ -77,14 +77,14 @@ void TestGaussWave() {
     v0.prim(i) = Array<3>{ 1. + exp(-5. * r), 0., 0. };
   }
 
-	SpaceDisc disc{KurganovFlux, std::move(b), std::move(v0)};
-	TimeDisc  solv{EulerSolver};
-  solv.SetSpaceDisc(&disc);
+	SpaceDisc sd{HLLFlux<Wavespeeds::Einfeldt>, std::move(b), std::move(v0)};
+	TimeDisc  td{};
+  td.SetSpaceDisc(&sd);
 
 	double dt = 0.001;
-	disc.DumpFields("out0.dat");
-	solv.Step(dt);
-	disc.DumpFields("out1.dat");
+	sd.DumpFields("out0.dat");
+	EulerSolver(td, dt);
+	sd.DumpFields("out1.dat");
 }
 
 void TestSimpleRunup() {
@@ -119,19 +119,19 @@ void TestSimpleRunup() {
 		v0.prim(i) = Array<3>{ hc + v0.b(i), uc, vc};
   }
 
-	SpaceDisc disc{KurganovFlux, std::move(bathymetry), std::move(v0)};
-	disc.DumpFields("out_0.dat");
+	SpaceDisc sd{HLLCFlux<Wavespeeds::Einfeldt>, std::move(bathymetry), std::move(v0)};
+	sd.DumpFields("out_0.dat");
 
-	TimeDisc solv{EulerSolver};
-  solv.SetSpaceDisc(&disc);
+	TimeDisc  td{};
+  td.SetSpaceDisc(&sd);
 
 	double t_end = 2.;
 
-	int limiter = 0, max_nb_steps = 1000;
+	int limiter = 0, max_nb_steps = 10000;
 
-	for (double t = 0., dt = 1e-3; t <= t_end; t += (dt = solv.CFLdt())) {
+	for (double t = 0., dt = 1e-3; t <= t_end; t += (dt = td.CFLdt())) {
 		printf("\rStep #%d:  t=%.5e,  dt = %.5e", ++limiter, t, dt);
-		solv.Step(dt);
+		SSPRK3Solver(td, dt);
 		if (limiter > max_nb_steps) {
 			break;
 		}
@@ -141,40 +141,8 @@ void TestSimpleRunup() {
 	disc.DumpFields("out_2.dat");
 }
 
-void TestAnalytic() {
-
-  StructTriangMesh mesh{ 40, 40, 0.1 };
-  Bathymetry bathymetry{ std::move(mesh) };
-
-	Parser parser("config.ini");
-	DimensionManager dimer(parser);
-	BallTest test(parser, dimer, bathymetry.Mesh());
-
-  for (size_t i = 0; i < bathymetry.Mesh().NumNodes(); i++) {
-		const auto& p = bathymetry.Mesh().P(i);
-    bathymetry.AtNode(i) = test.b(p[0], p[1]);
-  }
-
-  VolumeField v0{ bathymetry, bathymetry.Mesh().NumTriangles() };
-
-	size_t i;
-
-	#pragma omp parallel for
-  for (i = 0; i < bathymetry.Mesh().NumTriangles(); ++i) {
-		Point	p = bathymetry.Mesh().T(i);
-		double hc = test.h(p[0], p[1], 2.);
-		double uc = test.u(p[0], p[1], 2.);
-		double vc = test.v(p[0], p[1], 2.);
-		v0.prim(i) = Array<3>{ hc + v0.b(i), uc, vc};
-  }
-
-	SpaceDisc disc{KurganovFlux, std::move(bathymetry), std::move(v0)};
-	disc.DumpFields("out_2_an.dat");
-}
-
 void TestAll() {
 	//testValueFields();
   //testGaussWave();
 	TestSimpleRunup();
-	//testAnalytic();
 }

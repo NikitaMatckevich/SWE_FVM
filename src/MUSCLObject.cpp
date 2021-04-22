@@ -8,14 +8,16 @@ MUSCLObject::MUSCLObject(Bathymetry&& b, const VolumeField& v0)
 	: m_b(std::move(b))
 	, m_vol(m_b, v0)
 	, m_edg(m_b, 2 * m_b.Mesh().NumEdges())
-	, m_s  (m_b,     m_b.Mesh().NumTriangles())
+	//, m_s  (m_b,     m_b.Mesh().NumTriangles())
+  , m_src(m_b, 2 * m_b.Mesh().NumEdges())
 {}
 
 MUSCLObject::MUSCLObject(Bathymetry&& b, VolumeField&& v0)
 	: m_b(std::move(b))
 	, m_vol(m_b, std::move(v0))
 	, m_edg(m_b, 2 * m_b.Mesh().NumEdges())
-	, m_s  (m_b, 2 * m_b.Mesh().NumTriangles())
+	//, m_s  (m_b, 2 * m_b.Mesh().NumTriangles())
+  , m_src(m_b, 2 * m_b.Mesh().NumEdges())
 {}
 
 void MUSCLObject::DumpFields(const std::string& filename) const {
@@ -33,7 +35,7 @@ void MUSCLObject::DumpFields(const std::string& filename) const {
 
 		fout << m_vol.h(i) << '\t' << m_vol.w(i) << '\t';
 
-		fout << m_s.u(i) << '\t' << m_s.v(i) << '\t';
+		//fout << m_s.u(i) << '\t' << m_s.v(i) << '\t';
 
 		fout << m_vol.u(i)  << '\t' << m_vol.v(i) << '\t'; 
 		fout << m_vol.hu(i) << '\t' << m_vol.hv(i) << '\t';
@@ -121,9 +123,11 @@ void MUSCLObject::ReconstructDryCell(Idx i) {
 	const auto& it = m.TriangTriangs(i);
 
 	for (int k = 0; k < 3; k++) {
-		m_edg.cons(ie[k], i, it[k]) = DryState(m_edg.b(ie[k], i, it[k]));
-	}
-	m_s.vel(i) = Array<2>{0., 0.};
+		m_edg.prim(ie[k], i, it[k]) = DryState(m_edg.b(ie[k], i, it[k]));
+    m_src.vel(ie[k], i, it[k]) = Bath().Gradient(i);
+  }
+
+  //m_s.vel(i) = Array<2>{0.,0.};
 }
 
 void MUSCLObject::ReconstructFullWetCell(Idx i) {
@@ -149,16 +153,15 @@ void MUSCLObject::ReconstructFullWetCell(Idx i) {
 
 	for (int k = 0; k < 3; k++) {
 		
+    double wpk = vol.w(i) + df_lim.row(0) * (m.P(ip[k]) - m.T(i)).matrix();
+    m_max_w[ip[k]] = std::max(m_max_w[ip[k]], wpk);
+
     Array<3> vek = vol.prim(i) + (df_lim * (m.E(ie[k]) - m.T(i)).matrix()).array();
-		
     m_edg.prim(ie[k], i, it[k]) = vek;
-
-		double wpk = vol.w(i) + df_lim.row(0) * (m.P(ip[k]) - m.T(i)).matrix();
-
-		m_max_w[ip[k]] = std::max(m_max_w[ip[k]], wpk);
+		m_src.vel(ie[k], i, it[k]) = df_lim.row(0).transpose().array();
 	}
 
-	m_s.vel(i) = df_lim.row(0).transpose().array();
+	//m_s.vel(i) = df_lim.row(0).transpose().array();
 }
 
 void MUSCLObject::ReconstructPartWetCell1(Idx i) {
@@ -192,18 +195,14 @@ void MUSCLObject::ReconstructPartWetCell1(Idx i) {
 	for (int k = 0; k < 3; k++) {
 		
     m_max_w[ip[k]] = std::max(m_max_w[ip[k]], w_rec);
-
-		double shore = m_edg.b(ie[k], i, it[k]);
-
+		
+    double shore = m_edg.b(ie[k], i, it[k]);
 		if (w_rec > shore) {
 			m_edg.prim(ie[k], i, it[k]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
 		} else {
 			m_edg.prim(ie[k], i, it[k]) = Array<3>{shore, 0, 0};
 		}
-
 	}
-
-	m_s.vel(i) = Array<2>{0., 0.};
 }
 
 void MUSCLObject::ReconstructPartWetCell2(Idx i) {
@@ -272,31 +271,48 @@ void MUSCLObject::ReconstructPartWetCell2(Idx i) {
   auto semiwet_edge = [this, &i, &ie, &it]
     (int k, double val1, double val2, double portion)
   {
-    if (portion < 0.5) {
-      return DryState(m_edg.b(ie[k], i, it[k]));
-    }
-    else {
+    //if (portion < 0.5) {
+    //  return DryState(m_edg.b(ie[k], i, it[k]));
+    //}
+    //else {
       double c = 0.5 / portion;
       double w_rec = c * val1 + (1. - c) * val2;
       return Array<3>{ w_rec, m_vol.u(i), m_vol.v(i) };
-    }
+    //}
   };
 
   //Case 1
   if (hi <= h_delimiter1) {
 
     m_edg.prim(ie[2], i, it[2]) = DryState(m_edg.b(ie[2], i, it[2]));
+    m_src.vel(ie[2], i, it[2])  = Bath().Gradient(i);
 
     double k2 = sqrt(3. * ratio_h / ratio_b);
     grad_values    [1] = k2 * b.AtNode(ip[1]) + (1. - k2) * b.AtNode(ip[0]);
     grad_points.row(1) = k2 * m.P(ip[1]) + (1. - k2) * m.P(ip[0]);
-    m_edg.prim(ie[0], i, it[0]) = semiwet_edge(0, grad_values[0], grad_values[1], k2);
     
     double k3 = sqrt(3. * ratio_h * ratio_b);
     grad_values    [2] = k3 * b.AtNode(ip[2]) + (1. - k3) * b.AtNode(ip[0]);
     grad_points.row(2) = k3 * m.P(ip[2]) + (1. - k3) * m.P(ip[0]);
-    m_edg.prim(ie[1], i, it[1]) = semiwet_edge(1, grad_values[0], grad_values[2], k3);
-  }
+      
+    Array<2> gradient = (grad_values * GradientCoefs(grad_points)).transpose().array();
+
+    if (k2 < 0.5) {
+      m_edg.prim(ie[0], i, it[0]) = DryState(m_edg.b(ie[0], i, it[0]));
+      m_src.vel(ie[0], i, it[0])  = Bath().Gradient(i);
+    } else {
+      m_edg.prim(ie[0], i, it[0]) = semiwet_edge(0, grad_values[0], grad_values[1], k2);
+      m_src.vel(ie[0], i, it[0]) = gradient;
+    }
+
+    if (k3 < 0.5) {
+      m_edg.prim(ie[1], i, it[1]) = DryState(m_edg.b(ie[1], i, it[1]));
+      m_src.vel(ie[1], i, it[1])  = Bath().Gradient(i);
+    } else {
+      m_edg.prim(ie[1], i, it[1]) = semiwet_edge(1, grad_values[0], grad_values[2], k3);
+      m_src.vel(ie[1], i, it[1]) = gradient;
+    }
+ }
   //Case 3
   else if (hi >= h_delimiter2) {
 
@@ -316,6 +332,10 @@ void MUSCLObject::ReconstructPartWetCell2(Idx i) {
     m_edg.prim(ie[1], i, it[1]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
     w_rec = 0.5 * (grad_values[1] + grad_values[2]);
     m_edg.prim(ie[2], i, it[2]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
+
+    Array<2> gradient = (grad_values * GradientCoefs(grad_points)).transpose().array();
+    for (short int k = 0; k < 3; k++)
+      m_src.vel(ie[k], i, it[k]) = gradient;
   }
   //Case 2
   else {
@@ -335,13 +355,30 @@ void MUSCLObject::ReconstructPartWetCell2(Idx i) {
     grad_values    [2] = bp1;
     grad_points.row(2) = k1 * m.P(ip[2]) + (1. - k1) * m.P(ip[1]);
     
+    Array<2> gradient = (grad_values * GradientCoefs(grad_points)).transpose().array();
     double w_rec = 0.5 * (grad_values[0] + grad_values[1]);
+
     m_edg.prim(ie[0], i, it[0]) = Array<3>{w_rec, m_vol.u(i), m_vol.v(i)};
-    m_edg.prim(ie[1], i, it[1]) = semiwet_edge(1, grad_values[0], bp3, k3);
-    m_edg.prim(ie[2], i, it[2]) = semiwet_edge(2, grad_values[1], bp1, k1);
+    m_src.vel(ie[0], i, it[0]) = gradient;
+  
+    if (k3 < 0.5) {
+      m_edg.prim(ie[1], i, it[1]) = DryState(m_edg.b(ie[1], i, it[1]));
+      m_src.vel(ie[1], i, it[1]) = Bath().Gradient(i);
+    } else {
+      m_edg.prim(ie[1], i, it[1]) = semiwet_edge(1, grad_values[0], bp3, k3);
+      m_src.vel(ie[1], i, it[1]) = gradient;
+    }
+
+    if (k1 < 0.5) {
+      m_edg.prim(ie[2], i, it[2]) = DryState(m_edg.b(ie[2], i, it[2]));
+      m_src.vel(ie[2], i, it[2]) = Bath().Gradient(i);
+    } else {
+      m_edg.prim(ie[2], i, it[2]) = semiwet_edge(2, grad_values[1], bp1, k1);
+      m_src.vel(ie[2], i, it[2]) = gradient;
+    }
   }
  
-  m_s.vel(i) = (grad_values * GradientCoefs(grad_points)).transpose().array();
+  //m_s.vel(i) = (grad_values * GradientCoefs(grad_points)).transpose().array();
 }
 	
 void MUSCLObject::ReconstructAll() {

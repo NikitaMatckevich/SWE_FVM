@@ -160,14 +160,18 @@ PointArray TriangMesh::C(NodeTagArray const& i) const {
   return res;
 }
 
-Vector2d TriangMesh::Norm(NodeTag ie, NodeTag it) const {
+Vector2d TriangMesh::Tang(NodeTag ie, NodeTag it) const {
   NodeTag a = m_edge_points(ie, 0);
   NodeTag b = m_edge_points(ie, 1);
   Vector2d tan = (P(b) - P(a)).matrix() / L(ie);
-  if (Det(T(it) - P(a), tan) < 0.) {
+  if (Det(T(it) - P(a), tan) > 0.) {
 		tan = -tan;
 	}
-  return (Matrix2d() << 0, -1, 1, 0).finished() * tan;
+  return tan;
+}
+
+Vector2d TriangMesh::Norm(NodeTag ie, NodeTag it) const {
+  return (Matrix2d() << 0, 1, -1, 0).finished() * Tang(ie, it);
 }
 
 double TriangMesh::L(NodeTag ie) const {

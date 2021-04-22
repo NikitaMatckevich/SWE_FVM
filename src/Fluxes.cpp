@@ -1,44 +1,28 @@
 #include <Fluxes.h>
 
-Array<3> KurganovFlux(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
-
-	const auto& m = sd->Mesh();
-	const auto& edg = sd->GetEdgField();	
-
-	auto n = m.Norm(e, from);
+namespace Wavespeeds {
  
-	double ul = edg.prim(e, from, to).tail<2>().matrix().dot(n);
-	double cl = sqrt(edg.h(e, from, to));
-
-	double ur = edg.prim(e, to, from).tail<2>().matrix().dot(n);
-	double cr = sqrt(edg.h(e, to, from));
-
-	double al = -std::min({ ul - cl, ur - cr, 0. });
-	double ar =  std::max({ ul + cl, ur + cr, 0. });
-
-  // std::cout << from << ' ' << to << ' ' << ' ' << al << ' ' << ar << '\n';
-	
-  constexpr double min_wavespeed_to_capture = 1e-10;
-	if (al + ar <= min_wavespeed_to_capture) {
-		return Array<3>::Zero();
-	} 
-
-  if (r) {
-    double dl = 2. * m.Area(from) / m.L(e);
-	  double dr = 2. * m.Area(to)   / m.L(e);
-	  double length_to_wavespeed = std::min(dl, dr) / std::max(al, ar);
-		*r = std::min(*r, length_to_wavespeed);
+  Array<2> Rusanov(double ul, double hl, double ur, double hr) {
+    double cl = sqrt(hl);
+    double cr = sqrt(hr);
+    double aplus = std::max(abs(ul) + cl, abs(ur) + cr);
+    return Array<2>::Constant(aplus);
   }
 
-	/* TODO: delete */
-  // al = ar = 0.5;
-	/**/
+  Array<2> Davis(double ul, double hl, double ur, double hr) {
+    double cl = sqrt(hl);
+    double cr = sqrt(hr);
+    return Array<2>{std::min(ul - cl, ur - cr), std::max(ul + cl, ur + cr)};
+  }
 
-	const auto& Ul = edg.cons(e, from, to);
-	const auto& Ur = edg.cons(e, to, from);
+  Array<2> Einfeldt(double ul, double hl, double ur, double hr) {
+    double cl = sqrt(hl);
+    double cr = sqrt(hr);
+    
+    double uRoe = (cl * ul + cl * ur) / (cl + cr);
+    double cRoe = sqrt(0.5 * (hl + hr));
 
-	//return ElemFlux(n, Ul);
+    return Array<2>{std::min(ul - cl, uRoe - cRoe), std::max(ur + cr, uRoe + cRoe)};
+  }
 
-	return (al * ElemFlux(n, Ur) + ar * ElemFlux(n, Ul) - (al * ar) * (Ur - Ul)) / (al + ar);
-	//return (al * ElemFlux(n, Ur) + ar * ElemFlux(n, Ul)) / (al + ar);
 }
