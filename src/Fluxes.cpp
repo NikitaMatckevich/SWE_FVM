@@ -6,7 +6,7 @@ namespace Wavespeeds {
     double cl = sqrt(hl);
     double cr = sqrt(hr);
     double aplus = std::max(abs(ul) + cl, abs(ur) + cr);
-    return Array<2>::Constant(aplus);
+    return Array<2>{-aplus, aplus};
   }
 
   Array<2> Davis(double ul, double hl, double ur, double hr) {

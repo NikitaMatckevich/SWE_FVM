@@ -3,7 +3,7 @@
 
 struct TimeDisc {
 	
-	TimeDisc(const Solver& solver, double cor = 0., double tau = 0.)
+	explicit TimeDisc(double cor = 0., double tau = 0.)
 		: m_cor(cor)
 		, m_tau(tau) {}
 	

@@ -78,12 +78,12 @@ void TestGaussWave() {
   }
 
 	SpaceDisc sd{HLLFlux<Wavespeeds::Einfeldt>, std::move(b), std::move(v0)};
-	TimeDisc  td{};
+	TimeDisc  td;
   td.SetSpaceDisc(&sd);
 
 	double dt = 0.001;
 	sd.DumpFields("out0.dat");
-	EulerSolver(td, dt);
+	EulerSolver(&td, dt);
 	sd.DumpFields("out1.dat");
 }
 
@@ -122,7 +122,7 @@ void TestSimpleRunup() {
 	SpaceDisc sd{HLLCFlux<Wavespeeds::Einfeldt>, std::move(bathymetry), std::move(v0)};
 	sd.DumpFields("out_0.dat");
 
-	TimeDisc  td{};
+	TimeDisc  td;
   td.SetSpaceDisc(&sd);
 
 	double t_end = 2.;
@@ -131,14 +131,14 @@ void TestSimpleRunup() {
 
 	for (double t = 0., dt = 1e-3; t <= t_end; t += (dt = td.CFLdt())) {
 		printf("\rStep #%d:  t=%.5e,  dt = %.5e", ++limiter, t, dt);
-		SSPRK3Solver(td, dt);
+		SSPRK3Solver(&td, dt);
 		if (limiter > max_nb_steps) {
 			break;
 		}
 	}
 	
 	printf("\n");	
-	disc.DumpFields("out_2.dat");
+	sd.DumpFields("out_2.dat");
 }
 
 void TestAll() {
