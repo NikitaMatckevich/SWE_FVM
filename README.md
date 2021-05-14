@@ -12,8 +12,11 @@ To build the project, you will need:
 Simply clone this repository to your machine and run Cmake:
 
 $ mkdir build
+
 $ cd build 
+
 $ cmake -DCMAKE_BUILD_TYPE=Debug .. # or =Release
+
 $ make
 
 You will get the executable called SWE_FVM in your build directory. Change the
