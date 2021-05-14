@@ -42,7 +42,8 @@ Array<3> HLL(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
   if (r) {
     double dl = 2. * m.Area(from) / m.L(e);
 	  double dr = 2. * m.Area(to)   / m.L(e);
-	  double length_to_wavespeed = std::min(dl, dr) / std::max(-al, ar);
+    double cor = abs(sd->GetCor());
+	  double length_to_wavespeed = std::min(dl, dr) / (cor + std::max(-al, ar));
 		*r = std::min(*r, length_to_wavespeed);
   }
 
@@ -84,7 +85,8 @@ Array<3> HLLC(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
   if (r) {
     double dl = 2. * m.Area(from) / m.L(e);
 	  double dr = 2. * m.Area(to)   / m.L(e);
-	  double length_to_wavespeed = std::min(dl, dr) / std::max(tol, std::max(al, ar));
+    double cor = abs(sd->GetCor());
+	  double length_to_wavespeed = std::min(dl, dr) / (cor + std::max(tol, std::max(al, ar)));
 		*r = std::min(*r, length_to_wavespeed);
   }
 

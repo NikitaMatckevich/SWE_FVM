@@ -1,6 +1,6 @@
 #include <DimensionManager.h>
 
-constexpr double g = 9.8;
+constexpr double g = 1.0;
 
 DimensionManager::DimensionManager(const Parser& Parser)
 : m_h0(Parser.Get("Common", "vertical_measure"))

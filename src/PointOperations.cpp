@@ -1,4 +1,5 @@
 #include <PointOperations.h>
+#include <sstream>
 
 double Len(const Point& a, const Point& b) noexcept {
   return sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
@@ -17,36 +18,25 @@ Point Intersection(
   const Point& b1, const Point& b2)
 {
   double den = Det(a2 - a1, b2 - b1);
-  if (den < 1e-14)
-    throw std::runtime_error("trying to find intersection of parallel vectors");
+  if (den < tol)
+    throw SolverError("trying to find intersection of parallel vectors");
   return a1 + (a2 - a1) * Det(b1 - a1, b2 - b1) / den;
 }
 
-double TriangAverage(const Point& p0, const Point& p1, const Point& p2,
-  const std::function<double(const Point&)>& f)
+double Bisection(
+  const std::function<double(double)>& f,
+  double xmin, double xmax,
+  const int accuracy)
 {
-  //double S = triang_area(p0, p1, p2);
-  constexpr unsigned N = 500;
-  constexpr double   h = 1./N;
-  const Point di = h * (p1 - p0);
-  const Point dj = h * (p2 - p0);
-  const Point dt = 1. / 3. * (di + dj);
-  double sum = 0.;
-  
-  Point pi = p0;
-  
-  for (unsigned i = 0; i < N; i++) {
-    Point pt = pi + dt;
-    for (unsigned j = 0; j < N - i - 1; j++) {
-      sum += h * f(pt);
-      sum += h * f(pt + dt);
-      pt += dj;
-    }
-    sum += h * f(pt);
-    pi += di;
+  if (std::signbit(f(xmin)) == std::signbit(f(xmax)))
+    return (abs(f(xmin)) < abs(f(xmax))) ? xmin : xmax;
+  int n = accuracy + static_cast<int>(log2(xmax - xmin));
+  double x;
+  for (int i = 0; i <= n; i++) {
+    x = 0.5*(xmin + xmax);
+    ((std::signbit(f(xmin)) != std::signbit(f(x))) ? xmax : xmin) = x;
   }
-
-  return h * sum;
+  return x;
 }
 
 Eigen::Matrix32d GradientCoefs(const Eigen::Matrix32d& p) {
@@ -61,11 +51,13 @@ Eigen::Matrix32d GradientCoefs(const Eigen::Matrix32d& p) {
 			 1,  0;
 	
 	Eigen::Matrix32d res = l * p * r;
-	
+  double scale = res.norm();	
+  res /= scale;
+
 	double d = res.topRows<2>().determinant();
-	
-	if (abs(d) < tol)
+	if (abs(d) < tol) {
 		throw SolverError("Division by zero in gradient coefficient computation");
+  }
 	
 	res /= d;
 	return res;

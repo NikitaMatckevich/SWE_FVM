@@ -7,7 +7,7 @@ Array<3> TimeDisc::RHS(Idx i, double dt) const {
   const auto& src = m_sd->GetSrcField();
   const auto& f   = m_sd->GetFluxes();
 
-  Array<3> res = { 0., m_cor * vol.v(i), -m_cor * vol.u(i) };
+  Array<3> res = Array<3>::Zero();
 
   const auto& m  = m_sd->Mesh();
   const auto& ie = m.TriangEdges(i);
