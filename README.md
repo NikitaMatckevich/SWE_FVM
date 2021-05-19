@@ -28,6 +28,7 @@ Program supports the input from .ini files. Simply add something like
 New flux discretizations, as well as time discretizations, can be added to the framework very simply (see the files
 src/Fluxes.cpp and src/Solvers.cpp, respectively).
 
-The author of the code apologizes for the lack of documentation. The project
-will switch to Doxygen soon.
+The author of the code apologizes for the amount of provided Doxygen
+[documentation](https://nikitamatckevich.github.io/SWE_FVM/). It will be
+detailed as soon as possible.
  
