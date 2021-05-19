@@ -1,0 +1,58 @@
+\hypertarget{PointOperations_8cpp}{}\section{Point\+Operations.\+cpp File Reference}
+\label{PointOperations_8cpp}\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+{\ttfamily \#include $<$Point\+Operations.\+h$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{PointOperations_8cpp_a076f6b39d52e128af13fb06ca347aa9b}{Len} (const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&a, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&b) noexcept
+\item 
+double \hyperlink{PointOperations_8cpp_ad707fa945114bc7e0e825ee5e1e431da}{Det} (const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&a, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&b) noexcept
+\item 
+double \hyperlink{PointOperations_8cpp_a53225604c66a375931d1b16bff9d0371}{Triang\+Area} (const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&a, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&b, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&c) noexcept
+\item 
+\hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \hyperlink{PointOperations_8cpp_afa8bbb677f8a93eaa127bcc9c401a53a}{Intersection} (const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&a1, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&a2, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&b1, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&b2)
+\item 
+double \hyperlink{PointOperations_8cpp_ac244306899173fe669ac73f411094c67}{Bisection} (const std\+::function$<$ double(double)$>$ \&f, double xmin, double xmax, const int accuracy)
+\item 
+\hyperlink{namespaceEigen_a4bc13f7bc164b152307bec23b85f81ab}{Eigen\+::\+Matrix32d} \hyperlink{PointOperations_8cpp_ad5bdae6a55b452c8ecad32e24a2ba3e4}{Gradient\+Coefs} (const \hyperlink{namespaceEigen_a4bc13f7bc164b152307bec23b85f81ab}{Eigen\+::\+Matrix32d} \&p)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{PointOperations_8cpp_ac244306899173fe669ac73f411094c67}\label{PointOperations_8cpp_ac244306899173fe669ac73f411094c67}} 
+\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}!Bisection@{Bisection}}
+\index{Bisection@{Bisection}!Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+\subsubsection{\texorpdfstring{Bisection()}{Bisection()}}
+{\footnotesize\ttfamily double Bisection (\begin{DoxyParamCaption}\item[{const std\+::function$<$ double(double)$>$ \&}]{f,  }\item[{double}]{xmin,  }\item[{double}]{xmax,  }\item[{const int}]{accuracy }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{PointOperations_8cpp_ad707fa945114bc7e0e825ee5e1e431da}\label{PointOperations_8cpp_ad707fa945114bc7e0e825ee5e1e431da}} 
+\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}!Det@{Det}}
+\index{Det@{Det}!Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+\subsubsection{\texorpdfstring{Det()}{Det()}}
+{\footnotesize\ttfamily double Det (\begin{DoxyParamCaption}\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{a,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{PointOperations_8cpp_ad5bdae6a55b452c8ecad32e24a2ba3e4}\label{PointOperations_8cpp_ad5bdae6a55b452c8ecad32e24a2ba3e4}} 
+\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}!Gradient\+Coefs@{Gradient\+Coefs}}
+\index{Gradient\+Coefs@{Gradient\+Coefs}!Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+\subsubsection{\texorpdfstring{Gradient\+Coefs()}{GradientCoefs()}}
+{\footnotesize\ttfamily \hyperlink{namespaceEigen_a4bc13f7bc164b152307bec23b85f81ab}{Eigen\+::\+Matrix32d} Gradient\+Coefs (\begin{DoxyParamCaption}\item[{const \hyperlink{namespaceEigen_a4bc13f7bc164b152307bec23b85f81ab}{Eigen\+::\+Matrix32d} \&}]{p }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{PointOperations_8cpp_afa8bbb677f8a93eaa127bcc9c401a53a}\label{PointOperations_8cpp_afa8bbb677f8a93eaa127bcc9c401a53a}} 
+\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}!Intersection@{Intersection}}
+\index{Intersection@{Intersection}!Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+\subsubsection{\texorpdfstring{Intersection()}{Intersection()}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} Intersection (\begin{DoxyParamCaption}\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{a1,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{a2,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{b1,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{b2 }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{PointOperations_8cpp_a076f6b39d52e128af13fb06ca347aa9b}\label{PointOperations_8cpp_a076f6b39d52e128af13fb06ca347aa9b}} 
+\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}!Len@{Len}}
+\index{Len@{Len}!Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+\subsubsection{\texorpdfstring{Len()}{Len()}}
+{\footnotesize\ttfamily double Len (\begin{DoxyParamCaption}\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{a,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{PointOperations_8cpp_a53225604c66a375931d1b16bff9d0371}\label{PointOperations_8cpp_a53225604c66a375931d1b16bff9d0371}} 
+\index{Point\+Operations.\+cpp@{Point\+Operations.\+cpp}!Triang\+Area@{Triang\+Area}}
+\index{Triang\+Area@{Triang\+Area}!Point\+Operations.\+cpp@{Point\+Operations.\+cpp}}
+\subsubsection{\texorpdfstring{Triang\+Area()}{TriangArea()}}
+{\footnotesize\ttfamily double Triang\+Area (\begin{DoxyParamCaption}\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{a,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{b,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+

@@ -1,0 +1,115 @@
+\hypertarget{structBathymetry}{}\section{Bathymetry Struct Reference}
+\label{structBathymetry}\index{Bathymetry@{Bathymetry}}
+
+
+{\ttfamily \#include $<$Bathymetry.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structBathymetry_af29ee7c05a6c15897296235a6119c841}{Bathymetry} (\hyperlink{structTriangMesh}{Triang\+Mesh} \&\&m)
+\item 
+const \hyperlink{structTriangMesh}{Triang\+Mesh} \& \hyperlink{structBathymetry_a2344e707a6092a2fe753d9d983675270}{Mesh} () const
+\item 
+const \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 1 $>$ \& \hyperlink{structBathymetry_ad0bff54b04bec3c1ef57edde852bf26c}{Buff} () const
+\item 
+size\+\_\+t \hyperlink{structBathymetry_a9e37db46f1707e16a291e45922201ba7}{Size} () const
+\item 
+double \& \hyperlink{structBathymetry_a947fa04cebe8530b5359f4676ecc95ae}{At\+Node} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} n)
+\item 
+double \hyperlink{structBathymetry_a7b6e4230a197b6796d9bc92045b54cdd}{At\+Node} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} n) const
+\item 
+double \hyperlink{structBathymetry_a6f2e5f91978fbc5ceac899ad1bb97133}{At\+Point} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} t, const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&p) const
+\item 
+\hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 2 $>$ \hyperlink{structBathymetry_a7d7ef1d3154c6236acedb0faa5ab9a76}{Gradient} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} n) const
+\item 
+auto \hyperlink{structBathymetry_a85c33e305c755d3d291ac382817dcac5}{At\+Nodes} (\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&ns) const -\/$>$ decltype(m\+\_\+b.\+operator()(ns))
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structTriangMesh}{Triang\+Mesh} \hyperlink{structBathymetry_a5e00d3f71e39a4f82f5228bf006d0f02}{m\+\_\+m}
+\item 
+\hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 1 $>$ \hyperlink{structBathymetry_a5478b5454f3b9a280b903ac64b7f8a7b}{m\+\_\+b}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structBathymetry_af29ee7c05a6c15897296235a6119c841}\label{structBathymetry_af29ee7c05a6c15897296235a6119c841}} 
+\index{Bathymetry@{Bathymetry}!Bathymetry@{Bathymetry}}
+\index{Bathymetry@{Bathymetry}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{Bathymetry()}{Bathymetry()}}
+{\footnotesize\ttfamily Bathymetry\+::\+Bathymetry (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh}{Triang\+Mesh} \&\&}]{m }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structBathymetry_a947fa04cebe8530b5359f4676ecc95ae}\label{structBathymetry_a947fa04cebe8530b5359f4676ecc95ae}} 
+\index{Bathymetry@{Bathymetry}!At\+Node@{At\+Node}}
+\index{At\+Node@{At\+Node}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{At\+Node()}{AtNode()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double \& Bathymetry\+::\+At\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{n }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{structBathymetry_a7b6e4230a197b6796d9bc92045b54cdd}\label{structBathymetry_a7b6e4230a197b6796d9bc92045b54cdd}} 
+\index{Bathymetry@{Bathymetry}!At\+Node@{At\+Node}}
+\index{At\+Node@{At\+Node}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{At\+Node()}{AtNode()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double Bathymetry\+::\+At\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{n }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structBathymetry_a85c33e305c755d3d291ac382817dcac5}\label{structBathymetry_a85c33e305c755d3d291ac382817dcac5}} 
+\index{Bathymetry@{Bathymetry}!At\+Nodes@{At\+Nodes}}
+\index{At\+Nodes@{At\+Nodes}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{At\+Nodes()}{AtNodes()}}
+{\footnotesize\ttfamily auto Bathymetry\+::\+At\+Nodes (\begin{DoxyParamCaption}\item[{\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&}]{ns }\end{DoxyParamCaption}) const -\/$>$ decltype(m\+\_\+b.\+operator()(ns))}
+
+\mbox{\Hypertarget{structBathymetry_a6f2e5f91978fbc5ceac899ad1bb97133}\label{structBathymetry_a6f2e5f91978fbc5ceac899ad1bb97133}} 
+\index{Bathymetry@{Bathymetry}!At\+Point@{At\+Point}}
+\index{At\+Point@{At\+Point}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{At\+Point()}{AtPoint()}}
+{\footnotesize\ttfamily double Bathymetry\+::\+At\+Point (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{t,  }\item[{const \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \&}]{p }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structBathymetry_ad0bff54b04bec3c1ef57edde852bf26c}\label{structBathymetry_ad0bff54b04bec3c1ef57edde852bf26c}} 
+\index{Bathymetry@{Bathymetry}!Buff@{Buff}}
+\index{Buff@{Buff}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{Buff()}{Buff()}}
+{\footnotesize\ttfamily const \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$1$>$\& Bathymetry\+::\+Buff (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structBathymetry_a7d7ef1d3154c6236acedb0faa5ab9a76}\label{structBathymetry_a7d7ef1d3154c6236acedb0faa5ab9a76}} 
+\index{Bathymetry@{Bathymetry}!Gradient@{Gradient}}
+\index{Gradient@{Gradient}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{Gradient()}{Gradient()}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 2 $>$ Bathymetry\+::\+Gradient (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{n }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structBathymetry_a2344e707a6092a2fe753d9d983675270}\label{structBathymetry_a2344e707a6092a2fe753d9d983675270}} 
+\index{Bathymetry@{Bathymetry}!Mesh@{Mesh}}
+\index{Mesh@{Mesh}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{Mesh()}{Mesh()}}
+{\footnotesize\ttfamily const \hyperlink{structTriangMesh}{Triang\+Mesh}\& Bathymetry\+::\+Mesh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structBathymetry_a9e37db46f1707e16a291e45922201ba7}\label{structBathymetry_a9e37db46f1707e16a291e45922201ba7}} 
+\index{Bathymetry@{Bathymetry}!Size@{Size}}
+\index{Size@{Size}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{Size()}{Size()}}
+{\footnotesize\ttfamily size\+\_\+t Bathymetry\+::\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structBathymetry_a5478b5454f3b9a280b903ac64b7f8a7b}\label{structBathymetry_a5478b5454f3b9a280b903ac64b7f8a7b}} 
+\index{Bathymetry@{Bathymetry}!m\+\_\+b@{m\+\_\+b}}
+\index{m\+\_\+b@{m\+\_\+b}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{m\+\_\+b}{m\_b}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$1$>$ Bathymetry\+::m\+\_\+b\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{structBathymetry_a5e00d3f71e39a4f82f5228bf006d0f02}\label{structBathymetry_a5e00d3f71e39a4f82f5228bf006d0f02}} 
+\index{Bathymetry@{Bathymetry}!m\+\_\+m@{m\+\_\+m}}
+\index{m\+\_\+m@{m\+\_\+m}!Bathymetry@{Bathymetry}}
+\subsubsection{\texorpdfstring{m\+\_\+m}{m\_m}}
+{\footnotesize\ttfamily \hyperlink{structTriangMesh}{Triang\+Mesh} Bathymetry\+::m\+\_\+m\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Bathymetry_8h}{Bathymetry.\+h}\item 
+\hyperlink{Bathymetry_8cpp}{Bathymetry.\+cpp}\end{DoxyCompactItemize}

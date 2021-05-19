@@ -1,0 +1,212 @@
+\hypertarget{structSpaceDisc}{}\section{Space\+Disc Struct Reference}
+\label{structSpaceDisc}\index{Space\+Disc@{Space\+Disc}}
+
+
+{\ttfamily \#include $<$Space\+Disc.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} = std\+::function$<$ \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$(\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$const, \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}, \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}, \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}, double $\ast$)$>$
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structSpaceDisc_a69bc32c19f0e0392d65463de812818e5}{Space\+Disc} (const \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} \&fluxer, \hyperlink{structBathymetry}{Bathymetry} \&\&b, const \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&v0, double cor=0, double tau=0)
+\item 
+\hyperlink{structSpaceDisc_a3bc2b6463824bfb7f43235dec457f1ce}{Space\+Disc} (const \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} \&fluxer, \hyperlink{structBathymetry}{Bathymetry} \&\&b, \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&\&v0, double cor=0, double tau=0)
+\item 
+const \hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field} \& \hyperlink{structSpaceDisc_abb77eee64defc868e9ddcb9e7ab74dc7}{Get\+Edg\+Field} () const noexcept
+\item 
+const \hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field} \& \hyperlink{structSpaceDisc_ad92de02d3ac084f5545177e5dbad3fe2}{Get\+Src\+Field} () const noexcept
+\item 
+const \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 3 $>$ \& \hyperlink{structSpaceDisc_a99a97193afb313b64ea56205ac3a35c5}{Get\+Fluxes} () const noexcept
+\item 
+const double \hyperlink{structSpaceDisc_ab5d1e593defca1bd66222feb14d50c14}{Get\+Tau} () const noexcept
+\item 
+const double \hyperlink{structSpaceDisc_a6ad21f7074f4acc9ab9af1f174886f34}{Get\+Cor} () const noexcept
+\item 
+const double \hyperlink{structSpaceDisc_a156dcd96d37a1a7b8d55511ad7e36cb2}{Get\+Min\+Len\+To\+Wavespeed} () const noexcept
+\item 
+void \hyperlink{structSpaceDisc_ae25fa39b08a67210ca0dc2339033e1e6}{Compute\+Interface\+Values} ()
+\item 
+void \hyperlink{structSpaceDisc_a24d17843bb599b8359e17e647ecb3819}{Compute\+Fluxes} ()
+\item 
+\hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ \hyperlink{structSpaceDisc_a5f5179fe58a3d92f834680a6e2815022}{Compute\+Integrals} ()
+\item 
+\hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 3 $>$ \hyperlink{structSpaceDisc_adeaf3b111301eb2d4fa845ce89aca9c7}{Compare\+With} (const \hyperlink{classTest}{Test} \&test, double t)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{structSpaceDisc_aeb63d95bb23cf1c008b7a66e65be4e7f}{Update\+Interface\+Values} (const \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL} \&muscl)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field} \hyperlink{structSpaceDisc_a7e9d515b773fc6ab168329a928d72a67}{m\+\_\+edg}
+\item 
+\hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field} \hyperlink{structSpaceDisc_a31d451e05cdd7c4378279bf87c08c4fa}{m\+\_\+src}
+\item 
+\hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 3 $>$ \hyperlink{structSpaceDisc_ac487047c4daffb7e3f4073898df346a3}{m\+\_\+f}
+\item 
+\hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} \hyperlink{structSpaceDisc_aebc37aeb495c6f0982adb243c5746454}{m\+\_\+fluxer}
+\item 
+double \hyperlink{structSpaceDisc_ae49a845e8fa56af00601cbb4333917eb}{m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed}
+\item 
+const double \hyperlink{structSpaceDisc_a1951aa057a9226abb36b3c183cf5434b}{m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture} = 1e-\/10
+\item 
+const double \hyperlink{structSpaceDisc_a64789d9c4477009dc62c6c5b062d97c9}{m\+\_\+cor}
+\item 
+const double \hyperlink{structSpaceDisc_a3caf9e3638808eaf891f1ecf7299504a}{m\+\_\+tau}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}\label{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}} 
+\index{Space\+Disc@{Space\+Disc}!Fluxer@{Fluxer}}
+\index{Fluxer@{Fluxer}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Fluxer}{Fluxer}}
+{\footnotesize\ttfamily using \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Space\+Disc\+::\+Fluxer} =  std\+::function$<$\hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$3$>$(\hyperlink{structSpaceDisc}{Space\+Disc}$\ast$ const, \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}, \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}, \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}, double$\ast$)$>$}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structSpaceDisc_a69bc32c19f0e0392d65463de812818e5}\label{structSpaceDisc_a69bc32c19f0e0392d65463de812818e5}} 
+\index{Space\+Disc@{Space\+Disc}!Space\+Disc@{Space\+Disc}}
+\index{Space\+Disc@{Space\+Disc}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Space\+Disc()}{SpaceDisc()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Space\+Disc\+::\+Space\+Disc (\begin{DoxyParamCaption}\item[{const \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} \&}]{fluxer,  }\item[{\hyperlink{structBathymetry}{Bathymetry} \&\&}]{b,  }\item[{const \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&}]{v0,  }\item[{double}]{cor = {\ttfamily 0},  }\item[{double}]{tau = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{structSpaceDisc_a3bc2b6463824bfb7f43235dec457f1ce}\label{structSpaceDisc_a3bc2b6463824bfb7f43235dec457f1ce}} 
+\index{Space\+Disc@{Space\+Disc}!Space\+Disc@{Space\+Disc}}
+\index{Space\+Disc@{Space\+Disc}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Space\+Disc()}{SpaceDisc()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Space\+Disc\+::\+Space\+Disc (\begin{DoxyParamCaption}\item[{const \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} \&}]{fluxer,  }\item[{\hyperlink{structBathymetry}{Bathymetry} \&\&}]{b,  }\item[{\hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&\&}]{v0,  }\item[{double}]{cor = {\ttfamily 0},  }\item[{double}]{tau = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structSpaceDisc_adeaf3b111301eb2d4fa845ce89aca9c7}\label{structSpaceDisc_adeaf3b111301eb2d4fa845ce89aca9c7}} 
+\index{Space\+Disc@{Space\+Disc}!Compare\+With@{Compare\+With}}
+\index{Compare\+With@{Compare\+With}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Compare\+With()}{CompareWith()}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 3 $>$ Space\+Disc\+::\+Compare\+With (\begin{DoxyParamCaption}\item[{const \hyperlink{classTest}{Test} \&}]{test,  }\item[{double}]{t }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{structSpaceDisc_a24d17843bb599b8359e17e647ecb3819}\label{structSpaceDisc_a24d17843bb599b8359e17e647ecb3819}} 
+\index{Space\+Disc@{Space\+Disc}!Compute\+Fluxes@{Compute\+Fluxes}}
+\index{Compute\+Fluxes@{Compute\+Fluxes}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Compute\+Fluxes()}{ComputeFluxes()}}
+{\footnotesize\ttfamily void Space\+Disc\+::\+Compute\+Fluxes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{structSpaceDisc_a5f5179fe58a3d92f834680a6e2815022}\label{structSpaceDisc_a5f5179fe58a3d92f834680a6e2815022}} 
+\index{Space\+Disc@{Space\+Disc}!Compute\+Integrals@{Compute\+Integrals}}
+\index{Compute\+Integrals@{Compute\+Integrals}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Compute\+Integrals()}{ComputeIntegrals()}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ Space\+Disc\+::\+Compute\+Integrals (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{structSpaceDisc_ae25fa39b08a67210ca0dc2339033e1e6}\label{structSpaceDisc_ae25fa39b08a67210ca0dc2339033e1e6}} 
+\index{Space\+Disc@{Space\+Disc}!Compute\+Interface\+Values@{Compute\+Interface\+Values}}
+\index{Compute\+Interface\+Values@{Compute\+Interface\+Values}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Compute\+Interface\+Values()}{ComputeInterfaceValues()}}
+{\footnotesize\ttfamily void Space\+Disc\+::\+Compute\+Interface\+Values (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{structSpaceDisc_a6ad21f7074f4acc9ab9af1f174886f34}\label{structSpaceDisc_a6ad21f7074f4acc9ab9af1f174886f34}} 
+\index{Space\+Disc@{Space\+Disc}!Get\+Cor@{Get\+Cor}}
+\index{Get\+Cor@{Get\+Cor}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Cor()}{GetCor()}}
+{\footnotesize\ttfamily const double Space\+Disc\+::\+Get\+Cor (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structSpaceDisc_abb77eee64defc868e9ddcb9e7ab74dc7}\label{structSpaceDisc_abb77eee64defc868e9ddcb9e7ab74dc7}} 
+\index{Space\+Disc@{Space\+Disc}!Get\+Edg\+Field@{Get\+Edg\+Field}}
+\index{Get\+Edg\+Field@{Get\+Edg\+Field}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Edg\+Field()}{GetEdgField()}}
+{\footnotesize\ttfamily const \hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field}\& Space\+Disc\+::\+Get\+Edg\+Field (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structSpaceDisc_a99a97193afb313b64ea56205ac3a35c5}\label{structSpaceDisc_a99a97193afb313b64ea56205ac3a35c5}} 
+\index{Space\+Disc@{Space\+Disc}!Get\+Fluxes@{Get\+Fluxes}}
+\index{Get\+Fluxes@{Get\+Fluxes}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Fluxes()}{GetFluxes()}}
+{\footnotesize\ttfamily const \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$3$>$\& Space\+Disc\+::\+Get\+Fluxes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structSpaceDisc_a156dcd96d37a1a7b8d55511ad7e36cb2}\label{structSpaceDisc_a156dcd96d37a1a7b8d55511ad7e36cb2}} 
+\index{Space\+Disc@{Space\+Disc}!Get\+Min\+Len\+To\+Wavespeed@{Get\+Min\+Len\+To\+Wavespeed}}
+\index{Get\+Min\+Len\+To\+Wavespeed@{Get\+Min\+Len\+To\+Wavespeed}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Min\+Len\+To\+Wavespeed()}{GetMinLenToWavespeed()}}
+{\footnotesize\ttfamily const double Space\+Disc\+::\+Get\+Min\+Len\+To\+Wavespeed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structSpaceDisc_ad92de02d3ac084f5545177e5dbad3fe2}\label{structSpaceDisc_ad92de02d3ac084f5545177e5dbad3fe2}} 
+\index{Space\+Disc@{Space\+Disc}!Get\+Src\+Field@{Get\+Src\+Field}}
+\index{Get\+Src\+Field@{Get\+Src\+Field}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Src\+Field()}{GetSrcField()}}
+{\footnotesize\ttfamily const \hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field}\& Space\+Disc\+::\+Get\+Src\+Field (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structSpaceDisc_ab5d1e593defca1bd66222feb14d50c14}\label{structSpaceDisc_ab5d1e593defca1bd66222feb14d50c14}} 
+\index{Space\+Disc@{Space\+Disc}!Get\+Tau@{Get\+Tau}}
+\index{Get\+Tau@{Get\+Tau}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Tau()}{GetTau()}}
+{\footnotesize\ttfamily const double Space\+Disc\+::\+Get\+Tau (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structSpaceDisc_aeb63d95bb23cf1c008b7a66e65be4e7f}\label{structSpaceDisc_aeb63d95bb23cf1c008b7a66e65be4e7f}} 
+\index{Space\+Disc@{Space\+Disc}!Update\+Interface\+Values@{Update\+Interface\+Values}}
+\index{Update\+Interface\+Values@{Update\+Interface\+Values}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{Update\+Interface\+Values()}{UpdateInterfaceValues()}}
+{\footnotesize\ttfamily void Space\+Disc\+::\+Update\+Interface\+Values (\begin{DoxyParamCaption}\item[{const \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL} \&}]{muscl }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structSpaceDisc_a64789d9c4477009dc62c6c5b062d97c9}\label{structSpaceDisc_a64789d9c4477009dc62c6c5b062d97c9}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+cor@{m\+\_\+cor}}
+\index{m\+\_\+cor@{m\+\_\+cor}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+cor}{m\_cor}}
+{\footnotesize\ttfamily const double Space\+Disc\+::m\+\_\+cor\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_a7e9d515b773fc6ab168329a928d72a67}\label{structSpaceDisc_a7e9d515b773fc6ab168329a928d72a67}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+edg@{m\+\_\+edg}}
+\index{m\+\_\+edg@{m\+\_\+edg}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+edg}{m\_edg}}
+{\footnotesize\ttfamily \hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field} Space\+Disc\+::m\+\_\+edg\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_ac487047c4daffb7e3f4073898df346a3}\label{structSpaceDisc_ac487047c4daffb7e3f4073898df346a3}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+f@{m\+\_\+f}}
+\index{m\+\_\+f@{m\+\_\+f}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+f}{m\_f}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$3$>$ Space\+Disc\+::m\+\_\+f\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_aebc37aeb495c6f0982adb243c5746454}\label{structSpaceDisc_aebc37aeb495c6f0982adb243c5746454}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+fluxer@{m\+\_\+fluxer}}
+\index{m\+\_\+fluxer@{m\+\_\+fluxer}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+fluxer}{m\_fluxer}}
+{\footnotesize\ttfamily \hyperlink{structSpaceDisc_a96fbebf5dd4659e2dcc144a5debc861d}{Fluxer} Space\+Disc\+::m\+\_\+fluxer\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_ae49a845e8fa56af00601cbb4333917eb}\label{structSpaceDisc_ae49a845e8fa56af00601cbb4333917eb}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed@{m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed}}
+\index{m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed@{m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed}{m\_min\_length\_to\_wavespeed}}
+{\footnotesize\ttfamily double Space\+Disc\+::m\+\_\+min\+\_\+length\+\_\+to\+\_\+wavespeed\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_a1951aa057a9226abb36b3c183cf5434b}\label{structSpaceDisc_a1951aa057a9226abb36b3c183cf5434b}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture@{m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture}}
+\index{m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture@{m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture}{m\_min\_wavespeed\_to\_capture}}
+{\footnotesize\ttfamily const double Space\+Disc\+::m\+\_\+min\+\_\+wavespeed\+\_\+to\+\_\+capture = 1e-\/10\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_a31d451e05cdd7c4378279bf87c08c4fa}\label{structSpaceDisc_a31d451e05cdd7c4378279bf87c08c4fa}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+src@{m\+\_\+src}}
+\index{m\+\_\+src@{m\+\_\+src}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+src}{m\_src}}
+{\footnotesize\ttfamily \hyperlink{ValueField_8h_afe95c3cf57931e46528822035916f101}{Edge\+Field} Space\+Disc\+::m\+\_\+src\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structSpaceDisc_a3caf9e3638808eaf891f1ecf7299504a}\label{structSpaceDisc_a3caf9e3638808eaf891f1ecf7299504a}} 
+\index{Space\+Disc@{Space\+Disc}!m\+\_\+tau@{m\+\_\+tau}}
+\index{m\+\_\+tau@{m\+\_\+tau}!Space\+Disc@{Space\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+tau}{m\_tau}}
+{\footnotesize\ttfamily const double Space\+Disc\+::m\+\_\+tau\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{SpaceDisc_8h}{Space\+Disc.\+h}\item 
+\hyperlink{SpaceDisc_8cpp}{Space\+Disc.\+cpp}\end{DoxyCompactItemize}

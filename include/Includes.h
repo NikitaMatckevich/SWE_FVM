@@ -14,11 +14,11 @@ namespace Eigen {
   using Matrix21d = Matrix<double, 2, 1>;
 }
 
-// define possible boundary types
-enum class Boundaries : int { SOLID_WALL = -1, FREE_FLOW = -2, PERIODIC = -3, CUSTOM = -4 };
-
-// define alias for idxing
+// define alias for index type
 using Idx = Eigen::Index;
+
+// define possible boundary types
+enum class Boundaries : Idx { SOLID_WALL = -1, FREE_FLOW = -2, PERIODIC = -3, CUSTOM = -4 };
 
 template <size_t k>
 using Array = Eigen::Array<double, k, 1>;

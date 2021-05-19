@@ -344,9 +344,10 @@ void TestLakeAtRest() {
 }
 
 void TestAll() {
+  //Info(std::cout, mesh);
 	//testValueFields();
   //testGaussWave();
-	TestConvergence();
+	//TestConvergence();
   //TestLakeAtRest();
   //AddAnalyticPictures();
 }

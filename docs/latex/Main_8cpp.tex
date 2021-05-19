@@ -1,0 +1,113 @@
+\hypertarget{Main_8cpp}{}\section{Main.\+cpp File Reference}
+\label{Main_8cpp}\index{Main.\+cpp@{Main.\+cpp}}
+{\ttfamily \#include $<$Dimension\+Manager.\+h$>$}\newline
+{\ttfamily \#include $<$Struct\+Triang\+Mesh.\+h$>$}\newline
+{\ttfamily \#include $<$Fluxes.\+h$>$}\newline
+{\ttfamily \#include $<$Solvers.\+h$>$}\newline
+{\ttfamily \#include $<$Tests.\+h$>$}\newline
+{\ttfamily \#include $<$omp.\+h$>$}\newline
+{\ttfamily \#include $<$cmath$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$iomanip$>$}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{Main_8cpp_ae380476255b6b9195c35ca5dbc6f3807}{Test\+All} ()
+\item 
+int \hyperlink{Main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main} ()
+\item 
+\hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ \hyperlink{Main_8cpp_a56a7bc56a8dd6f1fb56402693e68fa69}{Output\+L2\+Errors} (const \hyperlink{structTriangMesh}{Triang\+Mesh} \&m, const \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 3 $>$ \&err, const std\+::string \&filename)
+\item 
+void \hyperlink{Main_8cpp_a2ca179ef31e270f576052afc87a8f2a6}{Dump\+Fields} (const \hyperlink{structSpaceDisc}{Space\+Disc} \&sd, const std\+::string \&filename)
+\item 
+void \hyperlink{Main_8cpp_ab77f218bab15ad66c57b93ff91cdf6eb}{Dump\+Integrals} (double t, const \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ \&ints, const std\+::string \&filename)
+\item 
+void \hyperlink{Main_8cpp_ad032b1f4e3433d49e3a50fd373c8d92d}{Dump\+Analytic} (const \hyperlink{classTest}{Test} \&test, const \hyperlink{structTriangMesh}{Triang\+Mesh} \&m, double t, const std\+::string \&filename)
+\item 
+void \hyperlink{Main_8cpp_aa8c38cdeb372ef97522e0a4eb0bddbd1}{Test\+Value\+Fields} ()
+\item 
+void \hyperlink{Main_8cpp_a9ab339a5098b3f62d43347c8b0ced2fc}{Test\+Gauss\+Wave} ()
+\item 
+\hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ \hyperlink{Main_8cpp_a6c4b3216c591e6ed2a65bf5261e26da8}{Process} (const \hyperlink{classTest}{Test} \&test, size\+\_\+t n, double l, double t\+\_\+end, double cor=0., double tau=0.)
+\item 
+void \hyperlink{Main_8cpp_a16333dc3b442f65e9dc916d84569feac}{Test\+Convergence} ()
+\item 
+void \hyperlink{Main_8cpp_a2dba6407e1669674da79394b803411f1}{Add\+Analytic\+Pictures} ()
+\item 
+void \hyperlink{Main_8cpp_a4d063d71df134ecf784581f88f36c459}{Test\+Lake\+At\+Rest} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{Main_8cpp_a2dba6407e1669674da79394b803411f1}\label{Main_8cpp_a2dba6407e1669674da79394b803411f1}} 
+\index{Main.\+cpp@{Main.\+cpp}!Add\+Analytic\+Pictures@{Add\+Analytic\+Pictures}}
+\index{Add\+Analytic\+Pictures@{Add\+Analytic\+Pictures}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Add\+Analytic\+Pictures()}{AddAnalyticPictures()}}
+{\footnotesize\ttfamily void Add\+Analytic\+Pictures (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_ad032b1f4e3433d49e3a50fd373c8d92d}\label{Main_8cpp_ad032b1f4e3433d49e3a50fd373c8d92d}} 
+\index{Main.\+cpp@{Main.\+cpp}!Dump\+Analytic@{Dump\+Analytic}}
+\index{Dump\+Analytic@{Dump\+Analytic}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Dump\+Analytic()}{DumpAnalytic()}}
+{\footnotesize\ttfamily void Dump\+Analytic (\begin{DoxyParamCaption}\item[{const \hyperlink{classTest}{Test} \&}]{test,  }\item[{const \hyperlink{structTriangMesh}{Triang\+Mesh} \&}]{m,  }\item[{double}]{t,  }\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_a2ca179ef31e270f576052afc87a8f2a6}\label{Main_8cpp_a2ca179ef31e270f576052afc87a8f2a6}} 
+\index{Main.\+cpp@{Main.\+cpp}!Dump\+Fields@{Dump\+Fields}}
+\index{Dump\+Fields@{Dump\+Fields}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Dump\+Fields()}{DumpFields()}}
+{\footnotesize\ttfamily void Dump\+Fields (\begin{DoxyParamCaption}\item[{const \hyperlink{structSpaceDisc}{Space\+Disc} \&}]{sd,  }\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_ab77f218bab15ad66c57b93ff91cdf6eb}\label{Main_8cpp_ab77f218bab15ad66c57b93ff91cdf6eb}} 
+\index{Main.\+cpp@{Main.\+cpp}!Dump\+Integrals@{Dump\+Integrals}}
+\index{Dump\+Integrals@{Dump\+Integrals}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Dump\+Integrals()}{DumpIntegrals()}}
+{\footnotesize\ttfamily void Dump\+Integrals (\begin{DoxyParamCaption}\item[{double}]{t,  }\item[{const \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ \&}]{ints,  }\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{Main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{Main.\+cpp@{Main.\+cpp}!main@{main}}
+\index{main@{main}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_a56a7bc56a8dd6f1fb56402693e68fa69}\label{Main_8cpp_a56a7bc56a8dd6f1fb56402693e68fa69}} 
+\index{Main.\+cpp@{Main.\+cpp}!Output\+L2\+Errors@{Output\+L2\+Errors}}
+\index{Output\+L2\+Errors@{Output\+L2\+Errors}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Output\+L2\+Errors()}{OutputL2Errors()}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$3$>$ Output\+L2\+Errors (\begin{DoxyParamCaption}\item[{const \hyperlink{structTriangMesh}{Triang\+Mesh} \&}]{m,  }\item[{const \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 3 $>$ \&}]{err,  }\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_a6c4b3216c591e6ed2a65bf5261e26da8}\label{Main_8cpp_a6c4b3216c591e6ed2a65bf5261e26da8}} 
+\index{Main.\+cpp@{Main.\+cpp}!Process@{Process}}
+\index{Process@{Process}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Process()}{Process()}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$3$>$ Process (\begin{DoxyParamCaption}\item[{const \hyperlink{classTest}{Test} \&}]{test,  }\item[{size\+\_\+t}]{n,  }\item[{double}]{l,  }\item[{double}]{t\+\_\+end,  }\item[{double}]{cor = {\ttfamily 0.},  }\item[{double}]{tau = {\ttfamily 0.} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_ae380476255b6b9195c35ca5dbc6f3807}\label{Main_8cpp_ae380476255b6b9195c35ca5dbc6f3807}} 
+\index{Main.\+cpp@{Main.\+cpp}!Test\+All@{Test\+All}}
+\index{Test\+All@{Test\+All}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Test\+All()}{TestAll()}}
+{\footnotesize\ttfamily void Test\+All (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_a16333dc3b442f65e9dc916d84569feac}\label{Main_8cpp_a16333dc3b442f65e9dc916d84569feac}} 
+\index{Main.\+cpp@{Main.\+cpp}!Test\+Convergence@{Test\+Convergence}}
+\index{Test\+Convergence@{Test\+Convergence}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Test\+Convergence()}{TestConvergence()}}
+{\footnotesize\ttfamily void Test\+Convergence (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_a9ab339a5098b3f62d43347c8b0ced2fc}\label{Main_8cpp_a9ab339a5098b3f62d43347c8b0ced2fc}} 
+\index{Main.\+cpp@{Main.\+cpp}!Test\+Gauss\+Wave@{Test\+Gauss\+Wave}}
+\index{Test\+Gauss\+Wave@{Test\+Gauss\+Wave}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Test\+Gauss\+Wave()}{TestGaussWave()}}
+{\footnotesize\ttfamily void Test\+Gauss\+Wave (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_a4d063d71df134ecf784581f88f36c459}\label{Main_8cpp_a4d063d71df134ecf784581f88f36c459}} 
+\index{Main.\+cpp@{Main.\+cpp}!Test\+Lake\+At\+Rest@{Test\+Lake\+At\+Rest}}
+\index{Test\+Lake\+At\+Rest@{Test\+Lake\+At\+Rest}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Test\+Lake\+At\+Rest()}{TestLakeAtRest()}}
+{\footnotesize\ttfamily void Test\+Lake\+At\+Rest (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{Main_8cpp_aa8c38cdeb372ef97522e0a4eb0bddbd1}\label{Main_8cpp_aa8c38cdeb372ef97522e0a4eb0bddbd1}} 
+\index{Main.\+cpp@{Main.\+cpp}!Test\+Value\+Fields@{Test\+Value\+Fields}}
+\index{Test\+Value\+Fields@{Test\+Value\+Fields}!Main.\+cpp@{Main.\+cpp}}
+\subsubsection{\texorpdfstring{Test\+Value\+Fields()}{TestValueFields()}}
+{\footnotesize\ttfamily void Test\+Value\+Fields (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+

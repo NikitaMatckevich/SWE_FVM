@@ -1,0 +1,329 @@
+\hypertarget{structTriangMesh}{}\section{Triang\+Mesh Struct Reference}
+\label{structTriangMesh}\index{Triang\+Mesh@{Triang\+Mesh}}
+
+
+{\ttfamily \#include $<$Triang\+Mesh.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} = \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structTriangMesh_a704b5960ace0f96b30a63d0d757c0a9f}{Triang\+Mesh} ()=default
+\item 
+\hyperlink{structTriangMesh_adf054ce5bd623c810c9544fb11fc181c}{Triang\+Mesh} (\hyperlink{structTriangMesh}{Triang\+Mesh} \&\&other)=default
+\item 
+\hyperlink{structTriangMesh_adc8b6dd095f0b5cde9b815fc99550e51}{Triang\+Mesh} (const \hyperlink{structTriangMesh}{Triang\+Mesh} \&other)=delete
+\item 
+\hyperlink{structTriangMesh_a2fd15d9e2c6fae5a93a8b132744a55e8}{Triang\+Mesh} (std\+::string const \&filename)
+\item 
+size\+\_\+t \hyperlink{structTriangMesh_ac936e752bedb743c50575c34cdc67d3b}{Num\+Nodes} () const
+\item 
+size\+\_\+t \hyperlink{structTriangMesh_a058b662444a7cf9e3eaddb4c88886951}{Num\+Edges} () const
+\item 
+size\+\_\+t \hyperlink{structTriangMesh_a87e9011fee83643dd2b28cadf0116f06}{Num\+Triangles} () const
+\item 
+\hyperlink{TriangMesh_8h_acc47488d876c8158f668034ca092038b}{Edge\+Tag} \hyperlink{structTriangMesh_a83972b4033aa0941adfbcf07c67d1267}{Edge\+Points} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{TriangMesh_8h_acc47488d876c8158f668034ca092038b}{Edge\+Tag} \hyperlink{structTriangMesh_ab160faebe26585d6a512bcf659113adc}{Edge\+Triangs} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+bool \hyperlink{structTriangMesh_af0cc2b0031c1f7a60e0b57e59cf2f770}{Is\+Edge\+Boundary} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{TriangMesh_8h_a278a4a778b70d153092ef4f362ec8bea}{Triang\+Tag} \hyperlink{structTriangMesh_a792914208398af409909bc875b1e901a}{Triang\+Points} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{TriangMesh_8h_a278a4a778b70d153092ef4f362ec8bea}{Triang\+Tag} \hyperlink{structTriangMesh_a41afce57a1ff9c91d513e12ceeaaa30f}{Triang\+Edges} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{TriangMesh_8h_a278a4a778b70d153092ef4f362ec8bea}{Triang\+Tag} \hyperlink{structTriangMesh_ae90636c4abcb8e021e933f93484ddeef}{Triang\+Triangs} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+bool \hyperlink{structTriangMesh_ae4a38de44007cce2fb0163d67a652493}{Is\+Triangle\+Boundary} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+double \hyperlink{structTriangMesh_a20db4e9b5170193411c4f2add2ed5458}{MinX} () const
+\item 
+double \hyperlink{structTriangMesh_aeed0671b822f7934b58f05a4cdde35d0}{MaxX} () const
+\item 
+double \hyperlink{structTriangMesh_a521abe5c5037afba47b4e0d307144729}{MinY} () const
+\item 
+double \hyperlink{structTriangMesh_a0488ee177575bde01db0fd543d873b7a}{MaxY} () const
+\item 
+\hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \hyperlink{structTriangMesh_a981d7a016f1d82eb7970bd6a8749be3d}{P} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \hyperlink{structTriangMesh_a4d6890abde7ec567f30c81cde2d066dd}{T} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \hyperlink{structTriangMesh_a5e710c953a0d5c0f405eb679e41f087c}{E} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} \hyperlink{structTriangMesh_a119dc180ae15f2a72577eae96185ec94}{C} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} i) const
+\item 
+\hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} \hyperlink{structTriangMesh_a8888f7d4da5a8f56f6302f5653dcba11}{P} (\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&i) const
+\item 
+\hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} \hyperlink{structTriangMesh_a4c1a60d7f6a81dc80cbeb47a00fedcc1}{T} (\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&i) const
+\item 
+\hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} \hyperlink{structTriangMesh_a5604f629630ad7f62eceb8ca96dc0e9f}{E} (\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&i) const
+\item 
+\hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} \hyperlink{structTriangMesh_a53b88a0e1eec5d79f0f9512f406d3ab1}{C} (\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&i) const
+\item 
+Eigen\+::\+Vector2d \hyperlink{structTriangMesh_a49ccf45d946f1b692c4e971e1a5e352e}{Tang} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} ie, \hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} it) const
+\item 
+Eigen\+::\+Vector2d \hyperlink{structTriangMesh_a630364be0304888840c6d231f5111695}{Norm} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} ie, \hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} it) const
+\item 
+double \hyperlink{structTriangMesh_a112d9aa92033fd1fcb48379b866ae19e}{L} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} ie) const
+\item 
+double \hyperlink{structTriangMesh_ad4cc6744df2597c5b6e119adb7d29041}{Area} (\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag} it) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} \hyperlink{structTriangMesh_a2079ca25815c1e3234c7a89c28a2cf87}{m\+\_\+p}
+\item 
+\hyperlink{TriangMesh_8h_abc2bd59f66a99a49734f137afeb7811c}{Edge\+Tag\+Array} \hyperlink{structTriangMesh_aeded3b35e614ebdb4509df84bf74b912}{m\+\_\+edge\+\_\+points}
+\item 
+\hyperlink{TriangMesh_8h_abc2bd59f66a99a49734f137afeb7811c}{Edge\+Tag\+Array} \hyperlink{structTriangMesh_a55e3d80b81a3744d622e4b5560717f0a}{m\+\_\+edge\+\_\+triangs}
+\item 
+\hyperlink{TriangMesh_8h_a327fc0ebbe645527e422ebcea99b4cd3}{Triang\+Tag\+Array} \hyperlink{structTriangMesh_a47780d9e5f3c77c75a9d0c7c4b0b2fb4}{m\+\_\+triang\+\_\+points}
+\item 
+\hyperlink{TriangMesh_8h_a327fc0ebbe645527e422ebcea99b4cd3}{Triang\+Tag\+Array} \hyperlink{structTriangMesh_a62df1a2e039c2ff911a14f856b57e733}{m\+\_\+triang\+\_\+edges}
+\item 
+\hyperlink{TriangMesh_8h_a327fc0ebbe645527e422ebcea99b4cd3}{Triang\+Tag\+Array} \hyperlink{structTriangMesh_aa0f5b8d8a9c65af1c789051dd10e88b0}{m\+\_\+triang\+\_\+triangs}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}\label{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Node\+Tag@{Node\+Tag}}
+\index{Node\+Tag@{Node\+Tag}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Node\+Tag}{NodeTag}}
+{\footnotesize\ttfamily using \hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Triang\+Mesh\+::\+Node\+Tag} =  \hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structTriangMesh_a704b5960ace0f96b30a63d0d757c0a9f}\label{structTriangMesh_a704b5960ace0f96b30a63d0d757c0a9f}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Mesh()}{TriangMesh()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Triang\+Mesh\+::\+Triang\+Mesh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+\mbox{\Hypertarget{structTriangMesh_adf054ce5bd623c810c9544fb11fc181c}\label{structTriangMesh_adf054ce5bd623c810c9544fb11fc181c}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Mesh()}{TriangMesh()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Triang\+Mesh\+::\+Triang\+Mesh (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh}{Triang\+Mesh} \&\&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+\mbox{\Hypertarget{structTriangMesh_adc8b6dd095f0b5cde9b815fc99550e51}\label{structTriangMesh_adc8b6dd095f0b5cde9b815fc99550e51}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Mesh()}{TriangMesh()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Triang\+Mesh\+::\+Triang\+Mesh (\begin{DoxyParamCaption}\item[{const \hyperlink{structTriangMesh}{Triang\+Mesh} \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+\mbox{\Hypertarget{structTriangMesh_a2fd15d9e2c6fae5a93a8b132744a55e8}\label{structTriangMesh_a2fd15d9e2c6fae5a93a8b132744a55e8}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Mesh()}{TriangMesh()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Triang\+Mesh\+::\+Triang\+Mesh (\begin{DoxyParamCaption}\item[{std\+::string const \&}]{filename }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structTriangMesh_ad4cc6744df2597c5b6e119adb7d29041}\label{structTriangMesh_ad4cc6744df2597c5b6e119adb7d29041}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Area@{Area}}
+\index{Area@{Area}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Area()}{Area()}}
+{\footnotesize\ttfamily double Triang\+Mesh\+::\+Area (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{it }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a119dc180ae15f2a72577eae96185ec94}\label{structTriangMesh_a119dc180ae15f2a72577eae96185ec94}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!C@{C}}
+\index{C@{C}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{C()}{C()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} Triang\+Mesh\+::C (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a53b88a0e1eec5d79f0f9512f406d3ab1}\label{structTriangMesh_a53b88a0e1eec5d79f0f9512f406d3ab1}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!C@{C}}
+\index{C@{C}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{C()}{C()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} Triang\+Mesh\+::C (\begin{DoxyParamCaption}\item[{\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a5e710c953a0d5c0f405eb679e41f087c}\label{structTriangMesh_a5e710c953a0d5c0f405eb679e41f087c}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!E@{E}}
+\index{E@{E}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{E()}{E()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} Triang\+Mesh\+::E (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a5604f629630ad7f62eceb8ca96dc0e9f}\label{structTriangMesh_a5604f629630ad7f62eceb8ca96dc0e9f}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!E@{E}}
+\index{E@{E}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{E()}{E()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} Triang\+Mesh\+::E (\begin{DoxyParamCaption}\item[{\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a83972b4033aa0941adfbcf07c67d1267}\label{structTriangMesh_a83972b4033aa0941adfbcf07c67d1267}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Edge\+Points@{Edge\+Points}}
+\index{Edge\+Points@{Edge\+Points}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Edge\+Points()}{EdgePoints()}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_acc47488d876c8158f668034ca092038b}{Edge\+Tag} Triang\+Mesh\+::\+Edge\+Points (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_ab160faebe26585d6a512bcf659113adc}\label{structTriangMesh_ab160faebe26585d6a512bcf659113adc}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Edge\+Triangs@{Edge\+Triangs}}
+\index{Edge\+Triangs@{Edge\+Triangs}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Edge\+Triangs()}{EdgeTriangs()}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_acc47488d876c8158f668034ca092038b}{Edge\+Tag} Triang\+Mesh\+::\+Edge\+Triangs (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_af0cc2b0031c1f7a60e0b57e59cf2f770}\label{structTriangMesh_af0cc2b0031c1f7a60e0b57e59cf2f770}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Is\+Edge\+Boundary@{Is\+Edge\+Boundary}}
+\index{Is\+Edge\+Boundary@{Is\+Edge\+Boundary}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Is\+Edge\+Boundary()}{IsEdgeBoundary()}}
+{\footnotesize\ttfamily bool Triang\+Mesh\+::\+Is\+Edge\+Boundary (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_ae4a38de44007cce2fb0163d67a652493}\label{structTriangMesh_ae4a38de44007cce2fb0163d67a652493}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Is\+Triangle\+Boundary@{Is\+Triangle\+Boundary}}
+\index{Is\+Triangle\+Boundary@{Is\+Triangle\+Boundary}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Is\+Triangle\+Boundary()}{IsTriangleBoundary()}}
+{\footnotesize\ttfamily bool Triang\+Mesh\+::\+Is\+Triangle\+Boundary (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a112d9aa92033fd1fcb48379b866ae19e}\label{structTriangMesh_a112d9aa92033fd1fcb48379b866ae19e}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!L@{L}}
+\index{L@{L}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{L()}{L()}}
+{\footnotesize\ttfamily double Triang\+Mesh\+::L (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{ie }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_aeed0671b822f7934b58f05a4cdde35d0}\label{structTriangMesh_aeed0671b822f7934b58f05a4cdde35d0}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!MaxX@{MaxX}}
+\index{MaxX@{MaxX}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Max\+X()}{MaxX()}}
+{\footnotesize\ttfamily double Triang\+Mesh\+::\+MaxX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_a0488ee177575bde01db0fd543d873b7a}\label{structTriangMesh_a0488ee177575bde01db0fd543d873b7a}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!MaxY@{MaxY}}
+\index{MaxY@{MaxY}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Max\+Y()}{MaxY()}}
+{\footnotesize\ttfamily double Triang\+Mesh\+::\+MaxY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_a20db4e9b5170193411c4f2add2ed5458}\label{structTriangMesh_a20db4e9b5170193411c4f2add2ed5458}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!MinX@{MinX}}
+\index{MinX@{MinX}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Min\+X()}{MinX()}}
+{\footnotesize\ttfamily double Triang\+Mesh\+::\+MinX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_a521abe5c5037afba47b4e0d307144729}\label{structTriangMesh_a521abe5c5037afba47b4e0d307144729}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!MinY@{MinY}}
+\index{MinY@{MinY}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Min\+Y()}{MinY()}}
+{\footnotesize\ttfamily double Triang\+Mesh\+::\+MinY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_a630364be0304888840c6d231f5111695}\label{structTriangMesh_a630364be0304888840c6d231f5111695}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Norm@{Norm}}
+\index{Norm@{Norm}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Norm()}{Norm()}}
+{\footnotesize\ttfamily Vector2d Triang\+Mesh\+::\+Norm (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{ie,  }\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{it }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a058b662444a7cf9e3eaddb4c88886951}\label{structTriangMesh_a058b662444a7cf9e3eaddb4c88886951}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Num\+Edges@{Num\+Edges}}
+\index{Num\+Edges@{Num\+Edges}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Num\+Edges()}{NumEdges()}}
+{\footnotesize\ttfamily size\+\_\+t Triang\+Mesh\+::\+Num\+Edges (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_ac936e752bedb743c50575c34cdc67d3b}\label{structTriangMesh_ac936e752bedb743c50575c34cdc67d3b}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Num\+Nodes@{Num\+Nodes}}
+\index{Num\+Nodes@{Num\+Nodes}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Num\+Nodes()}{NumNodes()}}
+{\footnotesize\ttfamily size\+\_\+t Triang\+Mesh\+::\+Num\+Nodes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_a87e9011fee83643dd2b28cadf0116f06}\label{structTriangMesh_a87e9011fee83643dd2b28cadf0116f06}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Num\+Triangles@{Num\+Triangles}}
+\index{Num\+Triangles@{Num\+Triangles}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Num\+Triangles()}{NumTriangles()}}
+{\footnotesize\ttfamily size\+\_\+t Triang\+Mesh\+::\+Num\+Triangles (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTriangMesh_a981d7a016f1d82eb7970bd6a8749be3d}\label{structTriangMesh_a981d7a016f1d82eb7970bd6a8749be3d}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!P@{P}}
+\index{P@{P}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{P()}{P()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} Triang\+Mesh\+::P (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a8888f7d4da5a8f56f6302f5653dcba11}\label{structTriangMesh_a8888f7d4da5a8f56f6302f5653dcba11}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!P@{P}}
+\index{P@{P}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{P()}{P()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} Triang\+Mesh\+::P (\begin{DoxyParamCaption}\item[{\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a4d6890abde7ec567f30c81cde2d066dd}\label{structTriangMesh_a4d6890abde7ec567f30c81cde2d066dd}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!T@{T}}
+\index{T@{T}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{T()}{T()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_a71a59e5a162c0274a9af106af82cf198}{Point} Triang\+Mesh\+::T (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a4c1a60d7f6a81dc80cbeb47a00fedcc1}\label{structTriangMesh_a4c1a60d7f6a81dc80cbeb47a00fedcc1}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!T@{T}}
+\index{T@{T}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{T()}{T()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} Triang\+Mesh\+::T (\begin{DoxyParamCaption}\item[{\hyperlink{TriangMesh_8h_aec6495913a1e6aad9c6535102a4dd953}{Node\+Tag\+Array} const \&}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a49ccf45d946f1b692c4e971e1a5e352e}\label{structTriangMesh_a49ccf45d946f1b692c4e971e1a5e352e}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Tang@{Tang}}
+\index{Tang@{Tang}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Tang()}{Tang()}}
+{\footnotesize\ttfamily Vector2d Triang\+Mesh\+::\+Tang (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{ie,  }\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{it }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a41afce57a1ff9c91d513e12ceeaaa30f}\label{structTriangMesh_a41afce57a1ff9c91d513e12ceeaaa30f}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Edges@{Triang\+Edges}}
+\index{Triang\+Edges@{Triang\+Edges}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Edges()}{TriangEdges()}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_a278a4a778b70d153092ef4f362ec8bea}{Triang\+Tag} Triang\+Mesh\+::\+Triang\+Edges (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_a792914208398af409909bc875b1e901a}\label{structTriangMesh_a792914208398af409909bc875b1e901a}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Points@{Triang\+Points}}
+\index{Triang\+Points@{Triang\+Points}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Points()}{TriangPoints()}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_a278a4a778b70d153092ef4f362ec8bea}{Triang\+Tag} Triang\+Mesh\+::\+Triang\+Points (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTriangMesh_ae90636c4abcb8e021e933f93484ddeef}\label{structTriangMesh_ae90636c4abcb8e021e933f93484ddeef}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!Triang\+Triangs@{Triang\+Triangs}}
+\index{Triang\+Triangs@{Triang\+Triangs}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{Triang\+Triangs()}{TriangTriangs()}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_a278a4a778b70d153092ef4f362ec8bea}{Triang\+Tag} Triang\+Mesh\+::\+Triang\+Triangs (\begin{DoxyParamCaption}\item[{\hyperlink{structTriangMesh_a9883abab211497b807f24e6e46f4b8f6}{Node\+Tag}}]{i }\end{DoxyParamCaption}) const}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structTriangMesh_aeded3b35e614ebdb4509df84bf74b912}\label{structTriangMesh_aeded3b35e614ebdb4509df84bf74b912}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!m\+\_\+edge\+\_\+points@{m\+\_\+edge\+\_\+points}}
+\index{m\+\_\+edge\+\_\+points@{m\+\_\+edge\+\_\+points}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{m\+\_\+edge\+\_\+points}{m\_edge\_points}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_abc2bd59f66a99a49734f137afeb7811c}{Edge\+Tag\+Array} Triang\+Mesh\+::m\+\_\+edge\+\_\+points\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTriangMesh_a55e3d80b81a3744d622e4b5560717f0a}\label{structTriangMesh_a55e3d80b81a3744d622e4b5560717f0a}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!m\+\_\+edge\+\_\+triangs@{m\+\_\+edge\+\_\+triangs}}
+\index{m\+\_\+edge\+\_\+triangs@{m\+\_\+edge\+\_\+triangs}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{m\+\_\+edge\+\_\+triangs}{m\_edge\_triangs}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_abc2bd59f66a99a49734f137afeb7811c}{Edge\+Tag\+Array} Triang\+Mesh\+::m\+\_\+edge\+\_\+triangs\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTriangMesh_a2079ca25815c1e3234c7a89c28a2cf87}\label{structTriangMesh_a2079ca25815c1e3234c7a89c28a2cf87}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!m\+\_\+p@{m\+\_\+p}}
+\index{m\+\_\+p@{m\+\_\+p}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{m\+\_\+p}{m\_p}}
+{\footnotesize\ttfamily \hyperlink{PointOperations_8h_aa878fb8322bc087b43ba840347e3469a}{Point\+Array} Triang\+Mesh\+::m\+\_\+p\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTriangMesh_a62df1a2e039c2ff911a14f856b57e733}\label{structTriangMesh_a62df1a2e039c2ff911a14f856b57e733}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!m\+\_\+triang\+\_\+edges@{m\+\_\+triang\+\_\+edges}}
+\index{m\+\_\+triang\+\_\+edges@{m\+\_\+triang\+\_\+edges}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{m\+\_\+triang\+\_\+edges}{m\_triang\_edges}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_a327fc0ebbe645527e422ebcea99b4cd3}{Triang\+Tag\+Array} Triang\+Mesh\+::m\+\_\+triang\+\_\+edges\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTriangMesh_a47780d9e5f3c77c75a9d0c7c4b0b2fb4}\label{structTriangMesh_a47780d9e5f3c77c75a9d0c7c4b0b2fb4}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!m\+\_\+triang\+\_\+points@{m\+\_\+triang\+\_\+points}}
+\index{m\+\_\+triang\+\_\+points@{m\+\_\+triang\+\_\+points}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{m\+\_\+triang\+\_\+points}{m\_triang\_points}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_a327fc0ebbe645527e422ebcea99b4cd3}{Triang\+Tag\+Array} Triang\+Mesh\+::m\+\_\+triang\+\_\+points\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTriangMesh_aa0f5b8d8a9c65af1c789051dd10e88b0}\label{structTriangMesh_aa0f5b8d8a9c65af1c789051dd10e88b0}} 
+\index{Triang\+Mesh@{Triang\+Mesh}!m\+\_\+triang\+\_\+triangs@{m\+\_\+triang\+\_\+triangs}}
+\index{m\+\_\+triang\+\_\+triangs@{m\+\_\+triang\+\_\+triangs}!Triang\+Mesh@{Triang\+Mesh}}
+\subsubsection{\texorpdfstring{m\+\_\+triang\+\_\+triangs}{m\_triang\_triangs}}
+{\footnotesize\ttfamily \hyperlink{TriangMesh_8h_a327fc0ebbe645527e422ebcea99b4cd3}{Triang\+Tag\+Array} Triang\+Mesh\+::m\+\_\+triang\+\_\+triangs\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{TriangMesh_8h}{Triang\+Mesh.\+h}\item 
+\hyperlink{TriangMesh_8cpp}{Triang\+Mesh.\+cpp}\end{DoxyCompactItemize}

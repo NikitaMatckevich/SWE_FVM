@@ -1,0 +1,102 @@
+\hypertarget{structTimeDisc}{}\section{Time\+Disc Struct Reference}
+\label{structTimeDisc}\index{Time\+Disc@{Time\+Disc}}
+
+
+{\ttfamily \#include $<$Time\+Disc.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structTimeDisc_a9f57c8abaf950c0cb32f83df8470b911}{Time\+Disc} (\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$sd=nullptr)
+\item 
+\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$ \hyperlink{structTimeDisc_aeff8e840257aa405f1e32ea469312299}{Get\+Space\+Disc} ()
+\item 
+const \hyperlink{structSpaceDisc}{Space\+Disc} $\ast$ \hyperlink{structTimeDisc_af58702da70c28c0876f0342b627a5c63}{Get\+Space\+Disc} () const
+\item 
+void \hyperlink{structTimeDisc_a1997626474c730f7167491fd804b8332}{Set\+Space\+Disc} (\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$sd)
+\item 
+double \hyperlink{structTimeDisc_aabda29cfe58340823c5c3781aeddcd43}{C\+F\+Ldt} () const
+\item 
+\hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ \hyperlink{structTimeDisc_a4fbce03e40554045b59958fceda7814d}{R\+HS} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i, double dt) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{structTimeDisc_aa3ede7163c05fc76a6779306bc284875}{Compute\+Draining\+Dt} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$ \hyperlink{structTimeDisc_af66d1003243d283ec075c2b69a795246}{m\+\_\+sd}
+\item 
+const double \hyperlink{structTimeDisc_a474cf65ec7cb4e8dc6367ea8ddc9ac7e}{m\+\_\+const\+C\+FL} = 0.\+15
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structTimeDisc_a9f57c8abaf950c0cb32f83df8470b911}\label{structTimeDisc_a9f57c8abaf950c0cb32f83df8470b911}} 
+\index{Time\+Disc@{Time\+Disc}!Time\+Disc@{Time\+Disc}}
+\index{Time\+Disc@{Time\+Disc}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{Time\+Disc()}{TimeDisc()}}
+{\footnotesize\ttfamily Time\+Disc\+::\+Time\+Disc (\begin{DoxyParamCaption}\item[{\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$}]{sd = {\ttfamily nullptr} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structTimeDisc_aabda29cfe58340823c5c3781aeddcd43}\label{structTimeDisc_aabda29cfe58340823c5c3781aeddcd43}} 
+\index{Time\+Disc@{Time\+Disc}!C\+F\+Ldt@{C\+F\+Ldt}}
+\index{C\+F\+Ldt@{C\+F\+Ldt}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{C\+F\+Ldt()}{CFLdt()}}
+{\footnotesize\ttfamily double Time\+Disc\+::\+C\+F\+Ldt (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTimeDisc_aa3ede7163c05fc76a6779306bc284875}\label{structTimeDisc_aa3ede7163c05fc76a6779306bc284875}} 
+\index{Time\+Disc@{Time\+Disc}!Compute\+Draining\+Dt@{Compute\+Draining\+Dt}}
+\index{Compute\+Draining\+Dt@{Compute\+Draining\+Dt}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{Compute\+Draining\+Dt()}{ComputeDrainingDt()}}
+{\footnotesize\ttfamily double Time\+Disc\+::\+Compute\+Draining\+Dt (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTimeDisc_aeff8e840257aa405f1e32ea469312299}\label{structTimeDisc_aeff8e840257aa405f1e32ea469312299}} 
+\index{Time\+Disc@{Time\+Disc}!Get\+Space\+Disc@{Get\+Space\+Disc}}
+\index{Get\+Space\+Disc@{Get\+Space\+Disc}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Space\+Disc()}{GetSpaceDisc()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \hyperlink{structSpaceDisc}{Space\+Disc}$\ast$ Time\+Disc\+::\+Get\+Space\+Disc (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTimeDisc_af58702da70c28c0876f0342b627a5c63}\label{structTimeDisc_af58702da70c28c0876f0342b627a5c63}} 
+\index{Time\+Disc@{Time\+Disc}!Get\+Space\+Disc@{Get\+Space\+Disc}}
+\index{Get\+Space\+Disc@{Get\+Space\+Disc}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{Get\+Space\+Disc()}{GetSpaceDisc()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily const \hyperlink{structSpaceDisc}{Space\+Disc}$\ast$ Time\+Disc\+::\+Get\+Space\+Disc (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{structTimeDisc_a4fbce03e40554045b59958fceda7814d}\label{structTimeDisc_a4fbce03e40554045b59958fceda7814d}} 
+\index{Time\+Disc@{Time\+Disc}!R\+HS@{R\+HS}}
+\index{R\+HS@{R\+HS}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{R\+H\+S()}{RHS()}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_abd9de33944f934950000c3929e14ad8d}{Array}$<$ 3 $>$ Time\+Disc\+::\+R\+HS (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i,  }\item[{double}]{dt }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structTimeDisc_a1997626474c730f7167491fd804b8332}\label{structTimeDisc_a1997626474c730f7167491fd804b8332}} 
+\index{Time\+Disc@{Time\+Disc}!Set\+Space\+Disc@{Set\+Space\+Disc}}
+\index{Set\+Space\+Disc@{Set\+Space\+Disc}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{Set\+Space\+Disc()}{SetSpaceDisc()}}
+{\footnotesize\ttfamily void Time\+Disc\+::\+Set\+Space\+Disc (\begin{DoxyParamCaption}\item[{\hyperlink{structSpaceDisc}{Space\+Disc} $\ast$}]{sd }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structTimeDisc_a474cf65ec7cb4e8dc6367ea8ddc9ac7e}\label{structTimeDisc_a474cf65ec7cb4e8dc6367ea8ddc9ac7e}} 
+\index{Time\+Disc@{Time\+Disc}!m\+\_\+const\+C\+FL@{m\+\_\+const\+C\+FL}}
+\index{m\+\_\+const\+C\+FL@{m\+\_\+const\+C\+FL}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+const\+C\+FL}{m\_constCFL}}
+{\footnotesize\ttfamily const double Time\+Disc\+::m\+\_\+const\+C\+FL = 0.\+15\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structTimeDisc_af66d1003243d283ec075c2b69a795246}\label{structTimeDisc_af66d1003243d283ec075c2b69a795246}} 
+\index{Time\+Disc@{Time\+Disc}!m\+\_\+sd@{m\+\_\+sd}}
+\index{m\+\_\+sd@{m\+\_\+sd}!Time\+Disc@{Time\+Disc}}
+\subsubsection{\texorpdfstring{m\+\_\+sd}{m\_sd}}
+{\footnotesize\ttfamily \hyperlink{structSpaceDisc}{Space\+Disc}$\ast$ Time\+Disc\+::m\+\_\+sd\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{TimeDisc_8h}{Time\+Disc.\+h}\item 
+\hyperlink{TimeDisc_8cpp}{Time\+Disc.\+cpp}\end{DoxyCompactItemize}

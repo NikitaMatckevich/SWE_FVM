@@ -1,0 +1,163 @@
+\hypertarget{structMUSCLObject}{}\section{M\+U\+S\+C\+L\+Object Struct Reference}
+\label{structMUSCLObject}\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+
+
+{\ttfamily \#include $<$M\+U\+S\+C\+L\+Object.\+h$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \& \hyperlink{structMUSCLObject_a9ba24ae90a94c7d80f651ce26053b303}{Get\+Vol\+Field} () noexcept
+\item 
+const \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \& \hyperlink{structMUSCLObject_a8b96302a64cceadec4e0126b68649814}{Get\+Vol\+Field} () const noexcept
+\item 
+const \hyperlink{structBathymetry}{Bathymetry} \& \hyperlink{structMUSCLObject_a4746396c5f8cb793b81ed847e372c71c}{Bath} () const noexcept
+\item 
+const \hyperlink{structTriangMesh}{Triang\+Mesh} \& \hyperlink{structMUSCLObject_a5761f77d8e701b065f3744cb56cae12a}{Mesh} () const noexcept
+\item 
+bool \hyperlink{structMUSCLObject_af28aa29d618bb7a6f18786979e073985}{Is\+Dry\+Cell} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\item 
+bool \hyperlink{structMUSCLObject_ab5ab3fb897dba03533436f88267be94e}{Is\+Full\+Wet\+Cell} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\item 
+bool \hyperlink{structMUSCLObject_a13ae627633d480bdfded994053dad157}{Is\+Part\+Wet\+Cell} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structMUSCLObject_a481dc01556085bc96bea8a87c9ffb80f}{M\+U\+S\+C\+L\+Object} (\hyperlink{structBathymetry}{Bathymetry} \&\&b, const \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&v0)
+\item 
+\hyperlink{structMUSCLObject_a66671ff223b2d645758754ba4122801b}{M\+U\+S\+C\+L\+Object} (\hyperlink{structBathymetry}{Bathymetry} \&\&b, \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&\&v0)
+\item 
+\hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL} \hyperlink{structMUSCLObject_addbf4dabcb3c632f5550cb38db0bd1cd}{Reconstruct\+Dry\+Cell} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\item 
+\hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL} \hyperlink{structMUSCLObject_a529e679b99f1bc7daf3db9aa1389b1fe}{Reconstruct\+Full\+Wet\+Cell} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\item 
+\hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL} \hyperlink{structMUSCLObject_ae56f660d7839258ac68b33e18123e31e}{Reconstruct\+Part\+Wet\+Cell1} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\item 
+\hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+CL} \hyperlink{structMUSCLObject_a3d2b47def9f33ca29cd5789895e64bb8}{Reconstruct\+Part\+Wet\+Cell2} (\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx} i) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structBathymetry}{Bathymetry} \hyperlink{structMUSCLObject_a87718427051d5e31fea3858c534b8616}{m\+\_\+b}
+\item 
+\hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \hyperlink{structMUSCLObject_ab01f05c398ad6379881a5c75401c85e1}{m\+\_\+vol}
+\item 
+\hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$ 1 $>$ \hyperlink{structMUSCLObject_a51fb4420efee42e415b49bca63d40742}{m\+\_\+max\+\_\+wp}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structMUSCLObject_a481dc01556085bc96bea8a87c9ffb80f}\label{structMUSCLObject_a481dc01556085bc96bea8a87c9ffb80f}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{M\+U\+S\+C\+L\+Object()}{MUSCLObject()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily M\+U\+S\+C\+L\+Object\+::\+M\+U\+S\+C\+L\+Object (\begin{DoxyParamCaption}\item[{\hyperlink{structBathymetry}{Bathymetry} \&\&}]{b,  }\item[{const \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&}]{v0 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structMUSCLObject_a66671ff223b2d645758754ba4122801b}\label{structMUSCLObject_a66671ff223b2d645758754ba4122801b}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{M\+U\+S\+C\+L\+Object()}{MUSCLObject()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily M\+U\+S\+C\+L\+Object\+::\+M\+U\+S\+C\+L\+Object (\begin{DoxyParamCaption}\item[{\hyperlink{structBathymetry}{Bathymetry} \&\&}]{b,  }\item[{\hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} \&\&}]{v0 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structMUSCLObject_a4746396c5f8cb793b81ed847e372c71c}\label{structMUSCLObject_a4746396c5f8cb793b81ed847e372c71c}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Bath@{Bath}}
+\index{Bath@{Bath}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Bath()}{Bath()}}
+{\footnotesize\ttfamily const \hyperlink{structBathymetry}{Bathymetry}\& M\+U\+S\+C\+L\+Object\+::\+Bath (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structMUSCLObject_a9ba24ae90a94c7d80f651ce26053b303}\label{structMUSCLObject_a9ba24ae90a94c7d80f651ce26053b303}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Get\+Vol\+Field@{Get\+Vol\+Field}}
+\index{Get\+Vol\+Field@{Get\+Vol\+Field}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Get\+Vol\+Field()}{GetVolField()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field}\& M\+U\+S\+C\+L\+Object\+::\+Get\+Vol\+Field (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structMUSCLObject_a8b96302a64cceadec4e0126b68649814}\label{structMUSCLObject_a8b96302a64cceadec4e0126b68649814}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Get\+Vol\+Field@{Get\+Vol\+Field}}
+\index{Get\+Vol\+Field@{Get\+Vol\+Field}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Get\+Vol\+Field()}{GetVolField()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily const \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field}\& M\+U\+S\+C\+L\+Object\+::\+Get\+Vol\+Field (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structMUSCLObject_af28aa29d618bb7a6f18786979e073985}\label{structMUSCLObject_af28aa29d618bb7a6f18786979e073985}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Is\+Dry\+Cell@{Is\+Dry\+Cell}}
+\index{Is\+Dry\+Cell@{Is\+Dry\+Cell}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Is\+Dry\+Cell()}{IsDryCell()}}
+{\footnotesize\ttfamily bool M\+U\+S\+C\+L\+Object\+::\+Is\+Dry\+Cell (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structMUSCLObject_ab5ab3fb897dba03533436f88267be94e}\label{structMUSCLObject_ab5ab3fb897dba03533436f88267be94e}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Is\+Full\+Wet\+Cell@{Is\+Full\+Wet\+Cell}}
+\index{Is\+Full\+Wet\+Cell@{Is\+Full\+Wet\+Cell}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Is\+Full\+Wet\+Cell()}{IsFullWetCell()}}
+{\footnotesize\ttfamily bool M\+U\+S\+C\+L\+Object\+::\+Is\+Full\+Wet\+Cell (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structMUSCLObject_a13ae627633d480bdfded994053dad157}\label{structMUSCLObject_a13ae627633d480bdfded994053dad157}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Is\+Part\+Wet\+Cell@{Is\+Part\+Wet\+Cell}}
+\index{Is\+Part\+Wet\+Cell@{Is\+Part\+Wet\+Cell}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Is\+Part\+Wet\+Cell()}{IsPartWetCell()}}
+{\footnotesize\ttfamily bool M\+U\+S\+C\+L\+Object\+::\+Is\+Part\+Wet\+Cell (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{structMUSCLObject_a5761f77d8e701b065f3744cb56cae12a}\label{structMUSCLObject_a5761f77d8e701b065f3744cb56cae12a}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Mesh@{Mesh}}
+\index{Mesh@{Mesh}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Mesh()}{Mesh()}}
+{\footnotesize\ttfamily const \hyperlink{structTriangMesh}{Triang\+Mesh}\& M\+U\+S\+C\+L\+Object\+::\+Mesh (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{structMUSCLObject_addbf4dabcb3c632f5550cb38db0bd1cd}\label{structMUSCLObject_addbf4dabcb3c632f5550cb38db0bd1cd}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Reconstruct\+Dry\+Cell@{Reconstruct\+Dry\+Cell}}
+\index{Reconstruct\+Dry\+Cell@{Reconstruct\+Dry\+Cell}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Reconstruct\+Dry\+Cell()}{ReconstructDryCell()}}
+{\footnotesize\ttfamily \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+C\+L\+Object\+::\+M\+U\+S\+CL} M\+U\+S\+C\+L\+Object\+::\+Reconstruct\+Dry\+Cell (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structMUSCLObject_a529e679b99f1bc7daf3db9aa1389b1fe}\label{structMUSCLObject_a529e679b99f1bc7daf3db9aa1389b1fe}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Reconstruct\+Full\+Wet\+Cell@{Reconstruct\+Full\+Wet\+Cell}}
+\index{Reconstruct\+Full\+Wet\+Cell@{Reconstruct\+Full\+Wet\+Cell}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Reconstruct\+Full\+Wet\+Cell()}{ReconstructFullWetCell()}}
+{\footnotesize\ttfamily \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+C\+L\+Object\+::\+M\+U\+S\+CL} M\+U\+S\+C\+L\+Object\+::\+Reconstruct\+Full\+Wet\+Cell (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structMUSCLObject_ae56f660d7839258ac68b33e18123e31e}\label{structMUSCLObject_ae56f660d7839258ac68b33e18123e31e}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Reconstruct\+Part\+Wet\+Cell1@{Reconstruct\+Part\+Wet\+Cell1}}
+\index{Reconstruct\+Part\+Wet\+Cell1@{Reconstruct\+Part\+Wet\+Cell1}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Reconstruct\+Part\+Wet\+Cell1()}{ReconstructPartWetCell1()}}
+{\footnotesize\ttfamily \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+C\+L\+Object\+::\+M\+U\+S\+CL} M\+U\+S\+C\+L\+Object\+::\+Reconstruct\+Part\+Wet\+Cell1 (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structMUSCLObject_a3d2b47def9f33ca29cd5789895e64bb8}\label{structMUSCLObject_a3d2b47def9f33ca29cd5789895e64bb8}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!Reconstruct\+Part\+Wet\+Cell2@{Reconstruct\+Part\+Wet\+Cell2}}
+\index{Reconstruct\+Part\+Wet\+Cell2@{Reconstruct\+Part\+Wet\+Cell2}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{Reconstruct\+Part\+Wet\+Cell2()}{ReconstructPartWetCell2()}}
+{\footnotesize\ttfamily \hyperlink{structMUSCLObject_1_1MUSCL}{M\+U\+S\+C\+L\+Object\+::\+M\+U\+S\+CL} M\+U\+S\+C\+L\+Object\+::\+Reconstruct\+Part\+Wet\+Cell2 (\begin{DoxyParamCaption}\item[{\hyperlink{Includes_8h_ae78891cd308078a2f5f9e7193065c805}{Idx}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structMUSCLObject_a87718427051d5e31fea3858c534b8616}\label{structMUSCLObject_a87718427051d5e31fea3858c534b8616}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!m\+\_\+b@{m\+\_\+b}}
+\index{m\+\_\+b@{m\+\_\+b}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{m\+\_\+b}{m\_b}}
+{\footnotesize\ttfamily \hyperlink{structBathymetry}{Bathymetry} M\+U\+S\+C\+L\+Object\+::m\+\_\+b\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structMUSCLObject_a51fb4420efee42e415b49bca63d40742}\label{structMUSCLObject_a51fb4420efee42e415b49bca63d40742}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!m\+\_\+max\+\_\+wp@{m\+\_\+max\+\_\+wp}}
+\index{m\+\_\+max\+\_\+wp@{m\+\_\+max\+\_\+wp}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{m\+\_\+max\+\_\+wp}{m\_max\_wp}}
+{\footnotesize\ttfamily \hyperlink{Includes_8h_ae7d375db701e28425a3faea2827f134b}{Storage}$<$1$>$ M\+U\+S\+C\+L\+Object\+::m\+\_\+max\+\_\+wp\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{structMUSCLObject_ab01f05c398ad6379881a5c75401c85e1}\label{structMUSCLObject_ab01f05c398ad6379881a5c75401c85e1}} 
+\index{M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}!m\+\_\+vol@{m\+\_\+vol}}
+\index{m\+\_\+vol@{m\+\_\+vol}!M\+U\+S\+C\+L\+Object@{M\+U\+S\+C\+L\+Object}}
+\subsubsection{\texorpdfstring{m\+\_\+vol}{m\_vol}}
+{\footnotesize\ttfamily \hyperlink{ValueField_8h_a329043a10c46a8722ea79ba24fe40f97}{Volume\+Field} M\+U\+S\+C\+L\+Object\+::m\+\_\+vol\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{MUSCLObject_8h}{M\+U\+S\+C\+L\+Object.\+h}\item 
+\hyperlink{MUSCLObject_8cpp}{M\+U\+S\+C\+L\+Object.\+cpp}\end{DoxyCompactItemize}
