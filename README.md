@@ -1,5 +1,4 @@
-SWE_FVM is a tiny finite-volume framework for solving 2D nonlinear shallow water equations with
-source terms. It extensively exploits the ideas from the article [Liu et al.,
+__SWE_FVM__ extensively exploits the ideas from the article [Liu et al.,
 2018](https://www.sciencedirect.com/science/article/pii/S0021999118304996) to
 build a robust positivity-preserving well-balanced interpolation of the unknown
 fields.
@@ -11,15 +10,13 @@ To build the project, you will need:
 
 Simply clone this repository to your machine and run Cmake:
 
+```
 $ mkdir build
-
 $ cd build 
-
 $ cmake -DCMAKE_BUILD_TYPE=Debug .. # or =Release
-
 $ make
-
-You will get the executable called SWE_FVM in your build directory. Change the
+```
+You will get the executable called SWE_FVM in your _build_ directory. Change the
 behavior of the program as you want by modyfying the src/Main.cpp.
 
 Program supports the input from .ini files. Simply add something like
@@ -31,4 +28,3 @@ src/Fluxes.cpp and src/Solvers.cpp, respectively).
 The author of the code apologizes for the amount of provided Doxygen
 [documentation](https://nikitamatckevich.github.io/SWE_FVM/). It will be
 detailed as soon as possible.
- 
