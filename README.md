@@ -14,12 +14,13 @@ $ cd build
 $ cmake -DCMAKE_BUILD_TYPE=Debug .. # or =Release
 $ make
 ```
-You will get the executable called SWE_FVM in your _build_ directory. Change the
-behavior of the program as you want by modyfying the src/Main.cpp.
+You will get the executable called SWE_FVM in your _build_ directory.
 
-Program supports the input from .ini files.
+Program supports the parameter input from standard .ini files. Also it is able to read .msh files provided by [Gmsh](https://gmsh.info) version >= 4.1. 
 
 New flux discretizations, as well as time discretizations, can be added to the framework very simply.
+
+The [Eigen](https://eigen.tuxfamily.org) library is used for algebraic operations. 
 
 The author of the code apologizes for the amount of provided Doxygen
 [documentation](https://nikitamatckevich.github.io/SWE_FVM/). It will be
