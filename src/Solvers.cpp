@@ -13,6 +13,25 @@ void Euler(TimeDisc * const td, double dt) {
 	}
 }
 
+void SSPRK2(TimeDisc * const td, double dt) {
+	SpaceDisc* sd = td->GetSpaceDisc();
+	const auto& m = sd->Mesh();
+
+  sd->ComputeInterfaceValues();
+  sd->ComputeFluxes();
+  const VolumeField U0 = sd->GetVolField();
+	for (size_t i = 0; i < m.NumTriangles(); ++i) {
+		sd->GetVolField().cons(i) = U0.cons(i) + td->RHS(i, dt);
+	}
+  
+  sd->ComputeInterfaceValues();
+  sd->ComputeFluxes();
+  const VolumeField& U1 = sd->GetVolField();
+  for (size_t i = 0; i < m.NumTriangles(); ++i) {
+		sd->GetVolField().cons(i) = 0.5 * U0.cons(i) + 0.5 * U1.cons(i) + td->RHS(i, 0.5 * dt);
+	}
+}
+
 void SSPRK3(TimeDisc * const td, double dt) {
 	SpaceDisc* sd = td->GetSpaceDisc();
 	const auto& m = sd->Mesh();

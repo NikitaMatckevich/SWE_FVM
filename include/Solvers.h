@@ -4,6 +4,7 @@
 namespace Solvers {
 
 void Euler(TimeDisc * const td, double dt);
+void SSPRK2(TimeDisc * const td, double dt);
 void SSPRK3(TimeDisc * const td, double dt);
 
 }
