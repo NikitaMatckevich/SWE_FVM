@@ -1,9 +1,8 @@
 #pragma once
-#include "Bathymetry.h"
+#include <Bathymetry.h>
 
 template <class Derived, size_t k>
-struct BaseAssigner {
-	
+struct BaseAssigner {	
 	BaseAssigner(Storage<k>* field, double b, Idx col)
 		: m_field(field), m_b(b), m_col(col) {}
 	
@@ -19,21 +18,23 @@ struct BaseAssigner {
 	void operator/=(double scalar) {
 		if (scalar == 0.) {
 			throw std::runtime_error("Division by zero when writing in value field in conservative form");
-    }
+        }
 		Child().operator*=(1. / scalar);
 	}
 
- protected:
+protected:
 	Storage<k>* const m_field;
 	double m_b;
 	Idx m_col;
 
-	const double m_eta_1 = 1e-3;
-	const double m_eta_2 = 1e-6;
-	const double m_eta_4 = 1e-12;
+	static constexpr const double m_eta_1 = 1e-3;
+	static constexpr const double m_eta_2 = 1e-6;
+	static constexpr const double m_eta_4 = 1e-12;
 
- private:	
-  inline Derived& Child() { return static_cast<Derived&>(*this); }
+private:	
+    inline Derived& Child() {
+        return static_cast<Derived&>(*this);
+    }
 };
 
 struct PrimAssigner : BaseAssigner<PrimAssigner, 3> {

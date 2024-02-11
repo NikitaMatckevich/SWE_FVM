@@ -1,7 +1,7 @@
 #pragma once
 
 // use Eigen library dense array/matrix objects:
-#include "eigen/Eigen/Dense"
+#include <Eigen/Dense>
 
 namespace Eigen {
   using Array23d  = Array<double, 2, 3>;
