@@ -33,7 +33,7 @@ bool MUSCLObject::IsPartWetCell(Idx i) const {
 MUSCLObject::MUSCL MUSCLObject::ReconstructDryCell(Idx i) const {
   Eigen::Matrix32d grad = Eigen::Matrix32d::Zero();
   grad.row(0) = Bath().Gradient(i).matrix().transpose();
-  return MUSCL{Bath(), Array<3>{m_vol.b(i), 0., 0.}, grad, i};
+  return MUSCL{&Bath(), Array<3>{m_vol.b(i), 0., 0.}, grad, i};
 }
 
 MUSCLObject::MUSCL MUSCLObject::ReconstructFullWetCell(Idx i) const {
@@ -52,7 +52,7 @@ MUSCLObject::MUSCL MUSCLObject::ReconstructFullWetCell(Idx i) const {
 			grad_values.col(k) = m_vol.prim(it[k]).matrix();
 		}
 		else if (IsDryCell(it[k])) {
-      return MUSCL{Bath(), m_vol.prim(i), Eigen::Matrix32d::Zero(), i};
+      return MUSCL{&Bath(), m_vol.prim(i), Eigen::Matrix32d::Zero(), i};
     }
     else {
       const auto reco = ReconstructPartWetCell1(it[k]);
@@ -79,7 +79,7 @@ MUSCLObject::MUSCL MUSCLObject::ReconstructFullWetCell(Idx i) const {
 		TVD = ((vtmin <= vek) && (vek <= vtmax)).select(TVD, Array<3>::Zero());
 	}
 	
-  return MUSCL{Bath(), m_vol.prim(i), TVD.matrix().asDiagonal() * df, i};
+  return MUSCL{&Bath(), m_vol.prim(i), TVD.matrix().asDiagonal() * df, i};
 }
 
 MUSCLObject::MUSCL MUSCLObject::ReconstructPartWetCell1(Idx i) const {
@@ -110,7 +110,7 @@ MUSCLObject::MUSCL MUSCLObject::ReconstructPartWetCell1(Idx i) const {
 		w_rec = Bisection(CubicPoly(c, b, a), /* find from */ b12, /* to */ b13);
 	}
 
-  return MUSCL{Bath(), Array<3>{w_rec, m_vol.u(i), m_vol.v(i)}, Eigen::Matrix32d::Zero(), i};
+  return MUSCL{&Bath(), Array<3>{w_rec, m_vol.u(i), m_vol.v(i)}, Eigen::Matrix32d::Zero(), i};
 }
 
 MUSCLObject::MUSCL MUSCLObject::ReconstructPartWetCell2(Idx i) const {
@@ -179,5 +179,5 @@ MUSCLObject::MUSCL MUSCLObject::ReconstructPartWetCell2(Idx i) const {
   Eigen::Matrix32d grad = Eigen::Matrix32d::Zero();
   grad.row(0) = grad_values * GradientCoefs(grad_points);
   double wt = w23 + grad.row(0) * (m.T(i) - m.P(ip[0])).matrix();
-  return MUSCL{Bath(), Array<3>{wt, m_vol.u(i), m_vol.v(i)}, grad, i};
+  return MUSCL{&Bath(), Array<3>{wt, m_vol.u(i), m_vol.v(i)}, grad, i};
 }

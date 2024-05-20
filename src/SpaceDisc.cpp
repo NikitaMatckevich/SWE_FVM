@@ -1,4 +1,5 @@
 #include <SpaceDisc.h>
+#include <memory>
 
 SpaceDisc::SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, const VolumeField& v0, double cor, double tau)
   : MUSCLObject(std::move(b), v0)
@@ -40,24 +41,25 @@ void SpaceDisc::UpdateInterfaceValues(const MUSCL& muscl) {
   }
 }
 
-void SpaceDisc::ComputeInterfaceValues() {
-		
-	m_max_wp = Bath().Buff();
+void SpaceDisc::ComputeInterfaceValues() {		
+  m_max_wp = Bath().Buff();
   const auto& m = Mesh();
 	
   for (size_t i = 0; i < m.NumTriangles(); ++i) {
-		if (IsDryCell(i))
-			UpdateInterfaceValues(ReconstructDryCell(i));
-		else if (!IsFullWetCell(i))
-			UpdateInterfaceValues(ReconstructPartWetCell1(i));
-    else
+	if (IsDryCell(i)) {
+	    UpdateInterfaceValues(ReconstructDryCell(i));
+    } else if (!IsFullWetCell(i)) {
+	    UpdateInterfaceValues(ReconstructPartWetCell1(i));
+    } else {
       UpdateInterfaceValues(ReconstructFullWetCell(i));
 	}
+  }
  
   for (size_t i = 0; i < m.NumTriangles(); ++i) {
-		if (IsPartWetCell(i))
-			UpdateInterfaceValues(ReconstructPartWetCell2(i));
-	}
+    if (IsPartWetCell(i)) {
+	  UpdateInterfaceValues(ReconstructPartWetCell2(i));
+    }
+  }
 }
 
 void SpaceDisc::ComputeFluxes() {
@@ -83,100 +85,65 @@ void SpaceDisc::ComputeFluxes() {
   }
 }
 
-Array<3> SpaceDisc::ComputeIntegrals() {
-
+Array<3> ComputeIntegrals(const SpaceDisc& sd) {
   Array<3> res = Array<3>::Zero();
-  const auto& m = Mesh();
+  const auto& m = sd.Mesh();
   const size_t n = m.NumTriangles();
 
   for (size_t i = 0; i < n; ++i) {
-    if (IsPartWetCell(i))
-      UpdateInterfaceValues(ReconstructPartWetCell1(i));
-		if (IsFullWetCell(i)) {
-      double h = m_vol.h(i);
-      double b = m_vol.b(i);
-      double u = m_vol.u(i);
-      double v = m_vol.v(i);
+	if (sd.IsFullWetCell(i)) {
+      double h = sd.GetVolField().h(i);
+      double b = sd.GetVolField().b(i);
+      double u = sd.GetVolField().u(i);
+      double v = sd.GetVolField().v(i);
       res += m.Area(i) * Array<3>{h, 0.5 * h * (u * u + v * v), 0.5 * h * h + h * b};
-			UpdateInterfaceValues(ReconstructFullWetCell(i));
-    }
-	}
-
-  for (size_t i = 0; i < n; ++i) {
-		if (IsPartWetCell(i)) {
-      MUSCL muscl = ReconstructPartWetCell2(i);
+    } else if (sd.IsPartWetCell(i)) {
+      const MUSCLObject::MUSCL muscl = sd.ReconstructPartWetCell2(i);
       const auto& ip = m.TriangPoints(i);
-      res[0] += m.Area(i) * m_vol.h(i);
+      res[0] += m.Area(i) * sd.GetVolField().h(i);
       res.tail<2>() += m.Area(i) * TriangAverage<2,10>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), [&](const Point& p) {
         Array<3> z = muscl.AtPoint(p);
-        double b = Bath().AtPoint(muscl.OriginId(), p);
+        double b = sd.Bath().AtPoint(muscl.OriginId(), p);
         double h = z[0] - b;
         Array<2> res = Array<2>{ 0.5 * h * (z[1] * z[1] + z[2] * z[2]), 0.5 * h * h + h * b};
         return res;
       });
     }
-	}
+  }
 
   return res;
 }
 
-Storage<3> SpaceDisc::CompareWith(const Test& test, double t) {
-
-  m_max_wp = Bath().Buff();
-  const auto& m = Mesh();
+Storage<3> Compare(const SpaceDisc& sd, const Test& test, double t) {
+  const auto& m = sd.Mesh();
   const size_t n = m.NumTriangles();
 
   Storage<3> errL2;
   errL2.resize(Eigen::NoChange, n);
-  	
-  for (size_t i = 0; i < n; ++i) {
-		if (IsDryCell(i)) {
-      MUSCL muscl = ReconstructDryCell(i);
-      const auto& ip = m.TriangPoints(i);
-      errL2.col(i) = TriangAverage<3,1>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), [&](const Point& p) {
-        double b = Bath().AtPoint(muscl.OriginId(), p);
-        Array<3> U = Array<3>{ test.w(p[0], p[1], t), test.hu(p[0], p[1], t), test.hv(p[0], p[1], t) };
-        Array<3> V = muscl.AtPoint(p);
-        V.tail<2>() *= (V[0] -  b);
-        Array<3> res = (U - V).abs();
-        return res;
-      });
-			UpdateInterfaceValues(muscl);
-    }
-		else if (!IsFullWetCell(i))
-			UpdateInterfaceValues(ReconstructPartWetCell1(i));
-	}
+  std::aligned_storage_t<sizeof(MUSCLObject::MUSCL), alignof(MUSCLObject::MUSCL)> data;
+  MUSCLObject::MUSCL* muscl = nullptr;
+  auto comparator = [&](const Point& p) {
+    double b = sd.Bath().AtPoint(muscl->OriginId(), p);
+    Array<3> U = Array<3>{ test.w(p[0], p[1], t), test.hu(p[0], p[1], t), test.hv(p[0], p[1], t) };
+    Array<3> V = muscl->AtPoint(p);
+    V.tail<2>() *= (V[0] - b);
+    Array<3> res = (U - V).abs();
+    return res;
+  };
 
   for (size_t i = 0; i < n; ++i) {
-		if (IsFullWetCell(i)) {
-      MUSCL muscl = ReconstructFullWetCell(i);
-      const auto& ip = m.TriangPoints(i);
-      errL2.col(i) = TriangAverage<3,1>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), [&](const Point& p) {
-        double b = Bath().AtPoint(muscl.OriginId(), p);
-        Array<3> U = Array<3>{ test.w(p[0], p[1], t), test.hu(p[0], p[1], t), test.hv(p[0], p[1], t) };
-        Array<3> V = muscl.AtPoint(p);
-        V.tail<2>() *= (V[0] - b);
-        Array<3> res = (U - V).abs();
-        return res;
-      });
-			UpdateInterfaceValues(muscl);
+    const auto& ip = m.TriangPoints(i);
+    if (sd.IsFullWetCell(i)) {
+      muscl = new (&data) MUSCLObject::MUSCL {sd.ReconstructFullWetCell(i)};
+      errL2.col(i) = TriangAverage<3,1>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), comparator);
+    } else if (sd.IsPartWetCell(i)) {
+      muscl = new (&data) MUSCLObject::MUSCL {sd.ReconstructPartWetCell2(i)};
+      errL2.col(i) = TriangAverage<3,100>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), comparator);
+    } else {
+      muscl = new (&data) MUSCLObject::MUSCL {sd.ReconstructDryCell(i)};
+      errL2.col(i) = TriangAverage<3,1>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), comparator);
     }
-	}
-
-  for (size_t i = 0; i < n; ++i) {
-		if (IsPartWetCell(i)) {
-      MUSCL muscl = ReconstructPartWetCell2(i);
-      const auto& ip = m.TriangPoints(i);
-      errL2.col(i) = TriangAverage<3,100>(m.P(ip[0]), m.P(ip[1]), m.P(ip[2]), [&](const Point& p) {
-        double b = Bath().AtPoint(muscl.OriginId(), p);
-        Array<3> U = Array<3>{ test.w(p[0], p[1], t), test.hu(p[0], p[1], t), test.hv(p[0], p[1], t) };
-        Array<3> V = muscl.AtPoint(p);
-        V.tail<2>() *= (V[0] - b);
-        Array<3> res = (U - V).abs();
-        return res;
-      });
-    }
-	}
+ }
 
   return errL2;
 }

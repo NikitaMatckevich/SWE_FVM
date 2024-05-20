@@ -1,4 +1,4 @@
 build/**
-include/eigen/**
+venv/**
 .clang-tidy
 run-clang-tidy.py

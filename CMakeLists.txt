@@ -8,7 +8,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer
 
 FetchContent_Declare(Eigen3
     GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-    GIT_TAG 3.4)
+    GIT_TAG 3.4
+    GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Eigen3)
 
 message(STATUS "Current build type: ${CMAKE_BUILD_TYPE}")
@@ -22,4 +23,4 @@ message(${SRC})
 include_directories("include")
 
 add_executable(SWE_FVM ${SRC})
-target_link_libraries(SWE_FVM Eigen3::Eigen)
+target_link_libraries(SWE_FVM PRIVATE Eigen3::Eigen) 

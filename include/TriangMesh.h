@@ -14,7 +14,7 @@ struct TriangMesh {
   TriangMesh() = default; // TODO(nikitamatckevich): delete this
   TriangMesh(TriangMesh&& other) = default;
   TriangMesh(const TriangMesh& other) = delete;
-  TriangMesh(std::string const& filename);
+  TriangMesh(const std::string& filename);
 
   // TOPOLOGY SECTION
   inline size_t NumNodes() const { return m_p.row(0).size(); }
@@ -40,10 +40,10 @@ struct TriangMesh {
   Point T(NodeTag i) const;
   Point E(NodeTag i) const;
   Point C(NodeTag i) const;
-  PointArray P(NodeTagArray const& i) const;
-  PointArray T(NodeTagArray const& i) const;
-  PointArray E(NodeTagArray const& i) const;
-  PointArray C(NodeTagArray const& i) const;
+  PointArray P(const NodeTagArray& i) const;
+  PointArray T(const NodeTagArray& i) const;
+  PointArray E(const NodeTagArray& i) const;
+  PointArray C(const NodeTagArray& i) const;
 
   Eigen::Vector2d Tang(NodeTag ie, NodeTag it) const;
   Eigen::Vector2d Norm(NodeTag ie, NodeTag it) const;
@@ -64,6 +64,6 @@ struct TriangMesh {
   TriangTagArray m_triang_triangs; // triangles of each triangle
 };
 
-double MaxTriangArea(TriangMesh const&);
+double MaxTriangArea(const TriangMesh&);
 
-void Info(std::ostream&, TriangMesh const&);
+void Info(std::ostream&, const TriangMesh&);

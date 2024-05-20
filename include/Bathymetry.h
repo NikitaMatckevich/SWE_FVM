@@ -2,13 +2,16 @@
 #include <PointOperations.h>
 #include <TriangMesh.h>
 
-consteval bool IsWet(double h) noexcept;
+constexpr inline bool IsWet(double h) noexcept {
+  constexpr double h_min = 1e-12; // minimal posible water depth of "wet" cell  
+  return h > h_min;
+}
 
 Array<3> DryState(double b) noexcept;
 
 struct Bathymetry {
   
-    explicit Bathymetry(TriangMesh* m);
+    explicit Bathymetry(const TriangMesh* m);
 
     inline const TriangMesh& Mesh() const { return *m_m; }
     inline const Storage<1>& Buff() const { return m_b; }
@@ -21,7 +24,7 @@ struct Bathymetry {
     Array<2> Gradient(Idx n) const;
 
 private:
-    TriangMesh *const m_m;
+    const TriangMesh *const m_m;
     Storage<1> m_b;
 
 public:

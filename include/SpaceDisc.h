@@ -23,36 +23,31 @@ inline Array<3> ElemFlux(const Eigen::Vector2d& n, const Array<3>& U) {
 
 struct SpaceDisc : MUSCLObject {
 
-  using Fluxer = std::function<Array<3>(SpaceDisc* const, Idx, Idx, Idx, double*)>;
+    using Fluxer = std::function<Array<3>(SpaceDisc* const, Idx, Idx, Idx, double*)>;
 
 	SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, const VolumeField& v0, double cor = 0, double tau = 0);
 	SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, VolumeField&& v0, double cor = 0, double tau = 0);
   
 	inline const EdgeField& GetEdgField() const noexcept { return m_edg; }
 	inline const EdgeField& GetSrcField() const noexcept { return m_src; }
-  inline const Storage<3>&  GetFluxes() const noexcept { return m_f; }
-  inline const double GetTau() const noexcept { return m_tau; }
+    inline const Storage<3>& GetFluxes() const noexcept { return m_f; }
+    inline const double GetTau() const noexcept { return m_tau; }
 	inline const double GetCor() const noexcept { return m_cor; }
-  inline const double GetMinLenToWavespeed() const noexcept { return m_min_length_to_wavespeed; }	
+    inline const double GetMinLenToWavespeed() const noexcept { return m_min_length_to_wavespeed; }	
 
-  void ComputeInterfaceValues();
+    void ComputeInterfaceValues();
 	void ComputeFluxes();
 
-  Array<3> ComputeIntegrals();
+ protected:	
+    void UpdateInterfaceValues(const MUSCL& muscl);
 
-  Storage<3> CompareWith(const Test& test, double t);
-	
- protected:
-	
-  void UpdateInterfaceValues(const MUSCL& muscl);
-
-  EdgeField   m_edg;
+    EdgeField   m_edg;
 	EdgeField   m_src;
-  Storage<3>  m_f;
-  Fluxer 		  m_fluxer;
+    Storage<3>  m_f;
+    Fluxer 		  m_fluxer;
   
-	double       m_min_length_to_wavespeed;
-  const double m_min_wavespeed_to_capture = 1e-10;
-  const double m_cor; // rotational force parameter
-  const double m_tau; // bottom friction parameter
+    double       m_min_length_to_wavespeed;
+    const double m_min_wavespeed_to_capture = 1e-10;
+    const double m_cor; // rotational force parameter
+    const double m_tau; // bottom friction parameter
 };

@@ -36,12 +36,10 @@ Array<3> TimeDisc::RHS(Idx i, double dt) const {
   
   //res -= dt * s.prim(i) * vol.h(i);
   //res.tail<2>() -= dt * m_sd->Bath().Gradient(i) * vol.h(i);
-
   return res;
 }
 
 double TimeDisc::ComputeDrainingDt(Idx i) const {
-
   if (i < 0)
     return std::numeric_limits<double>::infinity(); 
 

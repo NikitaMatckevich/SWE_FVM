@@ -170,6 +170,7 @@ TriangMesh::TriangMesh(const string& filename) {
 }
 
 using namespace Eigen;
+
 #include "PointOperations.h"
 
 using NodeTag = TriangMesh::NodeTag;

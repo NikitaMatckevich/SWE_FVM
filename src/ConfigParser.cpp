@@ -3,20 +3,18 @@
 
 using namespace std;
 
-namespace {
+static void Trim(string& s) {
+  s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return !isspace(ch); }));
+  s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return !isspace(ch); }).base(), s.end());
+}
 
-  void Trim(string& s) {
-    s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return !isspace(ch); }));
-    s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return !isspace(ch); }).base(), s.end());
-  }
-  bool IsComment(const string& line) {
-    return line.size() == 0 || line.at(0) == '#' || line.at(0) == ';';
-  }
-  bool IsSection(const string& line) {
-    return line.at(0) == '[' && line.back() == ']' && line.size() > 2;
-  }
+static bool IsComment(const string& line) {
+  return line.size() == 0 || line.at(0) == '#' || line.at(0) == ';';
+}
 
-}  // namespace
+static bool IsSection(const string& line) {
+  return line.at(0) == '[' && line.back() == ']' && line.size() > 2;
+}
 
 Parser::Parser(const string& filename) {
 
@@ -24,9 +22,10 @@ Parser::Parser(const string& filename) {
 
   ifstream file(filename);
 
-  if (!file.good())
+  if (!file.good()) {
     throw ParserError("no file with a name " + filename + " found by parser");
-  
+  }
+
   unsigned int ctr = 0;
   string line;
   string section;

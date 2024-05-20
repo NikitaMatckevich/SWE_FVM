@@ -4,17 +4,15 @@
 #include <Solvers.h>
 #include <Tests.h>
 
-#include <omp.h>
-
 #include <cmath>
 #include <iostream>
 #include <iomanip>
 
-void TestAll();
+void testAll();
 
 int main() {
   try {
-    TestAll();
+    testAll();
     return 0;
   }
   catch (const ParserError& e) {
@@ -46,6 +44,7 @@ int main() {
   return -1;
 }
 
+/*
 Array<3> OutputL2Errors(const TriangMesh& m, const Storage<3>& err, const std::string& filename) {
 
   std::ofstream fout(filename);
@@ -61,39 +60,19 @@ Array<3> OutputL2Errors(const TriangMesh& m, const Storage<3>& err, const std::s
   fout.close();
   return sum.sqrt();
 }
+*/
 
-void DumpFields(const SpaceDisc& sd, const std::string& filename) {
-
+void dumpFields(const SpaceDisc& sd, const std::string& filename) {
   std::ofstream fout(filename);
-	fout << "x\ty\th\tw\tu\tv\thu\thv\tb\tis full. wet?\tis part. wet?\tis dry?\n";
-	
   const auto& vol = sd.GetVolField();
   const auto& m = sd.Mesh();
-
-	for (size_t i = 0; i < m.NumTriangles(); i++) {
-		
-		const auto& t = m.T(i);
-		const auto& ie = m.TriangEdges(i);
-		const auto& it = m.TriangTriangs(i);
-
-		fout << t[0] << '\t' << t[1] << '\t';
-		fout << vol.h(i) << '\t' << vol.w(i) << '\t';
-		fout << vol.u(i)  << '\t' << vol.v(i) << '\t'; 
-		fout << vol.hu(i) << '\t' << vol.hv(i) << '\t';
-		fout << vol.b(i)  << '\t';
-
-		if (sd.IsFullWetCell(i))
-			fout << "1\t0\t0";
-		else if (sd.IsDryCell(i))
-			fout << "0\t0\t1";
-		else
-			fout << "0\t1\t0";
-		fout << '\n';
-	}
-
-	fout.close();
+  for (size_t i = 0; i < m.NumTriangles(); i++) {
+    fout << vol.w(i) << '\t' << vol.hu(i) << '\t' << vol.hv(i) << '\n';
+  }
+  fout.close();
 }
 
+/*
 void DumpIntegrals(double t, const Array<3>& ints, const std::string& filename) {
   std::ofstream fout(filename, std::ios_base::app);
   fout << t << ints.transpose() << ' ' << ints[1] + ints[2] << '\n';
@@ -142,14 +121,63 @@ void TestValueFields() {
   ue.vel (0, 0, 1) = Array<2>{ 2., 3. };
   std::cout << ue.prim(0, 0, 1).Get() << std::endl;
 }
+*/
 
-void TestGaussWave() {
+void dumpGeometry(const Bathymetry& b, const std::string& geometryFile) {
+  std::ofstream fout(geometryFile);
+  const auto& m = b.Mesh();
+  for (size_t i = 0; i < m.NumTriangles(); i++) {
+    const auto& t = m.T(i);
+    fout << t[0] << '\t' << t[1] << '\t' << b.AtPoint(i, t) << '\n';
+  }
+  fout.close();  
+}
 
-  Bathymetry b{StructTriangMesh{ 80, 80, 0.1 }};
+void dumpGeometry2(const Bathymetry& b, const std::string& geometryFile) {
+  std::ofstream fout(geometryFile);
+  const auto& m = b.Mesh();
+  for (size_t i = 0; i < m.NumNodes(); i++) {
+    const auto& p = m.P(i);
+    fout << p[0] << '\t' << p[1] << '\t' << b.AtNode(i) << '\n';
+  }
+  fout.close();  
+}
 
+void dumpTopology(const Bathymetry& b, const std::string& topologyFile) {
+  std::ofstream fout(topologyFile);
+  const auto& m = b.Mesh();
+  fout << m.NumEdges() << '\n';
+  for (size_t i = 0; i < m.NumEdges(); i++) {
+    const auto& ep = m.EdgePoints(i);
+    const auto& et = m.EdgeTriangs(i);
+    fout << ep[0] << '\t' << ep[1] << '\t' << et[0] << '\t' << et[1] << '\n';
+  }
+  fout << m.NumTriangles() << '\n';
+  for (size_t i = 0; i < m.NumTriangles(); i++) {
+    const auto& tp = m.TriangPoints(i);
+    const auto& te = m.TriangEdges(i);
+    const auto& tt = m.TriangTriangs(i);
+    fout << tp[0] << '\t' << tp[1] << '\t' << tp[2] << '\t';
+    fout << te[0] << '\t' << te[1] << '\t' << te[2] << '\t';
+    fout << tt[0] << '\t' << tt[1] << '\t' << tt[2] << '\n';
+  }
+  fout.close();
+}
+
+void dumpDomain(const Bathymetry& b, const std::string& geometryFile, const std::string& topologyFile) {
+  dumpGeometry2(b, geometryFile);
+  dumpTopology(b, topologyFile);
+}
+
+void testGaussWave() {
+
+  TriangMesh m("../examples/bowl.msh" );
+  Bathymetry b(&m);
   for (size_t i = 0; i < b.Size(); i++) {
     b.AtNode(i) = 0.;
   }
+
+  dumpDomain(b, "geometry.dat", "topology.dat");
 
   VolumeField v0{ b, b.Mesh().NumTriangles() };
   for (size_t i = 0; i < b.Mesh().NumTriangles(); ++i) {
@@ -157,15 +185,16 @@ void TestGaussWave() {
     v0.prim(i) = Array<3>{ 1. + exp(-5. * r), 0., 0. };
   }
 
-	SpaceDisc sd{Fluxes::HLL<Wavespeeds::Einfeldt>, std::move(b), std::move(v0)};
-	TimeDisc td{&sd};
+  SpaceDisc sd{Fluxes::HLL<Wavespeeds::Einfeldt>, std::move(b), std::move(v0)};
+  TimeDisc td{&sd};
 
-	double dt = 0.001;
-	DumpFields(sd, "out0.dat");
-	Solvers::Euler(&td, dt);
-	DumpFields(sd, "out1.dat");
+  double dt = 0.001;
+  dumpFields(sd, "out0.dat");
+  Solvers::Euler(&td, dt);
+  dumpFields(sd, "out1.dat");
 }
 
+/*
 Array<3> Process(const Test& test, size_t n, double l, double t_end, double cor = 0., double tau = 0.) {
 
   Bathymetry bathymetry{StructTriangMesh{ n, n, l / n }};
@@ -342,9 +371,10 @@ void TestLakeAtRest() {
   printf("\n");
   std::cout << errL2 << std::endl; 
 }
+*/
 
-void TestAll() {
-  //Info(std::cout, mesh);
+void testAll() {
+  testGaussWave();
 	//testValueFields();
   //testGaussWave();
 	//TestConvergence();
