@@ -2,8 +2,8 @@
 #include <Exceptions.h>
 #include <Includes.h>
 
-using Point = Array<2>;
-using PointArray = Storage<2>;
+using Point = Array<3>;
+using PointArray = Storage<3>;
 
 double Len(const Point& a, const Point& b) noexcept;
 double Det(const Point& a, const Point& b) noexcept;

@@ -9,15 +9,21 @@ using NodeTagArray   = Eigen::Array<Idx, 1, Eigen::Dynamic, Eigen::RowMajor>;
 using EdgeTagArray   = Eigen::Array<Idx, Eigen::Dynamic, 2, Eigen::RowMajor>;
 using TriangTagArray = Eigen::Array<Idx, Eigen::Dynamic, 3, Eigen::RowMajor>;
 
-struct TriangMesh {
+struct Topology {
   using NodeTag = Idx;
-  TriangMesh() = default; // TODO(nikitamatckevich): delete this
-  TriangMesh(TriangMesh&& other) = default;
-  TriangMesh(const TriangMesh& other) = delete;
-  TriangMesh(const std::string& filename);
 
-  // TOPOLOGY SECTION
-  inline size_t NumNodes() const { return m_p.row(0).size(); }
+  Topology(Topology&& other) = default;
+  Topology(const Topology& other) = delete;
+
+  Topology(
+          const Eigen::Ref<NodeTagArray> nodes,
+          const Eigen::Ref<EdgeTagArray> edgeNodes,
+          const Eigen::Ref<EdgeTagArray> edgeElements,
+          const Eigen::Ref<TriangTagArray> elementNodes,
+          const Eigen::Ref<TriangTagArray> elementEdges,
+          const Eigen::Ref<TriangTagArray> elementNeighbours);
+
+  inline size_t NumNodes() const { return m_nodes.row(0).size(); }
   inline size_t NumEdges() const { return m_edge_points.col(0).size(); }
   inline size_t NumTriangles() const { return m_triang_points.col(0).size(); }
 
@@ -30,40 +36,18 @@ struct TriangMesh {
   TriangTag TriangTriangs(NodeTag i) const;
   bool IsTriangleBoundary(NodeTag i) const;
 
-  // GEOMETRY SECTION
-  inline double MinX() const { return m_p.row(0).minCoeff(); }
-  inline double MaxX() const { return m_p.row(0).maxCoeff(); }
-  inline double MinY() const { return m_p.row(1).minCoeff(); }
-  inline double MaxY() const { return m_p.row(1).maxCoeff(); }
+private:
+  const NodeTagArray   m_nodes;         // mesh nodes
+  const EdgeTagArray   m_edge_points;   // ends of each edge
+  const EdgeTagArray   m_edge_triangs;  // triangle pairs that have 1 edge in common
+                                        // some special types are used for boundary
+                                        // edge's "ghost cells"
 
-  Point P(NodeTag i) const;
-  Point T(NodeTag i) const;
-  Point E(NodeTag i) const;
-  Point C(NodeTag i) const;
-  PointArray P(const NodeTagArray& i) const;
-  PointArray T(const NodeTagArray& i) const;
-  PointArray E(const NodeTagArray& i) const;
-  PointArray C(const NodeTagArray& i) const;
-
-  Eigen::Vector2d Tang(NodeTag ie, NodeTag it) const;
-  Eigen::Vector2d Norm(NodeTag ie, NodeTag it) const;
-  double L(NodeTag ie) const;
-  double Area(NodeTag it) const;
- 
- protected: // TODO(nikitamatckevich): make private
-  PointArray     m_p;              // vertices of mesh elements
-
-  EdgeTagArray   m_edge_points;    // ends of each edge
-
-  EdgeTagArray   m_edge_triangs;   // triangles that have edge in common
-                                  // some special types are used for boundary
-                                  // edge's "ghost cells"
-
-  TriangTagArray m_triang_points;  // points of each triangle
-  TriangTagArray m_triang_edges;   // edges of each triangle
-  TriangTagArray m_triang_triangs; // triangles of each triangle
+  const TriangTagArray m_triang_points;  // points of each triangle
+  const TriangTagArray m_triang_edges;   // edges of each triangle
+  const TriangTagArray m_triang_triangs; // triangles of each triangle
 };
 
-double MaxTriangArea(const TriangMesh&);
+double MaxTriangArea(const Topology&);
 
-void Info(std::ostream&, const TriangMesh&);
+void Info(std::ostream&, const Topology&);

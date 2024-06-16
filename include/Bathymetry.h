@@ -7,32 +7,50 @@ constexpr inline bool IsWet(double h) noexcept {
   return h > h_min;
 }
 
-Array<3> DryState(double b) noexcept;
+Point DryState(double b) noexcept;
 
-struct Bathymetry {
+struct Domain {
+    using NodeTag = Topology::NodeTag;
+
+    Domain(const Eigen::Ref<PointArray>& geometry, const Topology& topology);
+
+    inline const Topology& GetTopology() const noexcept { return m_topology; }
+    inline const Eigen::Ref<PointArray>& GetGeometry() const { return m_geometry; }
+    inline size_t Size() const { return m_geometry.size(); }
+   
+    inline double MinX() const { return m_geometry.row(0).minCoeff(); }
+    inline double MaxX() const { return m_geometry.row(0).maxCoeff(); }
+    inline double MinY() const { return m_geometry.row(1).minCoeff(); }
+    inline double MaxY() const { return m_geometry.row(1).maxCoeff(); }
+    double Z(NodeTag t, double x, double y) const;
+    
+    Point P(NodeTag p) const;
+    Point T(NodeTag t) const;
+    Point E(NodeTag e) const;
+    Point C(NodeTag c) const;
+    PointArray T(const NodeTagArray& t) const;
+    PointArray E(const NodeTagArray& e) const;
+    PointArray C(const NodeTagArray& e) const;
   
-    explicit Bathymetry(const TriangMesh* m);
+    Eigen::Vector2d Tang(NodeTag e, NodeTag t) const;
+    Eigen::Vector2d Norm(NodeTag e, NodeTag t) const;
+    Eigen::Vector2d Gradient(NodeTag t) const;
 
-    inline const TriangMesh& Mesh() const { return *m_m; }
-    inline const Storage<1>& Buff() const { return m_b; }
-    inline size_t Size() const { return m_b.size(); }
-
-    double& AtNode (Idx n);
-    double  AtNode (Idx n) const;
-    double  AtPoint(Idx t, const Point& p) const;
-	
-    Array<2> Gradient(Idx n) const;
-
+    double L(NodeTag e) const;
+    double Area(NodeTag t) const;
+   
 private:
-    const TriangMesh *const m_m;
-    Storage<1> m_b;
+    const Topology& m_topology;
+    const Eigen::Ref<PointArray>& m_geometry;
 
 public:
-    auto AtNodes(const NodeTagArray& ns) const -> decltype(m_b.operator()(ns));
+    auto P(const NodeTagArray& ns) const -> decltype(m_geometry.operator()(Eigen::all, ns)) {
+        return m_geometry(Eigen::all, ns);
+    }
 };
 
-struct BaseBathymetryWrapper {
-    explicit BaseBathymetryWrapper(const Bathymetry& b);
+struct BaseDomainWrapper {
+    explicit BaseDomainWrapper(const Domain& b);
 protected:
-    const Bathymetry& m_b;
+    const Domain& m_b;
 };

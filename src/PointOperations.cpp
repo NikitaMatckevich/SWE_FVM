@@ -51,13 +51,13 @@ Eigen::Matrix32d GradientCoefs(const Eigen::Matrix32d& p) {
 			 1,  0;
 	
 	Eigen::Matrix32d res = l * p * r;
-  double scale = res.norm();	
-  res /= scale;
+    double scale = res.norm();	
+    res /= scale;
 
 	double d = res.topRows<2>().determinant();
 	if (abs(d) < tol) {
 		throw SolverError("Division by zero in gradient coefficient computation");
-  }
+    }
 	
 	res /= d;
 	return res;

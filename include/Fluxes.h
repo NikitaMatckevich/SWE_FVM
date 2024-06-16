@@ -14,8 +14,8 @@ namespace Fluxes {
 template <Array<2> (*WavespeedCalc)(double, double, double, double)>
 Array<3> HLL(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 
-	const auto& m = sd->Mesh();
-	const auto& edg = sd->GetEdgField();	
+	const auto& m = sd->GetDomain();
+    const auto& edg = sd->GetEdgField();	
 
 	auto n = m.Norm(e, from);
  
@@ -25,27 +25,27 @@ Array<3> HLL(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 	double ur = edg.vel(e, to, from).matrix().dot(n);
 	double hr = edg.h(e, to, from);
 
-  constexpr double min_depth_to_capture = 1e-10;
+    constexpr double min_depth_to_capture = 1e-10;
 	if (hl + hr <= min_depth_to_capture) {
 		return Array<3>::Zero();
 	}
 
-  Array<2> a = WavespeedCalc(ul, hl, ur, hr);
+    Array<2> a = WavespeedCalc(ul, hl, ur, hr);
 	double al = std::min(0., a[0]);
 	double ar = std::max(0., a[1]);
 
-  constexpr double min_wavespeed_to_capture = 1e-10;
+    constexpr double min_wavespeed_to_capture = 1e-10;
 	if (ar - al <= min_wavespeed_to_capture) {
 		return Array<3>::Zero();
 	} 
 
-  if (r) {
-    double dl = 2. * m.Area(from) / m.L(e);
-	  double dr = 2. * m.Area(to)   / m.L(e);
-    double cor = abs(sd->GetCor());
-	  double length_to_wavespeed = std::min(dl, dr) / (cor + std::max(-al, ar));
+    if (r) {
+        double dl = 2. * m.Area(from) / m.L(e);
+	    double dr = 2. * m.Area(to)   / m.L(e);
+        double cor = abs(sd->GetCor());
+	    double length_to_wavespeed = std::min(dl, dr) / (cor + std::max(-al, ar));
 		*r = std::min(*r, length_to_wavespeed);
-  }
+    }
 
 	const auto& Ul = edg.cons(e, from, to);
 	const auto& Ur = edg.cons(e, to, from);
@@ -56,59 +56,58 @@ Array<3> HLL(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 template <Array<2> (*WavespeedCalc)(double, double, double, double)>
 Array<3> HLLC(SpaceDisc * const sd, Idx e, Idx from, Idx to, double * r) {
 
-  const auto& m = sd->Mesh();
+    const auto& m = sd->GetDomain();
 	const auto& edg = sd->GetEdgField();	
 
-  auto t = m.Tang(e, from);
+    auto t = m.Tang(e, from);
 	auto n = m.Norm(e, from);
   
 	double ul = edg.vel(e, from, to).matrix().dot(n);
-  double vl = edg.vel(e, from, to).matrix().dot(t);
-  double hl = edg.h(e, from, to);
+    double vl = edg.vel(e, from, to).matrix().dot(t);
+    double hl = edg.h(e, from, to);
 
 	double ur = edg.vel(e, to, from).matrix().dot(n);
 	double vr = edg.vel(e, to, from).matrix().dot(t);
-  double hr = edg.h(e, to, from);
+    double hr = edg.h(e, to, from);
 
-  constexpr double min_depth_to_capture = 1e-10;
+    constexpr double min_depth_to_capture = 1e-10;
 	if (hl + hr <= min_depth_to_capture) {
 		return Array<3>::Zero();
 	}
 
-  Array<2> a = WavespeedCalc(ul, hl, ur, hr);
+    Array<2> a = WavespeedCalc(ul, hl, ur, hr);
 	double al = a[0];
 	double ar = a[1];
 
-  double ustar = (ar - ur) * hr * ur - (al - ul) * hl * ul + 0.5 * (hl * hl - hr * hr);
-  ustar /= (hr * (ar - ur) - hl * (al - ul));
+    double ustar = (ar - ur) * hr * ur - (al - ul) * hl * ul + 0.5 * (hl * hl - hr * hr);
+    ustar /= (hr * (ar - ur) - hl * (al - ul));
 
-  if (r) {
-    double dl = 2. * m.Area(from) / m.L(e);
-	  double dr = 2. * m.Area(to)   / m.L(e);
-    double cor = abs(sd->GetCor());
-	  double length_to_wavespeed = std::min(dl, dr) / (cor + std::max(tol, std::max(al, ar)));
+    if (r) {
+        double dl = 2. * m.Area(from) / m.L(e);
+	    double dr = 2. * m.Area(to)   / m.L(e);
+        double cor = abs(sd->GetCor());
+	    double length_to_wavespeed = std::min(dl, dr) / (cor + std::max(tol, std::max(al, ar)));
 		*r = std::min(*r, length_to_wavespeed);
-  }
+    }
 
 	const auto& Ul = edg.cons(e, from, to);
 	const auto& Ur = edg.cons(e, to, from);
 
-  if (ustar <= 0) {
-    Array<2> vel = Array<2>{vr, ustar};
-    double urstar = vel.matrix().dot(t);
-    double vrstar = vel.matrix().dot(n);
-    double hrstar = hr * (ar - ur) / (ar - ustar);
-    Array<3> Urstar = Array<3>{hrstar, hrstar * urstar, hrstar * vrstar};
-    return ElemFlux(n, Ur) + std::max(0., ar) * (Urstar - Ur);
-  }
-  else {
-    Array<2> vel = Array<2>{vl, ustar};
-    double ulstar = vel.matrix().dot(t);
-    double vlstar = vel.matrix().dot(n);
-    double hlstar = hl * (al - ul) / (al - ustar);
-    Array<3> Ulstar = Array<3>{hlstar, hlstar * ulstar, hlstar * vlstar};
-    return ElemFlux(n, Ul) + std::min(0., al) * (Ulstar - Ul);
-  }
+    if (ustar <= 0) {
+        Array<2> vel = Array<2>{vr, ustar};
+        double urstar = vel.matrix().dot(t);
+        double vrstar = vel.matrix().dot(n);
+        double hrstar = hr * (ar - ur) / (ar - ustar);
+        Array<3> Urstar = Array<3>{hrstar, hrstar * urstar, hrstar * vrstar};
+        return ElemFlux(n, Ur) + std::max(0., ar) * (Urstar - Ur);
+    } else {
+        Array<2> vel = Array<2>{vl, ustar};
+        double ulstar = vel.matrix().dot(t);
+        double vlstar = vel.matrix().dot(n);
+        double hlstar = hl * (al - ul) / (al - ustar);
+        Array<3> Ulstar = Array<3>{hlstar, hlstar * ulstar, hlstar * vlstar};
+        return ElemFlux(n, Ul) + std::min(0., al) * (Ulstar - Ul);
+    }
 }
 
 }

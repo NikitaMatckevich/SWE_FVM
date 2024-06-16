@@ -7,27 +7,26 @@
 
 inline Array<3> ElemFlux(const Eigen::Vector2d& n, const Array<3>& U) {
 
-  Array<3> res = Array<3>::Zero();
+    Array<3> res = Array<3>::Zero();
 
-  double h = U[0];
+    double h = U[0];
 
-  if (IsWet(h)) {
-    Array<2> hvel = U.tail<2>();
-    double hveln = hvel.matrix().dot(n);
-    res[0] = hveln;
-    res.tail<2>() = (hveln / h) * hvel + (0.5 * h * h) * n.array();
-  }
+    if (IsWet(h)) {
+        Array<2> hvel = U.tail<2>();
+        double hveln = hvel.matrix().dot(n);
+        res[0] = hveln;
+        res.tail<2>() = (hveln / h) * hvel + (0.5 * h * h) * n.array();
+    }
 
-  return res;
+    return res;
 }
 
 struct SpaceDisc : MUSCLObject {
 
     using Fluxer = std::function<Array<3>(SpaceDisc* const, Idx, Idx, Idx, double*)>;
 
-	SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, const VolumeField& v0, double cor = 0, double tau = 0);
-	SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, VolumeField&& v0, double cor = 0, double tau = 0);
-  
+	SpaceDisc(const Fluxer& fluxer, const Domain& b, const VolumeField& v0, double cor = 0, double tau = 0);
+
 	inline const EdgeField& GetEdgField() const noexcept { return m_edg; }
 	inline const EdgeField& GetSrcField() const noexcept { return m_src; }
     inline const Storage<3>& GetFluxes() const noexcept { return m_f; }

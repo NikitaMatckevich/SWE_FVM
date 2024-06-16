@@ -1,7 +1,7 @@
 #include <SpaceDisc.h>
 #include <memory>
 
-SpaceDisc::SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, const VolumeField& v0, double cor, double tau)
+SpaceDisc::SpaceDisc(const Fluxer& fluxer, const Bathymetry& b, const VolumeField& v0, double cor, double tau)
   : MUSCLObject(std::move(b), v0)
   , m_edg(m_b, 2 * m_b.Mesh().NumEdges())
   , m_src(m_b, 2 * m_b.Mesh().NumEdges())
@@ -12,54 +12,43 @@ SpaceDisc::SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, const VolumeField& v0
 	m_f.resize(Eigen::NoChange, this->Mesh().NumEdges());
 }
 
-SpaceDisc::SpaceDisc(const Fluxer& fluxer, Bathymetry&& b, VolumeField&& v0, double cor, double tau)
-  : MUSCLObject(std::move(b), std::move(v0))
-  , m_edg(m_b, 2 * m_b.Mesh().NumEdges())
-  , m_src(m_b, 2 * m_b.Mesh().NumEdges())
-  , m_fluxer(fluxer)
-  , m_cor(cor)
-  , m_tau(tau)
-{
-	m_f.resize(Eigen::NoChange, this->Mesh().NumEdges());
-}
-
 void SpaceDisc::UpdateInterfaceValues(const MUSCL& muscl) {
+    const Idx i = muscl.OriginId();
+    const auto& m = Mesh();
+    const auto& ip = m.TriangPoints(i);
+    const auto& ie = m.TriangEdges(i);
+    const auto& it = m.TriangTriangs(i);
 
-  const Idx i = muscl.OriginId();
-  const auto& m = Mesh();
-  const auto& ip = m.TriangPoints(i);
-  const auto& ie = m.TriangEdges(i);
-  const auto& it = m.TriangTriangs(i);
-
-  for (short int k = 0; k < 3; ++k) {
-    m_max_wp[ip[k]] = std::max(m_max_wp[ip[k]], muscl.AtPoint(m.P(ip[k]))[0]);
-    m_edg.prim(ie[k], i, it[k]) = muscl.AtPoint(m.E(ie[k]));
-    m_src.vel(ie[k], i, it[k]) = muscl.Gradient(m.E(ie[k])).row(0).transpose().array();
-    double u = m_edg.u(ie[k], i, it[k]);
-    double v = m_edg.v(ie[k], i, it[k]);
-    m_src.vel(ie[k], i, it[k]) += m_cor * Array<2>{ -v, u };
-  }
+    for (short int k = 0; k < 3; ++k) {
+        m_max_wp[ip[k]] = std::max(m_max_wp[ip[k]], muscl.AtPoint(m.P(ip[k]))[0]);
+        const auto edgeCenter = m.E(ie[k]);
+        m_edg.prim(ie[k], i, it[k]) = muscl.AtPoint(edgeCenter);
+        m_src.vel(ie[k], i, it[k]) = muscl.Gradient(edgeCenter).row(0).transpose().array();
+        double u = m_edg.u(ie[k], i, it[k]);
+        double v = m_edg.v(ie[k], i, it[k]);
+        m_src.vel(ie[k], i, it[k]) += m_cor * Array<2>{ -v, u };
+    }
 }
 
 void SpaceDisc::ComputeInterfaceValues() {		
-  m_max_wp = Bath().Buff();
-  const auto& m = Mesh();
+    m_max_wp = Bath().Buff();
+    const auto& m = Mesh();
 	
-  for (size_t i = 0; i < m.NumTriangles(); ++i) {
-	if (IsDryCell(i)) {
-	    UpdateInterfaceValues(ReconstructDryCell(i));
-    } else if (!IsFullWetCell(i)) {
-	    UpdateInterfaceValues(ReconstructPartWetCell1(i));
-    } else {
-      UpdateInterfaceValues(ReconstructFullWetCell(i));
-	}
-  }
- 
-  for (size_t i = 0; i < m.NumTriangles(); ++i) {
-    if (IsPartWetCell(i)) {
-	  UpdateInterfaceValues(ReconstructPartWetCell2(i));
+    for (size_t i = 0; i < m.NumTriangles(); ++i) {
+        if (IsDryCell(i)) {
+            UpdateInterfaceValues(ReconstructDryCell(i));
+        } else if (!IsFullWetCell(i)) {
+	        UpdateInterfaceValues(ReconstructPartWetCell1(i));
+        } else {
+            UpdateInterfaceValues(ReconstructFullWetCell(i));
+	    }
     }
-  }
+ 
+    for (size_t i = 0; i < m.NumTriangles(); ++i) {
+        if (IsPartWetCell(i)) {
+	        UpdateInterfaceValues(ReconstructPartWetCell2(i));
+        }
+    }
 }
 
 void SpaceDisc::ComputeFluxes() {
