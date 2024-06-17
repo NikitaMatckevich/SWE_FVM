@@ -10,7 +10,6 @@ constexpr inline bool IsWet(double h) noexcept {
 Point DryState(double b) noexcept;
 
 struct Domain {
-    using NodeTag = Topology::NodeTag;
 
     Domain(const Eigen::Ref<PointArray>& geometry, const Topology& topology);
 
