@@ -48,4 +48,4 @@ double Bisection(
   double xmin = 0., double xmax = 1.,
   const int accuracy = 50);
 
-Eigen::Matrix32d GradientCoefs(const Eigen::Matrix32d& p);
+Eigen::Vector2d Gradient(const Eigen::Matrix3d& p);

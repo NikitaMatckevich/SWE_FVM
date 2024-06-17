@@ -4,7 +4,7 @@ namespace Solvers {
 
 void Euler(TimeDisc * const td, double dt) { 
 	SpaceDisc* sd = td->GetSpaceDisc();
-	const auto& m = sd->Mesh();
+	const auto& m = sd->GetDomain().GetTopology();
 
     sd->ComputeInterfaceValues();
     sd->ComputeFluxes();
@@ -15,7 +15,7 @@ void Euler(TimeDisc * const td, double dt) {
 
 void SSPRK2(TimeDisc * const td, double dt) {
 	SpaceDisc* sd = td->GetSpaceDisc();
-	const auto& m = sd->Mesh();
+	const auto& m = sd->GetDomain().GetTopology();
 
     sd->ComputeInterfaceValues();
     sd->ComputeFluxes();
@@ -34,7 +34,7 @@ void SSPRK2(TimeDisc * const td, double dt) {
 
 void SSPRK3(TimeDisc * const td, double dt) {
 	SpaceDisc* sd = td->GetSpaceDisc();
-	const auto& m = sd->Mesh();
+	const auto& m = sd->GetDomain().GetTopology();
 
     sd->ComputeInterfaceValues();
     sd->ComputeFluxes();

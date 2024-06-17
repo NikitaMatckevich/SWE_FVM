@@ -7,25 +7,14 @@ Domain::Domain(const Eigen::Ref<Storage<3>>& geometry, const Topology& topology)
         : m_geometry(geometry)
         , m_topology(topology) {}
 
-Eigen::Vector2d Domain::Gradient(Idx t) const {
+Eigen::Vector2d Domain::TriangSlope(Idx t) const {
     const auto& tp = m_topology.TriangPoints(t);
-    const auto& points = P(tp).matrix().transpose();
- 	Eigen::Matrix3d coefs;
-	coefs <<  0, 0, 0,
-             -1, 1, 0,
-             -1, 0, 1;
-	const auto& deltas = (coefs * points).bottomRows(2);
-    return deltas.leftCols(2).partialPivLu().solve(deltas.rightCols(1));
+    return Gradient(P(tp).matrix());
 }
 
 double Domain::Z(Idx t, double x, double y) const {
     const auto& tp = m_topology.TriangPoints(t);
-    const auto& points = P(tp).matrix().transpose();
-  	Eigen::Matrix3d coefs;
-	coefs <<  0, 0, 0,
-             -1, 1, 0,
-             -1, 0, 1;
-	return Gradient(t).dot(Eigen::Vector2d(x, y) - P(tp[0]).topRows(2).matrix());
+	return TriangSlope(t).dot(Eigen::Vector2d(x, y) - P(tp[0]).topRows(2).matrix());
 }
 
 Point Domain::P(NodeTag i) const {
@@ -100,4 +89,89 @@ double Domain::Area(NodeTag it) const {
   return TriangArea(P(ip[0]), P(ip[1]), P(ip[2]));
 }
 
+double MaxTriangArea(const Domain& b) {
+    const auto& m = b.GetTopology();
+    double maxArea = 0.;
+    for (int i = 0; i < m.NumTriangles(); i++) {
+        double area = b.Area(i);
+        if (area > maxArea) {
+            maxArea = area;
+        }
+    }
+    return maxArea;
+}
+
 BaseDomainWrapper::BaseDomainWrapper(const Domain& b) : m_b(b) {}
+
+
+// SIMPLE I/O
+
+#include <iostream>
+#include <fstream>
+#include <functional>
+#include <string>
+
+using namespace std;
+
+void Info(ostream& out, const Domain& b) {
+
+    const auto& m = b.GetTopology();
+
+    out.setf(ios::left, ios::adjustfield);
+
+    auto WriteComment = bind(
+        [&](ostream& out, Idx wid, string_view c) { out.width(wid); out << c << ' '; },
+        ref(out), std::placeholders::_1, std::placeholders::_2);
+    auto WriteLine = [&](auto n, string_view c1, auto v1,
+                               string_view c2, auto v2,
+                               string_view c3, auto v3,
+                               string_view c4, auto v4)
+    {
+    out.width(4); out << n  << ' ';
+    WriteComment(7,  c1);
+    out.width(3); out << v1 << ' ';
+    WriteComment(10, c2);
+    out.width(3); out << v2 << ' ';
+    WriteComment(11, c3);
+    out.width(3); out << v3 << ' ';
+    WriteComment(14, c4);
+    out.width(3); out << v4 << ' ';
+    out << '\n';
+    };
+
+    out << "TRIANGULAR MESH :\n";
+
+    out << "nodes: total = " << m.NumNodes() << '\n';
+    for (size_t i = 0; i < m.NumNodes(); ++i) {
+        WriteLine(i, "points:", b.P(i).transpose(),
+            "", "",
+            "", "",
+            "", "");
+    }
+  
+    out << "edges: total = " << m.NumEdges() << '\n';
+    for (size_t i = 0; i < m.NumEdges(); ++i) {
+        WriteLine(i, "points:", m.EdgePoints(i),
+            "triangles:", m.EdgeTriangs(i),
+            "center at:", b.E(i).transpose(),
+            "", "");
+    }
+  
+    out << "triangles: total = " << m.NumTriangles() 
+      << ";\tmax area = " << MaxTriangArea(b) << '\n';
+    for (size_t i = 0; i < m.NumTriangles(); ++i) {
+        WriteLine(i, "points:", m.TriangPoints(i),
+            "edges:", m.TriangEdges(i),
+            "nieghbours:", m.TriangTriangs(i),
+            "center at:", b.T(i).transpose());
+    }
+}
+
+
+
+
+
+
+
+
+

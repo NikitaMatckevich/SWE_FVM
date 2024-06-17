@@ -1,9 +1,5 @@
 #pragma once
 #include <MUSCLObject.h>
-#include <Tests.h>
-#include <fstream>
-#include <iostream>
-#include <string>
 
 inline Array<3> ElemFlux(const Eigen::Vector2d& n, const Array<3>& U) {
 

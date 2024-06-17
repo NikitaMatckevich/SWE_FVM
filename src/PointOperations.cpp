@@ -39,26 +39,10 @@ double Bisection(
   return x;
 }
 
-Eigen::Matrix32d GradientCoefs(const Eigen::Matrix32d& p) {
-		
-	Eigen::Matrix3d l;
-	l << 0,  1, -1,
-			-1,  0,  1,
-			 1, -1,  0;
-	
-	Eigen::Matrix2d r;
-	r << 0, -1,
-			 1,  0;
-	
-	Eigen::Matrix32d res = l * p * r;
-    double scale = res.norm();	
-    res /= scale;
-
-	double d = res.topRows<2>().determinant();
-	if (abs(d) < tol) {
-		throw SolverError("Division by zero in gradient coefficient computation");
-    }
-	
-	res /= d;
-	return res;
+Eigen::Vector2d Gradient(const Eigen::Matrix3d& points) {
+	const Eigen::Matrix23d coefs = (Eigen::Matrix23d() <<
+       -1, 1, 0,
+       -1, 0, 1).finished();
+	const auto& deltas = coefs * points.transpose();
+    return deltas.leftCols(2).partialPivLu().solve(deltas.rightCols(1));
 }

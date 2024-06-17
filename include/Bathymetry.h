@@ -34,7 +34,7 @@ struct Domain {
   
     Eigen::Vector2d Tang(NodeTag e, NodeTag t) const;
     Eigen::Vector2d Norm(NodeTag e, NodeTag t) const;
-    Eigen::Vector2d Gradient(NodeTag t) const;
+    Eigen::Vector2d TriangSlope(NodeTag t) const;
 
     double L(NodeTag e) const;
     double Area(NodeTag t) const;
@@ -54,3 +54,7 @@ struct BaseDomainWrapper {
 protected:
     const Domain& m_b;
 };
+
+double MaxTriangArea(const Domain&);
+
+void Info(std::ostream&, const Domain&);

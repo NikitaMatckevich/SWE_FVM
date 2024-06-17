@@ -1,4 +1,10 @@
-build/**
-venv/**
-.clang-tidy
-run-clang-tidy.py
+# Build artifacts
+build
+
+# Virtual env
+venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+*.egg-info

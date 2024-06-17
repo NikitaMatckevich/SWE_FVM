@@ -1,27 +1,27 @@
 #include <SpaceDisc.h>
 #include <memory>
 
-SpaceDisc::SpaceDisc(const Fluxer& fluxer, const Bathymetry& b, const VolumeField& v0, double cor, double tau)
-  : MUSCLObject(std::move(b), v0)
-  , m_edg(m_b, 2 * m_b.Mesh().NumEdges())
-  , m_src(m_b, 2 * m_b.Mesh().NumEdges())
+SpaceDisc::SpaceDisc(const Fluxer& fluxer, const Domain& b, const VolumeField& v0, double cor, double tau)
+  : MUSCLObject(b, v0)
+  , m_edg(m_b, 2 * m_b.GetTopology().NumEdges())
+  , m_src(m_b, 2 * m_b.GetTopology().NumEdges())
   , m_fluxer(fluxer)
   , m_cor(cor)
   , m_tau(tau)
 {
-	m_f.resize(Eigen::NoChange, this->Mesh().NumEdges());
+	m_f.resize(Eigen::NoChange, m_b.GetTopology().NumEdges());
 }
 
 void SpaceDisc::UpdateInterfaceValues(const MUSCL& muscl) {
     const Idx i = muscl.OriginId();
-    const auto& m = Mesh();
+    const auto& m = m_b.GetTopology();
     const auto& ip = m.TriangPoints(i);
     const auto& ie = m.TriangEdges(i);
     const auto& it = m.TriangTriangs(i);
 
     for (short int k = 0; k < 3; ++k) {
-        m_max_wp[ip[k]] = std::max(m_max_wp[ip[k]], muscl.AtPoint(m.P(ip[k]))[0]);
-        const auto edgeCenter = m.E(ie[k]);
+        m_max_wp[ip[k]] = std::max(m_max_wp[ip[k]], muscl.AtPoint(m_b.P(ip[k]))[0]);
+        const auto& edgeCenter = m_b.E(ie[k]);
         m_edg.prim(ie[k], i, it[k]) = muscl.AtPoint(edgeCenter);
         m_src.vel(ie[k], i, it[k]) = muscl.Gradient(edgeCenter).row(0).transpose().array();
         double u = m_edg.u(ie[k], i, it[k]);
@@ -31,8 +31,8 @@ void SpaceDisc::UpdateInterfaceValues(const MUSCL& muscl) {
 }
 
 void SpaceDisc::ComputeInterfaceValues() {		
-    m_max_wp = Bath().Buff();
-    const auto& m = Mesh();
+    m_max_wp = m_b.GetGeometry().row(2);
+    const auto& m = m_b.GetTopology();
 	
     for (size_t i = 0; i < m.NumTriangles(); ++i) {
         if (IsDryCell(i)) {
@@ -54,15 +54,14 @@ void SpaceDisc::ComputeInterfaceValues() {
 void SpaceDisc::ComputeFluxes() {
 
   m_min_length_to_wavespeed = 1.;
-  const auto& m = Mesh();
+  const auto& m = m_b.GetTopology();
 
   for (size_t i = 0; i < m.NumEdges(); ++i) {
-
     const auto& it = m.EdgeTriangs(i);
     Idx lf = it[0];
     Idx lt = it[1];
 
-    auto n = m.Norm(i, lf);
+    auto n = m_b.Norm(i, lf);
     
     switch (lt) {
     case static_cast<Idx>(Boundaries::SOLID_WALL):
@@ -74,9 +73,10 @@ void SpaceDisc::ComputeFluxes() {
   }
 }
 
+/*
 Array<3> ComputeIntegrals(const SpaceDisc& sd) {
   Array<3> res = Array<3>::Zero();
-  const auto& m = sd.Mesh();
+  const auto& m = sd.GetTopology();
   const size_t n = m.NumTriangles();
 
   for (size_t i = 0; i < n; ++i) {
@@ -104,7 +104,7 @@ Array<3> ComputeIntegrals(const SpaceDisc& sd) {
 }
 
 Storage<3> Compare(const SpaceDisc& sd, const Test& test, double t) {
-  const auto& m = sd.Mesh();
+  const auto& m = sd.GetDomain().GetTopology();
   const size_t n = m.NumTriangles();
 
   Storage<3> errL2;
@@ -112,7 +112,7 @@ Storage<3> Compare(const SpaceDisc& sd, const Test& test, double t) {
   std::aligned_storage_t<sizeof(MUSCLObject::MUSCL), alignof(MUSCLObject::MUSCL)> data;
   MUSCLObject::MUSCL* muscl = nullptr;
   auto comparator = [&](const Point& p) {
-    double b = sd.Bath().AtPoint(muscl->OriginId(), p);
+    double b = sd.GetDomain().AtPoint(muscl->OriginId(), p);
     Array<3> U = Array<3>{ test.w(p[0], p[1], t), test.hu(p[0], p[1], t), test.hv(p[0], p[1], t) };
     Array<3> V = muscl->AtPoint(p);
     V.tail<2>() *= (V[0] - b);
@@ -136,4 +136,4 @@ Storage<3> Compare(const SpaceDisc& sd, const Test& test, double t) {
 
   return errL2;
 }
-
+*/
