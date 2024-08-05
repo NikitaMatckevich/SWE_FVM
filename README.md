@@ -1,5 +1,5 @@
-![](assets/Thacker-t0-HLLCE.png) ![](assets/Thacker-t0-HLLCE_coast.png)
-
+![Thacker benchmark; parabolic free surface in parabolic basin](assets/Thacker-t0-HLLCE.png)
+ 
 __SWE_FVM__ extensively exploits the ideas from the article [Liu et al.,2018](https://www.sciencedirect.com/science/article/pii/S0021999118304996) to build a robust positivity-preserving well-balanced interpolation of the unknown
 fields.
 
