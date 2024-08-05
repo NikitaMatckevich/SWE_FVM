@@ -5,3 +5,15 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "SWE_FVM"
 version = "0.0.1"
+
+[tool.scikit-build]
+
+# Verbose printout when building.
+cmake.verbose = true
+
+# The build type to use when building the project. Valid options are: "Debug",
+# "Release", "RelWithDebInfo", "MinSizeRel", "", etc.
+cmake.build-type = "Debug"
+
+# The build directory. Defaults to a temporary directory, but can be set.
+build-dir = "build"

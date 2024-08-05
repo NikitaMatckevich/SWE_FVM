@@ -1,6 +1,7 @@
 #pragma once
 #include <Exceptions.h>
 #include <PointOperations.h>
+#include <iostream>
 
 using NodeTag = Idx; 
 using EdgeTag   = Eigen::Array<Idx, 1, 2, Eigen::RowMajor>;
@@ -35,11 +36,12 @@ struct Topology {
     , m_edge_triangs(edgeElements)
     , m_triang_points(elementNodes)
     , m_triang_edges(elementEdges)
-    , m_triang_triangs(elementNeighbours) {}
+    , m_triang_triangs(elementNeighbours) 
+    {}
 
     inline NodeTag NumNodes() const { return m_numNodes; }
-    inline NodeTag NumEdges() const { return m_edge_points->col(0).size(); }
-    inline NodeTag NumTriangles() const { return m_triang_points->col(0).size(); }
+    inline NodeTag NumEdges() const { return m_edge_points.col(0).size(); }
+    inline NodeTag NumTriangles() const { return m_triang_points.col(0).size(); }
     
     EdgeTag EdgePoints(NodeTag i) const;
     EdgeTag EdgeTriangs(NodeTag i) const;
@@ -52,13 +54,13 @@ struct Topology {
     
 private:
     const NodeTag  m_numNodes; // number of mesh nodes
-    const EdgeTagArray* m_edge_points;  // ends of each edge
-    const EdgeTagArray* m_edge_triangs; // triangle pairs that have 1 edge in common
+    const EdgeTagArray& m_edge_points;  // ends of each edge
+    const EdgeTagArray& m_edge_triangs; // triangle pairs that have 1 edge in common
                                         // some special types are used for boundary
                                         // edge's "ghost cells"
   
-    const TriangTagArray* m_triang_points;  // points of each triangle
-    const TriangTagArray* m_triang_edges;   // edges of each triangle
-    const TriangTagArray* m_triang_triangs; // triangles of each triangle
+    const TriangTagArray& m_triang_points;  // points of each triangle
+    const TriangTagArray& m_triang_edges;   // edges of each triangle
+    const TriangTagArray& m_triang_triangs; // triangles of each triangle
 };
 

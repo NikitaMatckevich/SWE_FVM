@@ -24,7 +24,7 @@ PYBIND11_MODULE(SWE_FVM, m) {
                 "edgeElements"_a.noconvert(),
                 "elementNodes"_a.noconvert(),
                 "elementEdges"_a.noconvert(),
-                "elementNieghbours"_a.noconvert())
+                "elementNeighbours"_a.noconvert())
         .def("num_nodes", &Topology::NumNodes)
         .def("num_edges", &Topology::NumEdges)
         .def("num_elements", &Topology::NumTriangles);
